@@ -1,0 +1,231 @@
+---
+projectLink: https://github.com/GhostPack/Seatbelt
+name: Seatbelt
+languages:
+  - name: EXE
+    prefix: Seatbelt.exe
+
+params:
+  - name: Seatbelt commands
+    type: label
+
+  - name: SbGroup
+    description: Specify Seatbelt recon group.
+    default: "All"
+    template: "-group={0}"
+    type: select
+    options: ["All", "User", "System", "Slack", "Chromium", "Remote", "Misc"]
+    optional: true
+  - name: SbCommand
+    description: Command option for seatbelt
+    default: "AMSIProviders"
+    template: "{0}"
+    type: select
+    options:
+      [
+        "AMSIProviders",
+        "AntiVirus",
+        "AppLocker",
+        "ARPTable",
+        "AuditPolicies",
+        "AuditPolicyRegistry",
+        "AutoRuns",
+        "Certificates",
+        "CertificateThumbprints",
+        "ChromiumBookmarks",
+        "ChromiumHistory",
+        "ChromiumPresence",
+        "CloudCredentials",
+        "CloudSyncProviders",
+        "CredEnum",
+        "CredGuard",
+        "dir",
+        "DNSCache",
+        "DotNet",
+        "DpapiMasterKeys",
+        "Dsregcmd",
+        "EnvironmentPath",
+        "EnvironmentVariables",
+        "ExplicitLogonEvents",
+        "ExplorerMRUs",
+        "ExplorerRunCommands",
+        "FileInfo",
+        "FileZilla",
+        "FirefoxHistory",
+        "FirefoxPresence",
+        "Hotfixes",
+        "IdleTime",
+        "IEFavorites",
+        "IETabs",
+        "IEUrls",
+        "InstalledProducts",
+        "InterestingFiles",
+        "InterestingProcesses",
+        "InternetSettings",
+        "KeePass",
+        "LAPS",
+        "LastShutdown",
+        "LocalGPOs",
+        "LocalGroups",
+        "LocalUsers",
+        "LogonEvents",
+        "LogonSessions",
+        "LOLBAS",
+        "LSASettings",
+        "MappedDrives",
+        "McAfeeConfigs",
+        "McAfeeSiteList",
+        "MicrosoftUpdates",
+        "NamedPipes",
+        "NetworkProfiles",
+        "NetworkShares",
+        "NTLMSettings",
+        "OfficeMRUs",
+        "OptionalFeatures",
+        "OracleSQLDeveloper",
+        "OSInfo",
+        "OutlookDownloads",
+        "PoweredOnEvents",
+        "PowerShell",
+        "PowerShellEvents",
+        "PowerShellHistory",
+        "Printers",
+        "ProcessCreationEvents",
+        "Processes",
+        "ProcessOwners",
+        "PSSessionSettings",
+        "PuttyHostKeys",
+        "PuttySessions",
+        "RDCManFiles",
+        "RDPSavedConnections",
+        "RDPSessions",
+        "RDPsettings",
+        "RecycleBin",
+        "reg",
+        "RPCMappedEndpoints",
+        "SCCM",
+        "ScheduledTasks",
+        "SearchIndex",
+        "SecPackageCreds",
+        "SecurityPackages",
+        "Services",
+        "SlackDownloads",
+        "SlackPresence",
+        "SlackWorkspaces",
+        "SuperPutty",
+        "Sysmon",
+        "SysmonEvents",
+        "TcpConnections",
+        "TokenGroups",
+        "TokenPrivileges",
+        "UAC",
+        "UdpConnections",
+        "UserRightAssignments",
+        "WindowsAutoLogon",
+        "WindowsCredentialFiles",
+        "WindowsDefender",
+        "WindowsEventForwarding",
+        "WindowsFirewall",
+        "WindowsVault",
+        "WMI",
+        "WMIEventConsumer",
+        "WMIEventFilter",
+        "WMIFilterBinding",
+        "WSUS",
+      ]
+    optional: true
+
+  - name: Targets
+    type: label
+
+  - name: ComputerName
+    type: text
+    description: Remote computer name to enumerate (full FQDN or IP)
+    template: "-computername={0}"
+    default: comp1.example.local
+    optional: true
+
+  - name: Authentication
+    type: label
+
+  - name: Domain
+    type: text
+    description: Domain name
+    template: "{0}"
+    default: example.local
+    optional: false
+  - name: Username
+    type: text
+    description: Username
+    template: "-username={Domain}\\{0}"
+    default: User1
+    optional: true
+  - name: Password
+    type: text
+    description: Password
+    template: "-password={0}"
+    default: Password123
+    optional: true
+  
+  - name: Output
+    type: label
+
+  - name: OutputFile
+    type: text
+    description: Output file path (Specifying json suffix will produce Json output)
+    template: "-outputfile=\"{0}\""
+    default: C:\temp\out.txt
+    optional: true
+
+  - name: Flags
+    type: label
+  
+  - name: Full
+    type: flag
+    description: argument prevents filtering output
+    value: -full
+    optional: true
+    selected: true
+  - name: Quiet
+    type: flag
+    description: Execute in quiet mode
+    value: -q
+    optional: true
+    selected: false
+  
+
+sections:
+- name: Self crafted command
+  labels: ["Recon"]
+  mitre: 'T1592'
+  verb: ''
+  required_flags: []
+  optional_flags: [SbCommand, SbGroup, ComputerName, Username, Password, OutputFile, Full, Quiet]
+
+- name: Run specific command
+  labels: ["Recon"]
+  mitre: 'T1592'
+  verb: ''
+  required_flags: [SbCommand]
+  optional_flags: [ComputerName, Username, Password, OutputFile, Full, Quiet]
+
+- name: Run specific group of commands
+  labels: ["Recon"]
+  mitre: 'T1592'
+  verb: ''
+  required_flags: [SbGroup]
+  optional_flags: [ComputerName, Username, Password, OutputFile, Full, Quiet]
+
+- name: Run checks on remote host
+  labels: ["Recon"]
+  mitre: 'T1592'
+  verb: ''
+  required_flags: [ComputerName]
+  optional_flags: [SbCommand, SbGroup, Username, Password, OutputFile, Full, Quiet]
+
+- name: Run checks with credentials
+  labels: ["Recon"]
+  mitre: 'T1592'
+  verb: ''
+  required_flags: [Username, Password]
+  optional_flags: [SbCommand, SbGroup, ComputerName, OutputFile, Full, Quiet]

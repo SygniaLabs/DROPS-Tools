@@ -1,0 +1,164 @@
+---
+projectLink: https://github.com/0xthirteen/SharpMove
+name: SharpMove
+languages:
+  - name: EXE
+    prefix: SharpMove.exe
+
+params:
+  - name: action
+    description: Action to execute
+    default: query
+    template: "action={0}"
+    type: select
+    options: [query, create, executevbs, taskscheduler, dcom, scm, modsvc, modschtask, hijackdcom, startservice]
+    optional: false
+  - name: ComputerName
+    type: text
+    description: desc
+    template: "computername={0}"
+    default: Comp1.windomain.local
+    optional: false
+
+  - name: Command
+    type: text
+    description: Command to execute
+    template: "command=\"{0}\""
+    default: C:\windows\temp\payload.exe
+    optional: true
+  - name: Query
+    type: text
+    description: WMI query
+    template: "query=\"{0}\""
+    default: select * from win32_process
+    optional: true
+  - name: ServiceName
+    type: text
+    description: Service name
+    template: "servicename={0}"
+    default: TestService
+    optional: true
+  - name: CLSID
+    type: text
+    description: CLSID
+    template: "clsid={0}"
+    default: "{40bdc4e5-d532-42e6-b667-1ab890fdebcf}"
+    optional: true
+  - name: TaskName
+    type: text
+    description: Task name
+    template: "taskname={0}"
+    default: TestTask
+    optional: true
+  - name: Method
+    type: text
+    description: Method
+    template: "method={0}"
+    default: ShellBrowserWindow
+    optional: true
+  - name: EventName
+    type: text
+    description: Event name
+    template: "eventname={0}"
+    default: Debug
+    optional: true
+  
+  - name: Authentication
+    type: label
+
+  - name: Domain
+    type: text
+    description: desc
+    template: "{0}"
+    default: 
+    optional: false
+  - name: Username
+    type: text
+    description: Username
+    template: "username={Domain}\\{0}"
+    default: User1
+    optional: true
+  - name: Password
+    type: text
+    description: Password
+    template: "password={0}"
+    default: Password123
+    optional: true
+
+  - name: Flags
+    type: label
+
+  - name: AMSI
+    type: flag
+    description: desc
+    value: "amsi=true"
+    optional: true
+    selected: false
+
+sections:
+- name: Self crafted command
+  labels: []
+  mitre: ''
+  verb: ''
+  required_flags: [action, ComputerName]
+  optional_flags: [Command, Query, ServiceName, CLSID, TaskName, Method, EventName, Username, Password, AMSI]
+- name: Query WMI
+  labels: ["Recon", "Creds", "WMI"]
+  mitre: ''
+  verb: 'action=query'
+  required_flags: [ComputerName, Query, Username, Password]
+  optional_flags: []
+- name: Execute WMI
+  labels: ["Lateral", "Creds", "WMI"]
+  mitre: ''
+  verb: 'action=create'
+  required_flags: [ComputerName, Command, Username, Password, AMSI]
+  optional_flags: []
+- name: Execute VBS
+  labels: ["Lateral", "Creds", "VBS"]
+  mitre: ''
+  verb: 'action=executevbs'
+  required_flags: [ComputerName, EventName, Username, Password, AMSI]
+  optional_flags: []
+- name: Execute task over TaskScheduler
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: 'action=taskscheduler'
+  required_flags: [ComputerName, Command, TaskName, Username, Password, AMSI]
+  optional_flags: []
+- name: Execute task over DCOM
+  labels: ["Lateral", "Creds", "DCOM"]
+  mitre: ''
+  verb: 'action=dcom'
+  required_flags: [ComputerName, Command, Method, AMSI]
+  optional_flags: []
+- name: Execute task over SCM
+  labels: ["Lateral", "Creds", "SCM"]
+  mitre: ''
+  verb: 'action=scm'
+  required_flags: [ComputerName, Command, ServiceName, AMSI]
+  optional_flags: []
+- name: Execute task over modsvc
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: 'action=modsvc'
+  required_flags: [ComputerName, Command, ServiceName, AMSI]
+  optional_flags: []
+- name: Execute task over modschtask
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: 'action=modschtask'
+  required_flags: [ComputerName, Command, Username, Password, TaskName]
+  optional_flags: []
+- name: Execute task using hijackdcom
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: 'action=hijackdcom'
+  required_flags: [ComputerName, CLSID]
+  optional_flags: []
+- name: Execute task using start service
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: 'action=startservice'
+  required_flags: [ComputerName, ServiceName]
+  optional_flags: []

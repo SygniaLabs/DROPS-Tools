@@ -1,0 +1,38 @@
+---
+projectLink: https://docs.microsoft.com/en-us/powershell/module/activedirectory/?view=windowsserver2022-ps
+name: AD Module
+
+params:
+  - name: Domain
+    description: Name of the domain to enumerate.
+    default: example.local
+  - name: Forest
+    description: Name of the forest to enumerate.
+    default: example.local
+
+sections:
+  - name: name
+    labels: ["Recon"]
+    mitre: ""
+    commands:
+      - language: PS
+        command: Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
+
+    - name: Domain trusts for the current domain
+      labels: ["Recon"]
+      mitre: ""
+      commands:
+        - language: PS
+          command: |-
+            Get-ADTrust
+            Get-ADTrust –Identity {{Domain}}
+    
+    - name: Details about the current forest
+      labels: ["Recon"]
+      mitre: ''
+      commands:
+        - language: PS
+          command: |-
+            Get-ADForest
+            Get-ADForest –Identity {{Domain}}
+    

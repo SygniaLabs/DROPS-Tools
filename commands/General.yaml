@@ -1,0 +1,57 @@
+---
+projectLink: https://lolbas-project.github.io/
+name: LOLBAS
+params:
+  - name: Username
+    description: Username
+    default:
+  - name: GroupName
+    description: Username
+    default:
+
+sections:
+  - name: Systeminfo
+    labels: ["Recon", "Local"]
+    mitre: "T1082"
+    commands:
+      - language: Batch
+        command: |-
+          systeminfo
+          hostname
+
+  - name: Hotfixes
+    labels: ["Recon", "Local"]
+    mitre: "T1082"
+    commands:
+      - language: Batch
+        command: wmic qfe get Caption,Description,HotFixID,InstalledOn
+
+  - name: Network information
+    labels: ["Recon", "Local"]
+    mitre: ""
+    commands:
+      - language: Batch
+        command: |-
+          ipconfig /all
+          route print
+          arp -A
+
+  - name: Local users and groups enumeration
+    labels: ["Recon", "Local"]
+    mitre: ""
+    commands:
+      - language: Batch
+        command: |-
+          net users
+          net localgroups
+          net localgroup {{GroupName}}
+          net user {{Username}}
+
+  - name: Domain users and group enumeration
+    labels: ["Recon", "LDAP"]
+    mitre: ""
+    commands:
+      - language: Batch
+        command: |-
+          net user {{Username}} /domain
+          net group {{GroupName}} /domain

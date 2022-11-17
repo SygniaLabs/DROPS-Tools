@@ -1,0 +1,31 @@
+---
+projectLink: https://github.com/GhostPack/SharpUp
+name: SharpUp
+languages:
+  - name: EXE
+    prefix: SharpUp.exe
+
+params:
+  - name: Audit
+    type: flag
+    description: Specifies whether or not to enable audit mode
+    value: audit
+    optional: true
+    selected: true
+
+  - name: Check
+    description: The individual vulnerability check to be ran
+    default: ProcessDLLHijack
+    template: "{0}"
+    type: select
+    options: [AlwaysInstallElevated, CachedGPPPassword, DomainGPPPassword, HijackablePaths, McAfeeSitelistFiles, ModifiableScheduledTask, ModifiableServiceBinaries, ModifiableServiceRegistryKeys, ModifiableServices, ProcessDLLHijack, RegistryAutoLogons, RegistryAutoruns, TokenPrivileges, UnattendedInstallFiles, UnquotedServicePath]
+    optional: true
+    selected: false
+
+sections:
+  - name: Run vulnerability checks
+    labels: [Recon, PrivEsc]
+    mitre: ''
+    verb: ''
+    required_flags: []
+    optional_flags: [Audit, Check]

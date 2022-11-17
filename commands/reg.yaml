@@ -1,0 +1,26 @@
+---
+params:
+- name: Path
+  description: Registry path
+- name: Value
+  description: Registry key value
+- name: Data
+  description: Registry key data
+- name: Type
+  description: Registry key type
+sections:
+- name: Query registry
+  labels: []
+  commands:
+  - language: EXE
+    command: reg query {{Path}}
+- name: Query registry specific value
+  labels: []
+  commands:
+  - language: EXE
+    command: reg query {{Path}} /v {{Value}}
+- name: Set registry value
+  labels: []
+  commands:
+  - language: EXE
+    command: reg add {{Path}} /v {{Value}} /t {{Type}} /d {{Data}} /f

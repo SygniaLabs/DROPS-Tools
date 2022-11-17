@@ -1,0 +1,121 @@
+---
+projectLink: https://github.com/Sygnia/SharpRDP
+name: SharpRDP
+languages:
+  - name: EXE
+    prefix: SharpRDP.exe
+
+params:
+  - name: ComputerName
+    type: text
+    description: Target computer name
+    template: "computername={0}"
+    default: Comp1.windomain.local
+    optional: false
+  - name: Command
+    type: text
+    description: Command to execute
+    template: "command=\"{0}\""
+    default: C:\temp\file.exe
+    optional: false
+  - name: Username
+    type: text
+    description: Username
+    template: "username={0}"
+    default: User1
+    optional: true
+  - name: Password
+    type: text
+    description: User password
+    template: "password={0}"
+    default: Password123
+    optional: true
+  - name: Exec
+    type: text
+    description: Parent process to execute
+    template: "{0}"
+    default: cmd
+    optional: true
+  - name: Elevated
+    description: Execute elevated command using one of the following options
+    default: taskmgr
+    template: "elevated={0}"
+    type: select
+    options: [taskmgr, winr]
+    optional: true
+
+  - name: NLA
+    type: flag
+    description: Network Level Authentication
+    value: nla=true
+    optional: true
+    selected: false
+  - name: Takeover
+    type: flag
+    description: Should takeover session
+    value: takeover=true
+    optional: true
+    selected: false
+  - name: ConnectDrive
+    type: flag
+    description: Should connect drive
+    value: connectdrive=true
+    optional: true
+    selected: false
+
+sections:
+- name: Self crafted command
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command]
+  optional_flags: [Username, Password, Exec, ConnectDrive, Elevated, NLA, Takeover]
+
+- name: Regular RDP connection and execution
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command, Username, Password]
+  optional_flags: []
+
+- name: Exec program as child process of cmd or powershell
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command, Username, Password, Exec]
+  optional_flags: []
+
+- name: Use restricted admin mode
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command]
+  optional_flags: []
+
+- name: Connect first host drives
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command, Username, Password, ConnectDrive]
+  optional_flags: []
+
+- name: Execute command elevated
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command, Username, Password, Elevated]
+  optional_flags: []
+  
+- name: Add Network Level Authentication
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command, Username, Password, NLA]
+  optional_flags: []
+
+- name: Ask to take over logon session
+  labels: ["Lateral", "RDP"]
+  mitre: ''
+  verb: ''
+  required_flags: [ComputerName, Command, Username, Password, Takeover]
+  optional_flags: []

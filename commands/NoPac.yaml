@@ -1,0 +1,82 @@
+---
+projectLink: https://github.com/cube0x0/noPac
+name: NoPac
+languages:
+  - name: EXE
+    prefix: NoPac.exe
+
+params:
+  - name: Domain
+    type: text
+    description: Domain name
+    template: "-domain {0}"
+    default: example.local
+    optional: false
+  - name: UserName
+    type: text
+    description: Username
+    template: "-user {0}"
+    default: User1
+    optional: false
+  - name: Password
+    type: text
+    description: Password
+    template: "-pass {0}"
+    default: Password123
+    optional: false
+  - name: DomainController
+    type: text
+    description: Domain controller
+    template: "/dc {0}"
+    default: 
+    optional: true
+  - name: mAccount
+    type: text
+    description: New computer account to create
+    template: "/mAccount {0}"
+    default: NoPacTest
+    optional: true
+  - name: mPassword
+    type: text
+    description: New computer account password
+    template: "/mPassword {0}"
+    default: P@ssw0rd
+    optional: true
+  - name: Service
+    type: text
+    description: Service of service ticket
+    template: "/service {0}"
+    default: cifs
+    optional: true
+  
+  - name: Flags
+    type: label
+
+  - name: PTT
+    type: flag
+    description: Pass-The-Ticket
+    value: /ptt
+    optional: true
+    selected: false
+
+sections:
+- name: Self crafted command
+  labels: ["PrivEsc", "AD", "Impersonation"]
+  mitre: ''
+  verb: ''
+  required_flags: [Domain, Username, Password]
+  optional_flags: [DomainController, mAccount, mPassword, Service, PTT]
+
+- name: Execute NoPac
+  labels: ["PrivEsc", "AD", "Impersonation"]
+  mitre: ''
+  verb: ''
+  required_flags: [Domain, Username, Password, DomainController, mAccount, mPassword, Service]
+  optional_flags: [PTT]
+
+- name: Check ticket size (~500 bytes is vulnrable)
+  labels: ["PrivEsc", "AD", "Impersonation"]
+  mitre: ''
+  verb: ''
+  required_flags: [Domain, Username, Password]
+  optional_flags: []

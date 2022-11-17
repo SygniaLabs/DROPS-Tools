@@ -1,0 +1,96 @@
+---
+projectLink:
+name: nltest
+languages:
+  - name: EXE
+    prefix: nltest
+
+params:
+  - name: Domain
+    type: text
+    description: Domain
+    template: "{0}"
+    default: example.local
+    optional: false
+
+  - name: nlServer
+    type: text
+    description: Specify server name
+    template: "/SERVER:{0}"
+    default: Server1
+    optional: true
+  
+  - name: nlQuery
+    type: flag
+    description: Query <ServerName> netlogon service
+    value: /QUERY
+    optional: true
+    selected: false
+  - name: nlREPL
+    type: flag
+    description: Force partial sync on <ServerName> BDC
+    value: /REPL
+    optional: true
+    selected: false
+  - name: nlSync
+    type: flag
+    description: Force full sync on <ServerName> BDC
+    value: /SYNC
+    optional: true
+    selected: false
+  - name: nlPdcREPL
+    type: flag
+    description: Force UAS change message from <ServerName> PDC
+    value: /PDC_REPL
+    optional: true
+    selected: false
+  
+  - name: nlSCQuery
+    type: flag
+    description: descQuery secure channel for <Domain> on <ServerName>
+    value: "/SC_QUERY:{Domain}"
+    optional: true
+    selected: false
+  - name: nlSCReset
+    type: flag
+    description: Reset secure channel for <Domain> on <ServerName> to <DcName>
+    value: "/SC_RESET:{Domain}"
+    optional: true
+    selected: false
+  - name: nlSCVerify
+    type: flag
+    description: Verify secure channel for <Domain> on <ServerName>
+    value: "/SC_VERIFY:{Domain}"
+    optional: true
+    selected: false
+  - name: nlDCList
+    type: flag
+    description: Get list of DC's for specified domain
+    template: "/DCLIST:{Domain}"
+    optional: true
+    selected: false
+  
+
+sections:
+  - name: Self crafted command
+    labels: []
+    mitre: ''
+    verb: ''
+    required_flags: []
+    optional_flags: [
+      nlServer, 
+      nlQuery,
+      nlREPL,
+      nlSync,
+      nlPdcREPL,
+      nlSCQuery,
+      nlSCReset,
+      nlSCVerify,
+      nlDCList
+      ]
+  - name: Get DC list
+    labels: ['Recon']
+    mitre: ''
+    verb: ''
+    required_flags: [nlDCList]
+    optional_flags: [nlServer]

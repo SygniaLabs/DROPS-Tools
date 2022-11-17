@@ -1,0 +1,298 @@
+---
+projectLink: https://github.com/0xthirteen/SharpStay
+name: SharpStay
+languages:
+  - name: EXE
+    prefix: SharpStay.exe
+
+params:
+  - name: General
+    type: label
+
+  - name: action
+    description:  
+    default: ListTaskNames
+    template: "action={0}"
+    type: select
+    options: [ElevatedRegistryKey, UserRegistryKey, UserInitMprLogonScriptKey, ElevatedUserInitKey, ScheduledTask, ScheduledTaskAction, SchTaskCOMHijack, CreateService, WMIEventSub, JunctionFolder, NewLNK, BackdoorLNK, ListTaskNames, ListScheduledTasks, ListRunningServices, GetScheduledTaskCOMHandler]
+    optional: false
+
+  - name: command
+    type: text
+    description: desc
+    template: "command=\"{0}\""
+    default: C:\Windows\temp\fun.exe
+    optional: true
+
+  - name: DllPath
+    type: text
+    description: desc
+    template: "dllpath={0}"
+    default: C:\windows\temp\fun.dll
+    optional: true
+  
+  - name: Registry
+    type: label
+
+  - name: KeyName
+    type: text
+    description: Registry key name
+    template: "keyname={0}"
+    default: Debug
+    optional: true
+  
+  - name: KeyPath
+    type: text
+    description: Registry key path
+    template: "keypath={0}"
+    default: HKCU:Software\Microsoft\Windows\CurrentVersion\Run
+    optional: true
+    selected: false
+
+  - name: Task Scheduler
+    type: label
+
+  - name: taskname
+    type: text
+    description: desc
+    template: "taskname={0}"
+    default: TestTask
+    optional: true
+    selected: false
+  
+  - name: runasuser
+    type: text
+    description: desc
+    template: "runasuser={0}"
+    default: user1
+    optional: true
+  
+  - name: triggertype
+    type: text
+    description: desc
+    template: "triggertype={0}"
+    default: logon
+    optional: true
+  
+  - name: author
+    type: text
+    description: desc
+    template: "author={0}"
+    default: Microsoft Corp.
+    optional: true
+
+  - name: description
+    type: text
+    description: desc
+    template: "description=\"{0}\""
+    default: Test Task
+    optional: true
+
+  - name: logonuser
+    type: text
+    description: desc
+    template: "logonuser={0}"
+    default: user1
+    optional: true
+  
+  - name: folder
+    type: text
+    description: desc
+    template: "folder=\"{0}\""
+    default: \\
+    optional: true
+
+  - name: actionid
+    type: text
+    description: desc
+    template: "actionid={0}"
+    default: ExecAction
+    optional: true
+
+  - name: COM Hijack
+    type: label
+
+  - name: clsid
+    type: text
+    description: desc
+    template: "clsid={0}"
+    default: "{a47af52a-27f9-4426-bd2b-727050712db1}"
+    optional: true
+
+  - name: Service
+    type: label
+
+  - name: ServiceName
+    type: text
+    description: Service name
+    template: "servicename={0}"
+    default: TestService
+    optional: true
+    selected: false
+
+  - name: WMI event
+    type: label
+
+  - name: eventname
+    type: text
+    description: desc
+    template: "eventname={0}"
+    default: Debugger
+    optional: true
+
+  - name: attime
+    type: text
+    description: desc
+    template: "attime={0}"
+    default: startup
+    optional: true
+  
+  - name: Junction folder
+    type: label
+
+  - name: guid
+    type: text
+    description: desc
+    template: "guid={0}"
+    default: "{a47af52a-27f9-4426-bd2b-727050712db1}"
+    optional: true
+
+  - name: LNK
+    type: label
+
+  - name: filepath
+    type: text
+    description: desc
+    template: "filepath=\"{0}\""
+    default: C:\users\admin\desktop
+    optional: true
+
+  - name: lnkname
+    type: text
+    description: desc
+    template: "lnkname=\"{0}\""
+    default: Notepad.lnk
+    optional: true
+
+  - name: lnktarget
+    type: text
+    description: desc
+    template: "lnktarget=\"{0}\""
+    default: C:\Windows\temp\file.exe
+    optional: true
+  
+  - name: lnkicon
+    type: text
+    description: desc
+    template: "lnkicon=\"{0}\""
+    default: C:\Windows\system32\notepad.exe
+    optional: true
+
+  - name: LnkPath
+    type: text
+    description: desc
+    template: "lnkpath=\"{0}\""
+    default: C:\users\user\desktop\Excel.lnk
+    optional: true
+
+  - name: Flags
+    type: label
+
+  - name: cleanup
+    type: flag
+    description: desc
+    value: cleanup=true
+    optional: true
+    selected: false
+
+sections:
+- name: Self create persistancy command
+  labels: [Persistancy]
+  mitre: ''
+  verb: ''
+  required_flags: [action]
+  optional_flags: [command, DllPath, KeyName, KeyPath, taskname, runasuser, triggertype, author, description, logonuser, folder, actionid, clsid, ServiceName, eventname, attime, guid, filepath, lnkname, lnktarget, lnkicon, LnkPath, cleanup]
+
+- name: User registry
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=UserRegistryKey'
+  required_flags: [keyname, keypath, command]
+  optional_flags: [cleanup]
+
+- name: Elevated user registry
+  labels: []
+  mitre: ''
+  verb: 'action=ElevatedRegistryKey'
+  required_flags: [keyname, keypath, command]
+  optional_flags: [cleanup]
+
+- name: User logon script
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=UserInitMprLogonScriptKey'
+  required_flags: [command]
+  optional_flags: []
+
+- name: Elevated user init key
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=ElevatedUserInitKey'
+  required_flags: [command]
+  optional_flags: []
+
+- name: Scheduled Task
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=ScheduledTask'
+  required_flags: [taskname, command, runasuser, triggertype, author, description, logonuser]
+  optional_flags: [cleanup]
+
+- name: Scheduled Task action
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=ScheduledTask'
+  required_flags: [taskname, command, folder, actionid]
+  optional_flags: [cleanup]
+
+- name: Scheduled Task COM Hijack
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=SchTaskCOMHijack'
+  required_flags: [clsid, dllpath]
+  optional_flags: [cleanup]
+
+- name: Service creation
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=CreateService'
+  required_flags: [servicename, command]
+  optional_flags: [cleanup]
+
+- name: WMIEventSub
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=WMIEventSub'
+  required_flags: [command, eventname, attime]
+  optional_flags: [cleanup]
+
+- name: JunctionFolder
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=JunctionFolder'
+  required_flags: [dllpath, guid]
+  optional_flags: [cleanup]
+
+- name: New LNK
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=NewLNK'
+  required_flags: [filepath, lnkname, lnktarget, lnkicon, ]
+  optional_flags: [cleanup]
+
+- name: Backdoor LNK
+  labels: [Persistancy]
+  mitre: ''
+  verb: 'action=BackdoorLNK'
+  required_flags: [command, lnkpath]
+  optional_flags: [cleanup]

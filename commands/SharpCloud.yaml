@@ -1,0 +1,23 @@
+---
+projectLink: https://github.com/chrismaddalena/SharpCloud
+name: SharpCloud
+languages:
+  - name: EXE
+    prefix: SharpCloud.exe
+
+params:
+  - name: SCOption
+    description: SharpCloud param
+    default: all
+    template: "{0}"
+    type: select
+    options: ["all", "aws", "azure", "gcloud"]
+    optional: false
+
+sections:
+- name: Search for cloud service credentials
+  labels: ["Recon"]
+  mitre: 'T1589.001'
+  verb: ''
+  required_flags: [SCOption]
+  optional_flags: []

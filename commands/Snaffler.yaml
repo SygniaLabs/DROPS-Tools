@@ -1,0 +1,181 @@
+---
+projectLink: https://github.com/SnaffCon/Snaffler
+name: Snaffler
+languages: 
+  - name: EXE
+    prefix: Snaffler.exe
+
+params:
+  - name: OutputDirectory
+    type: text
+    description: "Enables outputting results to a file. You probably want this if you're not using -s. e.g. -o C:\\users\\thing\\snaffler.log"
+    template: "-o {0}"
+    default: "."
+    optional: true
+
+  - name: Verbos
+    type: text
+    description: "Controls verbosity level, options are Trace (most verbose), Degub (less verbose, less gubs), Info (less verbose still, default), and Data (results only). e.g -v debug"
+    template: "-v {0}"
+    default: "Info"
+    optional: true
+ 
+  - name: Limit
+    type: text
+    description: "Maximum size of files (in bytes) to Snaffle. Defaults to 10000000, which is about 10MB."
+    template: "-l {0}"
+    default: 10000000
+    optional: true
+  
+  - name: Domain
+    type: text
+    description: "Domain to search for computers to search for shares on to search for files in. Easy."
+    template: "-d {0}"
+    default: "example.local"
+    optional: true
+
+  - name: DomainController
+    type: text
+    description: "Domain controller to query for the list of domain computers."
+    template: "-c {0}"
+    default: "dc.example.local"
+    optional: true
+ 
+  - name: FileSizeLimit
+    type: text
+    description: "The maximum size file (in bytes) to search inside for interesting strings. Defaults to 500k."
+    template: "-r {0}"
+    default: 500000
+    optional: true
+ 
+  - name: StringsInFileSizeLimit
+    type: text
+    description: "How many bytes of context either side of found strings in files to show, e.g. -j 200"
+    template: "-j {0}"
+    default: 200
+    optional: true
+ 
+  - name: ConfigFilePath
+    type: text
+    description: "Path to a config file that defines all of the above, and much much more! See below for more details. Give it -z generate to generate a sample config file called .\\default.toml."
+    template: "-z {0}"
+    default: ".\\default.toml"
+    optional: true
+
+  - name: FileType
+    type: text
+    description: "Type of log you would like to output. Currently supported options are plain and JSON. Defaults to plain."
+    template: "-t {0}"
+    default: "plain"
+    optional: true
+
+  - name: Threads
+    type: text
+    description: "Max number of threads to use. Don't set it below 4 or shit will break."
+    template: "-x {0}"
+    default: 4
+    optional: true
+
+  - name: DirectoryPath
+    type: text
+    description: "Path to a directory full of .toml formatted rules. Snaffler will load all of these in place of the default ruleset."
+    template: "-p {0}"
+    default: "."
+    optional: true
+
+  - name: SkipsLAIMrules
+    description: "Skips the LAIM rules that will find less-interesting stuff, tune it with a number between 0 and 3."
+    default: "1"
+    template: "-b {0}"
+    type: select
+    options: ["0", "1", "2", "3"]
+    optional: false
+  
+  - name: SkipsLAIMrules2
+    type: select
+    description: 
+    template: "-b {0}"
+    default: "0"
+    option: ["0","1","2","3"]
+    optional: true
+
+    
+# Flags
+
+  - name: Optional flags
+    type: label
+    
+  - name: OutputStdOut
+    type: flag
+    description: "Enables outputting results to stdout as soon as they're found. You probably want this if you're not using -o."
+    value: -s
+    optional: true
+    selected: false
+ 
+  - name: OutputDirectoryFiles
+    type: flag
+    description: "Enables and assigns an output dir for snaffler to automatically take a copy of (or Snaffle... if you will) any found files that it likes."
+    value: -m
+    optional: true
+    selected: false
+ 
+  - name: DisablesComputerAndShareDiscovery
+    type: flag
+    description: "Disables computer and share discovery, requires a path to a directory in which to perform file discovery."
+    value: -i
+    optional: true
+    selected: false
+  
+  - name: DisablesComputerDiscovery
+    type: flag
+    description: "Disables computer discovery, takes a comma-separated list of hosts to do share and file discovery on."
+    value: -n
+    optional: true
+    selected: false
+
+  - name: TSV-formats
+    type: flag
+    description: "TSV-formats the output."
+    value: -y
+    optional: true
+    selected: false
+ 
+  - name: LimitsFindingDFS
+    type: flag
+    description: "Limits Snaffler to finding file shares via DFS (Distributed File System) - this should be quite a bit sneakier than the default while still covering the biggest file shares in a lot of orgs."
+    value: -f
+    optional: true
+    selected: false
+
+  - name: SkipsFileEnumeration
+    type: flag
+    description: "Skips file enumeration, just gives you a list of listable shares on the target hosts."
+    value: -a
+    optional: true
+    selected: false
+
+  - name: SnafflerADAccountPull
+    type: flag
+    description: "Makes Snaffler pull a list of account names from AD, choose the ones that look most-interesting, and then use them in a search rule."
+    value: -u
+    optional: true
+    selected: false
+
+# Sections
+
+sections:
+  - name: Self crafted option
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: []
+    optional_flags: [
+      OutputStdOut,
+      OutputDirectoryFiles,
+      DisablesComputerAndShareDiscovery,
+      DisablesComputerDiscovery,
+      TSV-formats,
+      LimitsFindingDFS,
+      SkipsFileEnumeration,
+      SnafflerADAccountPull
+    ]

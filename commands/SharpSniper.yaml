@@ -1,0 +1,42 @@
+---
+projectLink: https://github.com/HunnicCyber/SharpSniper
+name: SharpSniper
+languages:
+  - name: EXE
+    prefix: SharpSniper.exe
+
+params:
+  - name: SearchUser
+    type: text
+    description: User to search
+    template: "{0}"
+    default: targetuser
+    optional: false
+  - name: Username
+    type: text
+    description: Domain user Username
+    template: "{0}"
+    default: User1
+    optional: false
+  - name: Password
+    type: text
+    description: Domain user password
+    template: "{0}"
+    default: Password123
+    optional: false
+  
+
+sections:
+- name: Search domain user location with current context
+  labels: ["Recon"]
+  mitre: ''
+  verb: ''
+  required_flags: [SearchUser]
+  optional_flags: []
+
+- name: Search domain user location with supplied creds
+  labels: ["Recon"]
+  mitre: ''
+  verb: ''
+  required_flags: [SearchUser, Username, Password]
+  optional_flags: []

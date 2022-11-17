@@ -1,0 +1,14 @@
+---
+projectLink: https://github.com/Sygnia/webfinder
+name: WebFinder
+params:
+- name: Range
+  description: Specify IP Range
+  default: 10.0.1-254.1-254
+
+sections:
+- name: Scan for web pages in network 
+  labels: ['Recon', 'Web']
+  commands:
+  - language: PS
+    command: WebFinder.ps1 {{Range}}

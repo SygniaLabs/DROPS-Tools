@@ -1,0 +1,167 @@
+---
+projectLink: https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
+name: PsExec
+languages:
+  - name: EXE
+    prefix: psexec
+
+params:
+
+  - name: Target
+    type: label
+
+  - name: computer
+    type: text
+    description: Execute an application on the remote computer or computers specified  (comma seperated). If you omit the computer name, PsExec runs the application on the local system
+    template: "\\\\{0}"
+    default: 'victim.domain.local'
+    optional: false
+
+  - name: fileinput
+    type: text
+    description: PsExec will execute the command on each of the computers listed in the file
+    template: "@{0}"
+    default: 
+    optional: true
+    selected: false
+
+  - name: Authentication
+    type: label
+  
+  - name: username
+    type: text
+    description: Specifies optional user name for login to remote computer
+    template: "-u {0}"
+    default: 
+    optional: true
+    selected: false
+
+  - name: password
+    type: text
+    description: 'Specifies optional password for user name. If you omit this you will be prompted to enter a hidden password'
+    template: "-p {0}"
+    default: 
+    optional: true
+    selected: false
+
+  - name: File Operation
+    type: label 
+
+  - name: copy
+    type: text
+    description: 	Copy the specified executable to the remote system for execution. If you omit this option the application must be in the system path on the remote system
+    template: "-c {0}"
+    default: 'mal.exe'
+    optional: false
+
+  - name: force-copy
+    type: flag
+    description: Copy the specified program even if the file already exists on the remote system
+    value: '-f'
+    optional: true
+    selected: false
+  
+  - name: Execution
+    type: label
+  
+  - name: application
+    type: text
+    description: Name of application to execute
+    template: "\"{0}\""
+    default: 'c:\windows\system32\cmd.exe'
+    optional: false
+  
+  - name: arguments
+    type: text
+    description: Arguments to pass (note that file paths must be absolute paths on the target system)
+    template: "{0}"
+    default: ''
+    optional: true
+    selected: false
+  
+  - name: working-dir
+    type: text
+    description: Set the working directory of the process (relative to remote computer)
+    template: "-w {0}"
+    default: ''
+    optional: true
+    selected: false
+
+  - name: service-name
+    type: text
+    description: Specifies the name of the remote service to create or interact with
+    template: "-r {0}"
+    default: 
+    optional: true
+    selected: false
+
+  - name: Timeouts
+    type: label  
+  
+  - name: timeout
+    type: text
+    description: Specifies timeout in seconds connecting to remote computers
+    template: "-n {0}"
+    default: '5'
+    optional: true
+    selected: false
+
+  - name: Flags
+    type: label
+
+  - name: system
+    type: flag
+    description: Run the remote process in the System account.
+    value: '-s'
+    optional: true
+    selected: false
+
+  - name: interactive
+    type: flag
+    description: 'Run the program so that it interacts with the desktop of the specified session on the remote system. If no session is specified the process runs in the console session. This flag is required when attempting to run console applications interactively'
+    value: '-i'
+    optional: true
+    selected: false
+
+  - name: accepteula
+    type: flag
+    description: Suppress the display of the license dialog
+    value: '-accepteula'
+    optional: true
+    selected: false
+  
+  - name: nowait
+    type: flag
+    description: Don't wait for process to terminate (non-interactive).
+    value: -d
+    optional: true
+    selected: false
+
+  - name: lowpriv
+    type: flag
+    description: Run process as limited user (strips the Administrators group and allows only privileges assigned to the Users group)
+    value: '-l'
+    optional: true
+    selected: false
+
+sections:
+  - name: Launch interactive command prompt on a remote computer, optionally specifying username and password to autnheticate
+    labels: [Lateral]
+    mitre: 'T1588.002'
+    verb: ''
+    required_flags: [interactive, computer, application]
+    optional_flags: [username, password, nowait, system, lowpriv, accepteula, working-dir]
+  
+  - name: Copy local program to the remote system and execute it interactively, optionally specify application arguments
+    labels: [Lateral]
+    mitre: 'T1608.002'
+    verb: ''
+    required_flags: [interactive, computer, copy]
+    optional_flags: [arguments, force-copy, username, password, nowait, working-dir, accepteula]
+
+  - name: Run local application interactively with the System account privileges
+    labels: [PrivEsc]
+    mitre: ''
+    verb: ''
+    required_flags: [interactive, nowait, system, application]
+    optional_flags: [arguments, nowait, accepteula]

@@ -1,0 +1,99 @@
+---
+projectLink: https://github.com/vivami/SauronEye
+name: SauronEye
+languages:
+  - name: EXE
+    prefix: SauronEye.exe
+
+params:
+  - name: directories
+    type: text
+    description: Directories to search
+    template: "--directories {0}"
+    default: 'C:\ "\\SOME NETWORK DRIVE\C$"'
+    optional: false
+  - name: filetypes
+    type: text
+    description: File types to search
+    template: "--FileTypes {0}"
+    default: ".txt .bat .docx .conf"
+    optional: true
+  - name: keywords
+    type: text
+    description: Keywords to search for
+    template: "--keywords {0}"
+    default: "*pass* user creds secret key AKIA ASIA"
+    optional: true
+  - name: maxfilesize
+    type: text
+    description: Max file size to search contents in, in kilobytes
+    template: "--maxfilesize {0}"
+    default: 5000000
+    optional: true
+  - name: BeforeDate
+    type: text
+    description: "Filter files last modified before this date, format: yyyy-MM-dd"
+    template: "--BeforeDate {0}"
+    default: "2020-07-23"
+    optional: true
+  - name: AfterDate
+    type: text
+    description: "Filter files last modified after this date, format: yyyy-MM-dd"
+    template: "--AfterDate {0}"
+    default: "2020-07-23"
+    optional: true
+
+sections:
+  - name: Self crafted command
+    labels: ["Recon"]
+    mitre: 'T1595.003'
+    verb: ''
+    required_flags: [directories]
+    optional_flags: [filetypes, keywords, maxfilesize, BeforeDate, AfterDate]
+    
+  - name: Search files by suffix
+    labels: ["Recon"]
+    mitre: "T1595.003"
+    verb: ''
+    required_flags: ["directories", "filetypes"]
+    optional_flags: []
+
+
+  - name: Search files by suffix and keywords
+    labels: ["Recon"]
+    mitre: "T1595.003"
+    verb: ''
+    required_flags: ["directories", "filetypes", "keywords"]
+    optional_flags: []
+
+
+  - name: Search files by suffix and keywords which modified date is after a specific date
+    labels: ["Recon"]
+    mitre: "T1595.003"
+    verb: ''
+    required_flags: ["directories", "filetypes", "keywords", "AfterDate"]
+    optional_flags: []
+
+
+  - name: Search files by suffix and keywords which modified date is before a specific date
+    labels: ["Recon"]
+    mitre: "T1595.003"
+    verb: ''
+    required_flags: ["directories", "filetypes", "keywords", "BeforeDate"]
+    optional_flags: []
+
+
+  - name: Search the contents of files with provdied suffix with keywords
+    labels: ["Recon"]
+    mitre: "T1595.003"
+    verb: ''
+    required_flags: ["directories", "filetypes", "keywords", "contents"]
+    optional_flags: []
+
+
+  - name: Search files and content by size of files
+    labels: ["Recon"]
+    mitre: "T1595.003"
+    verb: ''
+    required_flags: ["directories", "filetypes", "keywords", "maxfilesize", "contents"]
+    optional_flags: []

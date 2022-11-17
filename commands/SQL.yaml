@@ -1,0 +1,10 @@
+---
+params:
+  - name: Table
+    description: Table name
+sections:
+  - name: Query specific table
+    labels: []
+    commands:
+      - language: EXE
+        command: select * from {{Table}}

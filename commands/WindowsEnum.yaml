@@ -1,0 +1,24 @@
+---
+projectLink: https://github.com/absolomb/WindowsEnum
+name: WindowsEnum
+languages:
+  - name: PS
+    prefix: '.\WindowsEnum.ps1' 
+
+params:
+
+  - name: extended
+    type: flag
+    description: 'Extended checks will search for config files, various interesting files, and passwords in files and the registry, etc. It will take some time so be patient'
+    value: 'extended'
+    optional: true
+    selected: false
+
+sections:
+
+  - name: Run checks for privilege escalation vectors, optionally extending checks to perform a thorough search of sensitive information
+    labels: ['Recon', 'PrivEsc']
+    mitre: 'T1082'
+    verb: ''
+    required_flags: []
+    optional_flags: [extended]

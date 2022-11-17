@@ -1,0 +1,297 @@
+---
+projectLink: https://github.com/GhostPack/Certify
+name: Certify
+languages:
+  - name: EXE
+    prefix: Certify.exe
+params:
+  - name: ca
+    description: ''
+    template: "/ca:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: domain
+    description: ''
+    template: "/domain:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: path
+    description: ''
+    template: "/path:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: outfile
+    description: ''
+    template: "/outfile:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: subject
+    description: ''
+    template: "/subject:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: template
+    description: ''
+    template: "/template:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: altname
+    description: ''
+    template: "/altname:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: onbehalfof
+    description: ''
+    template: "/onbehalfof:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: enrollcert
+    description: ''
+    template: "/enrollcert:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: enrollcertpw
+    description: ''
+    template: "/enrollcertpw:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: id
+    description: ''
+    template: "/id:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: hideAdmins
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/hideAdmins'
+
+  - name: showAllPermissions
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/showAllPermissions'
+
+  - name: skipWebServiceChecks
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/skipWebServiceChecks'
+
+  - name: quiet
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/quiet'
+
+  - name: vulnerable
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/vulnerable'
+
+  - name: currentuser
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/currentuser'
+
+  - name: enrolleeSuppliesSubject
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/enrolleeSuppliesSubject'
+
+  - name: clientauth
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/clientauth'
+
+  - name: json
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/json'
+
+  - name: showAdmins
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/showAdmins'
+
+  - name: install
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/install'
+
+  - name: machine
+    description: ''
+    optional: true
+    selected: false
+    type: flag
+    value: '/machine'
+
+
+sections:
+
+  - name: Find information about all registered CAs
+    labels: []
+    mitre: ""
+    verb: 'cas'
+    required_flags: []
+    optional_flags: ["domain", "ca", "hideAdmins", "showAllPermissions", "skipWebServiceChecks", "quiet"]
+
+
+
+  - name: Find all enabled certificate templates
+    labels: []
+    mitre: ""
+    verb: 'find'
+    required_flags: []
+    optional_flags: ["domain", "ca", "quiet"]
+
+
+  - name: Find vulnerable/abusable certificate templates using default low-privileged groups
+    labels: []
+    mitre: ""
+    verb: 'find'
+    required_flags: ["vulnerable"]
+    optional_flags: ["domain", "ca", "quiet"]
+
+
+  - name: Find vulnerable/abusable certificate templates using all groups the current user context is a part of
+    labels: []
+    mitre: ""
+    verb: 'find'
+    required_flags: ["vulnerable", "currentuser"]
+    optional_flags: ["domain", "quiet"]
+
+
+  - name: Find enabled certificate templates where ENROLLEE_SUPPLIES_SUBJECT is enabled
+    labels: []
+    mitre: ""
+    verb: 'find'
+    required_flags: ["enrolleeSuppliesSubject"]
+    optional_flags: ["domain", "quiet"]
+
+
+  - name: Find enabled certificate templates capable of client authentication
+    labels: []
+    mitre: ""
+    verb: 'find'
+    required_flags: ["clientauth"]
+    optional_flags: ["domain", "quiet"]
+
+
+  - name: Find all enabled certificate templates, display all of their permissions, and don't display the banner message
+    labels: []
+    mitre: ""
+    verb: 'find'
+    required_flags: ["showAllPermissions", "quiet"]
+    optional_flags: ["domain"]
+
+
+  - name: Find all enabled certificate templates and output to a json file
+    labels: []
+    mitre: ""
+    verb: 'find'
+    required_flags: ["json", "outfile"]
+    optional_flags: ["domain"]
+
+
+
+  - name: Enumerate access control information for PKI objects
+    labels: []
+    mitre: ""
+    verb: 'pkiobjects'
+    required_flags: []
+    optional_flags: ["domain", "showAdmins", "quiet"]
+
+
+
+  - name: Request a new certificate using the current user context
+    labels: []
+    mitre: ""
+    verb: 'request'
+    required_flags: ["ca"]
+    optional_flags: ["subject", "template", "install"]
+
+
+  - name: Request a new certificate using the current machine context
+    labels: []
+    mitre: ""
+    verb: 'request'
+    required_flags: ["ca", "machine"]
+    optional_flags: ["subject", "template", "install"]
+
+
+  - name: Request a new certificate using the current user context but for an alternate name (if supported)
+    labels: []
+    mitre: ""
+    verb: 'request'
+    required_flags: ["ca", "template"]
+    optional_flags: ["altname"]
+
+
+  - name: Request a new certificate on behalf of another user, using an enrollment agent certificate
+    labels: []
+    mitre: ""
+    verb: 'request'
+    required_flags: ["ca","template", "onbehalfof", "enrollcert"]
+    optional_flags: ["enrollcertpw"]
+
+
+
+  - name: Download an already requested certificate
+    labels: []
+    mitre: ""
+    verb: 'download'
+    required_flags: ["ca", "id"]
+    optional_flags: ["install", "machine"]
+

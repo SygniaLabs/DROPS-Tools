@@ -1,0 +1,91 @@
+---
+projectLink: https://github.com/mitchmoser/SharpShares
+name: SharpShares
+languages:
+  - name: EXE
+    prefix: SharpShares.exe
+
+params:
+  - name: Threads
+    type: text
+    description: specify maximum number of parallel threads
+    template: "/threads:{0}"
+    default: 25
+    optional: true
+  - name: DomainController
+    type: text
+    description: specify domain controller to query (if not ran on a domain-joined host)
+    template: "/dc:{0}"
+    default: dc1
+    optional: true
+  - name: Domain
+    type: text
+    description: specify domain name (if not ran on a domain-joined host)
+    template: "/domain:{0}"
+    default: windomain.local
+    optional: true
+  - name: SsLDAP
+    description: query hosts from the following LDAP filters
+    default: all
+    template: "/ldap:{0}"
+    type: select
+    options: ["all", "dc", "exclude-dc", "servers", "servers-exclude-dc"]
+    optional: true
+  - name: OU
+    type: text
+    description: specify LDAP OU to query enabled computer objects from
+    template: "/ou:\"{0}\""
+    default: OU=Special Servers,DC=windomain,DC=local
+    optional: true
+  - name: Fiter
+    type: text
+    description: list of comma-separated shares to exclude from enumeration
+    template: "/filter:{0}"
+    default: SYSVOL,NETLOGON,IPC$,PRINT$
+    optional: true
+  - name: OutFile
+    type: text
+    description: specify file for shares to be appended to instead of printing to std out
+    template: "/outfile:{0}"
+    default: C:\temp\outfile
+    optional: true
+
+  - name: Stealth
+    type: flag
+    description: list share names without performing read/write access checks
+    value: /stealth
+    optional: true
+    selected: true
+  - name: Verbose
+    type: flag
+    description: return unauthorized shares
+    value: /verbose
+    optional: true
+    selected: true
+  
+
+sections:
+- name: Execute shares search custom
+  labels: ["Recon"]
+  mitre: 'T1083'
+  verb: ''
+  required_flags: []
+  optional_flags: [Threads, DomainController, Domain, SsLDAP, OU, Filter, OutFile, Stealth, Verbose]
+- name: Verbose search shares with custom filter, threads, ldap, ou
+  labels: ["Recon"]
+  mitre: 'T1083'
+  verb: ''
+  required_flags: [Threads, SsLDAP, OU, Filter, Verbose]
+  optional_flags: []
+- name: Verbose search shares, output results to file
+  labels: ["Recon"]
+  mitre: 'T1083'
+  verb: ''
+  required_flags: [Threads, SsLDAP, OU, Filter, Verbose, OutFile]
+  optional_flags: []
+- name: Stealth and verbose search shares, output results to file
+  labels: ["Recon"]
+  mitre: 'T1083'
+  verb: ''
+  required_flags: [Threads, SsLDAP, OU, Filter, OutFile, Verbose, Stealth]
+  optional_flags: []

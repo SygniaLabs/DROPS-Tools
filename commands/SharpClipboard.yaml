@@ -1,0 +1,16 @@
+---
+projectLink: https://github.com/slyd0g/SharpClipboard
+name: SharpClipboard
+languages:
+  - name: EXE
+    prefix: SharpClipboard.exe
+
+params:
+
+sections:
+- name: Get domain backup key as Base64 string
+  labels: ["Lateral", "Creds"]
+  mitre: ''
+  verb: ''
+  required_flags: []
+  optional_flags: []

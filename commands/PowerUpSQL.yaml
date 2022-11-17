@@ -1,0 +1,284 @@
+projectLink: https://github.com/NetSPI/PowerUpSQL
+name: PowerUpSQL
+languages:
+  - name: PS
+    prefix: ''
+  
+params:
+  - name: Target
+    type: label
+
+  - name: Instance
+    type: text
+    description: The SQL server instance
+    template: "-Instance {0}"
+    default: MSSQLSRV04\SOMESQL
+    optional: true
+
+  - name: IPAddress
+    type: text
+    description: IP Address of SQL Server
+    template: "-IPAddress {0}"
+    default: '10.0.0.1'
+    optional: true
+
+  - name: IPRange
+    type: text
+    description: IP Address Range In CIDR Format to Audit
+    template: "-IPRange {0}"
+    default: '10.0.0.1/24'
+    optional: true
+
+  - name: ComputerName
+    type: text
+    description: Specific hostname to interact with
+    template: "-ComputerName {0}"
+    default: ''
+    optional: true
+
+  - name: FilePath
+    type: text
+    description: Load SQL targets from a file
+    template: "-FilePath {0}"
+    default: 'c:\temp\computers.txt'
+    optional: true    
+  
+  - name: Authentication
+    type: label
+
+  - name: Username
+    type: text
+    description: SQL Server or domain account to authenticate with
+    template: "-Username {0}"
+    default: ''
+    optional: true    
+
+  - name: Password
+    type: text
+    description: SQL Server or domain account password to authenticate with
+    template: "-Password {0}"
+    default: ''
+    optional: true
+  
+  - name: Crednetial
+    type: text
+    description: A type of [System.Management.Automation.PSCredential] parameter to authenticate
+    template: "-Crednetial {0}"
+    default: 
+    optional: true
+
+  - name: WorkstationId
+    type: text
+    description: Spoof the name of the workstation/hostname your connecting to the server with
+    template: "{0}"
+    default: 'dc01'
+    optional: true
+
+  - name: Execution
+    type: label
+    
+  - name: Query
+    type: text
+    description: Query to be executed on the SQL Server
+    template: "-Query {0}"
+    default: '"Select @@version"'
+    optional: true
+
+  - name: Command
+    type: text
+    description: Operating command to be executed on the SQL Server
+    template: "-Command {0}"
+    default: 'whoami'
+    optional: true
+  
+  - name: Exploit
+    type: flag
+    description: Exploit idnetified audit issues
+    value: '-Exploit'
+    optional: true
+    selected: false
+
+  - name: Filter
+    type: label
+
+  - name: DatabaseName
+    type: text
+    description: Database name filter
+    template: "-DatabaseName {0}"
+    default: ''
+    optional: true
+
+  - name: TableName
+    type: text
+    description: Table name filter
+    template: "-TableName {0}"
+    default: ''
+    optional: true
+
+  - name: ColumnName
+    type: text
+    description: Column name filter
+    template: "-ColumnName {0}"
+    default: ''
+    optional: true
+
+  - name: ColumnNameSearch
+    type: text
+    description: Column name filter that support wildcards
+    template: "-ColumnNameSearch {0}"
+    default: 'passwords'
+    optional: true
+
+  - name: NoDefaults
+    type: flag
+    description: Don't list anything from default databases
+    value: '-NoDefaults'
+    optional: true
+    selected: false
+
+  - name: Options
+    type: label
+  
+  - name: OutFolder
+    type: text
+    description: Output folder to store SQL audit results (csv)
+    template: "-OutFolder {0}"
+    default: 'OUTPUT'
+    optional: true
+    
+  - name: Threads
+    type: text
+    description: Number of concurrent threads
+    template: "-Threads {0}"
+    default: '5'
+    optional: true 
+
+  - name: Timeout
+    type: text
+    description: Connection timeout
+    template: "-Timeout {0}"
+    default: 1
+    optional: true
+
+  - name: Verbose
+    type: flag
+    description: Enable console verbosity
+    value: '-Verbose'
+    optional: true
+    selected: false
+
+  - name: Encrypt
+    type: flag
+    description: Use an encrypted connection
+    value: '-Encrypt'
+    optional: true
+    selected: false
+
+  - name: DAC
+    type: flag
+    description: Connect using Dedicated Admin Connection
+    value: '-DAC'
+    optional: true
+    selected: false
+
+  - name: RawResults
+    type: flag
+    description: Just show the raw results of an execution without the computer or instance name
+    value: '-RawResults'
+    optional: true
+    selected: false
+
+  - name: HasAccess
+    type: flag
+    description: Only select databases the current user has access to
+    value: '-HasAccess'
+    optional: true
+    selected: false
+
+  - name: SysAdminOnly
+    type: flag
+    description: Only select databases owned by a sysadmin
+    value: '-SysAdminOnly'
+    optional: true
+    selected: false
+  
+  - name: NoOutput
+    type: flag
+    description: Don't output anything
+    value: '-NoOutput'
+    optional: true
+    selected: false
+ 
+
+  
+sections:
+
+  - name: Discover Active Directory's SQL Server instances
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-SQLInstanceDomain'
+    required_flags: []
+    optional_flags: [Verbose,SysAdminOnly]
+
+  - name: Discover Remote SQL Instances via UDP scan
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-SQLInstanceScanUDPThreaded'
+    required_flags: [ComputerName]
+    optional_flags: [IPADddress,IPRange,Verbose]
+
+  - name: Get server info from a specified instance
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-SQLServerInfo'
+    required_flags: [Instance]
+    optional_flags: [Username,Password,Credential,Verbose]
+
+  - name: Test autentication to SQL instance (Uses current user if credentials are not supplied)
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-SQLConnectionTestThreaded'
+    required_flags: [Instance]
+    optional_flags: [IPAddress,IPRange,Database,Username,Password,Credential,Threads,Verbose,Timeout,DAC,HasAccess]
+
+  - name: Execute a query on target SQL servers
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-SQLQuery'
+    required_flags: [Instance, Query]
+    optional_flags: [Username,Password,Credential,Database,Verbose,Timeout,DAC,Threads,WorkstationId,Encrypt]
+
+  - name: Audit for high impact weak configurations by running all privilege escalation checks
+    labels: [PrivEsc]
+    mitre: ''
+    verb: 'Invoke-SQLAudit'
+    required_flags: [Instance]
+    optional_flags: [Username,Password,Credential,Exploit,OutFolder,NoOutput]
+
+  - name: Execute OS commands - xp_cmdshell
+    labels: [Lateral]
+    mitre: 'T1505.001'
+    verb: 'Invoke-SQLOSCmd'
+    required_flags: [Instance,Command]
+    optional_flags: [Username,Password,Credential,Verbose]
+
+  - name: Execute OS commands - CLR
+    labels: [Lateral]
+    mitre: 'T1505.001'
+    verb: 'Invoke-SQLOSCLR'
+    required_flags: [Instance,Command]
+    optional_flags: [Username,Password,Credential,Verbose]
+
+  - name: Crawl database links
+    labels: [Recon]
+    mitre: ''
+    verb: 'Get-SqlServerLinkCrawl'
+    required_flags: [Instance]
+    optional_flags: [Username,Password,Credential,Verbose]
+
+  - name: Dump an inventory of common objects to csv in the current directory
+    labels: [Recon]
+    mitre: ''
+    verb: 'Invoke-SQLDumpInfo'
+    required_flags: [Instance]
+    optional_flags: [Username,Password,Credential,OutFolder,Verbose]

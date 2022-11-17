@@ -1,0 +1,120 @@
+---
+projectLink: https://github.com/CCob/SharpBlock
+name: SharpBlock
+languages:
+  - name: EXE
+    prefix: SharpBlock.exe
+
+params:
+  - name: Program
+    type: text
+    description: Program to execute, can be remote path.
+    template: "-e \"{0}\""
+    default: C:\Windows\System32\cmd.exe
+    optional: false
+  - name: Arguments
+    type: text
+    description: Arguments for program.
+    template: "-a \"{0}\""
+    default: 
+    optional: true
+  - name: BlockDLLs
+    type: text
+    description: Name of DLL to block. (for multiple dlls need to use this flag multiple times)
+    template: "-n \"{0}\""
+    default: 
+    optional: true
+  - name: BlockCopyright
+    type: text
+    description: Copyright string to block.
+    template: "-c \"{0}\""
+    default: 
+    optional: true
+  - name: BlockProduct
+    type: text
+    description: Product string to block.
+    template: "-p \"{0}\""
+    default: 
+    optional: true
+  - name: BlockDescription
+    type: text
+    description: Description string to block.
+    template: "-d \"{0}\""
+    default: 
+    optional: true
+  - name: SpawnProcess
+    type: text
+    description: Host process to spawn for swapping with the target exe.
+    template: "-s {0}"
+    default: chrome.exe
+    optional: true
+  - name: PPID
+    type: text
+    description: Parent process ID for spawned child (PPID Spoofing)
+    template: "--ppid={0}"
+    default: 4
+    optional: true
+
+  - name: Show
+    type: flag
+    description:  Show the lauched process window instead of the default hide
+    value: "-w"
+    optional: true
+    selected: false
+  - name: DisableBypassAMSI
+    type: flag
+    description: Disable AMSI bypassAmsi
+    value: --disable-bypass-amsi
+    optional: true
+    selected: false
+  - name: DisableBypassCmd
+    type: flag
+    description: Disable command line bypass
+    value: --disable-bypass-cmdline
+    optional: true
+    selected: false
+  - name: DisableBypassETW
+    type: flag
+    description: Disable ETW bypass
+    value: --disable-bypass-etw
+    optional: true
+    selected: false
+  - name: DisableHeaderPatch
+    type: flag
+    description: Disable process hollow detection bypass
+    value: --disable-header-patch
+    optional: true
+    selected: false
+    
+sections:
+- name: Self crafted command
+  labels: ["Execution", "Evasion"]
+  mitre: 'T1562'
+  verb: ''
+  required_flags: [Program]
+  optional_flags: [Arguments, SpawnProcess, PPID, BlockDLLs, BlockCopyright, BlockProduct, BlockDescription, Show, DisableBypassAMSI, DisableBypassCmd, DisableBypassETW, DisableHeaderPatch]
+
+- name: Execute assembly with arguments and bypasses
+  labels: ["Execution", "Evasion"]
+  mitre: "T1564.010"
+  verb: ''
+  required_flags: [Program]
+  optional_flags: [Arguments, Show, DisableBypassAMSI, DisableBypassCmd, DisableBypassETW, DisableHeaderPatch]
+- name: Execute assembly, with blocking rules
+  labels: ["Execution", "Evasion"]
+  mitre: 'T1562'
+  verb: ''
+  required_flags: [Program]
+  optional_flags: [Arguments, BlockDLLs, BlockCopyright, BlockProduct, BlockDescription, Show, DisableBypassAMSI, DisableBypassCmd, DisableBypassETW, DisableHeaderPatch]
+- name: Spawn process and execute assembly
+  labels: ["Execution", "Evasion"]
+  mitre: 'T1055.012'
+  verb: ''
+  required_flags: [Program, SpawnProcess]
+  optional_flags: [Arguments, BlockDLLs, BlockCopyright, BlockProduct, BlockDescription, Show, DisableBypassAMSI, DisableBypassCmd, DisableBypassETW, DisableHeaderPatch]
+- name: Execute assembly with PID spoofing
+  labels: ["Execution", "Evasion"]
+  mitre: 'T1134.004'
+  verb: ''
+  required_flags: [Program, PPID]
+  optional_flags: [Arguments, BlockDLLs, BlockCopyright, BlockProduct, BlockDescription, Show, DisableBypassAMSI, DisableBypassCmd, DisableBypassETW, DisableHeaderPatch]

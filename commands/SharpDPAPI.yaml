@@ -1,0 +1,228 @@
+---
+projectLink: https://github.com/GhostPack/SharpDPAPI
+name: SharpDPAPI
+languages:
+  - name: EXE
+    prefix: 'SharpDPAPI.exe'
+  - name: C2
+    prefix: 'execute-assembly /path/to/local/SharpDPAPI.exe'
+
+params:
+  - name: Decryption Keys
+    type: label	
+
+  - name: pvk
+    type: text
+    description: DPAPI domain private key file/Base64 to decrypt reachable user masterkeys
+    template: "/pvk:{0}"
+    default: 'key.pvk'
+    optional: false
+
+  - name: password
+    type: text
+    description: User's plain-text password to decrypt the current user's discovered masterkeys
+    template: "/password:{0}"
+    default: ''
+    optional: false
+
+  - name: guid-sha
+    type: text
+    description: 'One or more GUID:SHA1 masterkeys for decryption of discovered DPAPI blobs'
+    template: "{0}"
+    default: '{44ca9f3a-9097-455e-94d0-d91de951c097}:9b049ce6918ab89937687'
+    optional: true
+    selected: false
+
+  - name: mkfile
+    type: text
+    description: 'A file of one or more GUID:SHA1 masterkeys for decryption of discovered DPAPI blobs'
+    template: "/mkfile:{0}"
+    default: 'masterkeys.txt'
+    optional: true
+    selected: false
+
+  - name: Target
+    type: label	
+
+  - name: server
+    type: text
+    description: 'Domain Controller server to target'
+    template: "/server:{0}"
+    default: 'dc.domain.local'
+    optional: true
+    selected: false
+
+  - name: target
+    type: text
+    description: 'Filer/Folder to target for the operation'
+    template: "/target:{0}"
+    default: 
+    optional: true
+    selected: false
+
+  - name: type
+    description: 'Type of objects for the search command'
+    default: 
+    template: "/type:{0}"
+    type: select
+    options: ['registry', 'folder', 'file', 'base64']
+    optional: false
+
+  - name: path
+    type: text
+    description: 'Optional path to focus the search (Syntax depend on the type)'
+    template: "/path:{0}"
+    default: 'C:\path\to\file'
+    optional: true
+    selected: true
+
+  - name: Filter
+    type: label	
+
+  - name: maxBytes
+    type: text
+    description: 'Maximum file size to filter for the search commmand'
+    template: "/maxBytes:{0}"
+    default: '16000'
+    optional: true
+    selected: false
+
+  - name: base
+    type: text
+    description: 'Base64 string to filter for the search command'
+    template: "/base:{0}"
+    default: ''
+    optional: true
+    selected: false
+
+  - name: Output
+    type: label	
+
+  - name: file
+    type: text
+    description: 'Path to output file'
+    template: "/file:{0}"
+    default: 'key.pvk'
+    optional: true
+    selected: false
+
+  - name: Flags
+    type: label
+
+  - name: unprotect
+    type: flag
+    description: 'Force use of CryptUnprotectData() for ps, rdg, or blob commands'
+    value: '/unprotect'
+    optional: true
+    selected: false
+
+  - name: showall
+    type: flag
+    description: 'Show all decrypted private key files, not just ones that are linked to installed certs (the default)'
+    value: '/showall'
+    optional: true
+    selected: false
+
+  - name: machine
+    type: flag
+    description: 'Use the local machine store for certificate triage'
+    value: '/machine'
+    optional: true
+    selected: false
+
+  - name: Display Flags
+    type: label
+
+  - name: nowrap
+    description: 'Dont wrap the lines of the displayed base64 keys'
+    optional: true
+    selected: false
+    type: flag
+    value: '/nowrap'
+
+  - name: showErrors
+    type: flag
+    description: desc
+    value: '/showErrors'
+    optional: true
+    selected: false
+
+
+sections:
+  - name: 'Retrieve a domain controller DPAPI backup key, optionally specifying a DC and output file'
+    labels: ['Credential Access']
+    mitre: ''
+    verb: 'backupkey'
+    required_flags: []
+    optional_flags: [nowrap, server, file]
+
+  - name: 'Triage user Masterkey files'
+    labels: ['Credential Access']
+    mitre: ''
+    verb: 'masterkeys'
+    required_flags: [pvk]
+    optional_flags: [server, target, password]    
+
+  - name: 'Search and decrypt Credential files for all users by providing masterkey GUID:SHA'
+    labels: ['Credential Access']
+    mitre: 'T1555.004'
+    verb: 'credentials'
+    required_flags: [guid-sha]
+    optional_flags: [guid-sha, unprotect, mkfile, showall, machine, password, server, target]
+
+  - name: 'Search and decrypt Credential files for all users by providing the domain backup key'
+    labels: ['Credential Access']
+    mitre: 'T1555.004'
+    verb: 'credentials'
+    required_flags: [pvk]
+    optional_flags: [guid-sha, unprotect, mkfile, showall, machine, password, server, target]
+
+  - name: 'Search for KeePass ProtectedUserKey.bin files for the current user (or if elevated, all users), and decrypt them'
+    labels: ['Credential Access']
+    mitre: 'T1555.005'
+    verb: 'keepass'
+    required_flags: [unprotect]
+    optional_flags: [password, guid-sha, mkfile, pvk]
+
+  - name: 'Search user encrypted DPAPI certificate private keys, and decrpyt them using the domain backup key'
+    labels: []
+    mitre: ''
+    verb: 'certificates'
+    required_flags: [pvk]
+    optional_flags: [mkfile, target, pvk, server, password, machine, showall]
+
+  - name: 'Elevate to SYSTEM to retrieve the DPAPI_SYSTEM LSA secret and decrypt any found machine DPAPI masterkeys'
+    labels: []
+    mitre: 'T1003.004'
+    verb: 'machinemasterkeys'
+    required_flags: []
+    optional_flags: []
+
+  - name: 'Elevate to SYSTEM to retrieve the DPAPI_SYSTEM LSA secret, decrypt any found machine DPAPI masterkeys, and triage machine Credential files and Vaults'
+    labels: ['Credential Access']
+    mitre: ''
+    verb: 'machinetriage'
+    required_flags: []
+    optional_flags: []
+
+
+  - name: 'Use the machine certificate store to look for decryptable machine certificate private keys'
+    labels: []
+    mitre: ''
+    verb: 'certificates'
+    required_flags: [machine]
+    optional_flags: [target, mkfile, showall]
+
+  - name: 'Describe/decrypt a DPAPI blob'
+    labels: []
+    mitre: ''
+    verb: 'blob'
+    required_flags: [target, unprotect]
+    optional_flags: [pvk]
+
+  - name: 'Search for potential DPAPI blobs in the registry / files / folders or base64 blobs'
+    labels: []
+    mitre: ''
+    verb: 'search'
+    required_flags: [type]
+    optional_flags: [path, base, maxBytes, showErrors]

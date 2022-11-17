@@ -1,0 +1,278 @@
+[
+    {
+        "id": "Recon",
+        "label": "Recon",
+        "parentId": null,
+        "items": [
+            {
+                "id": "commands/SharpHound.yaml",
+                "label": "SharpHound",
+                "tags": ["Recon", "LDAP"]
+            },
+            {
+                "id": "commands/PingCastle.yaml",
+                "label": "PingCastle",
+                "tags": ["Recon", "AD"]
+            },
+            {
+                "id": "commands/Seatbelt.yaml",
+                "label": "Seatbelt",
+                "tags": ["Recon"]
+            },
+            {
+                "id": "commands/SauronEye.yaml",
+                "label": "SauronEye",
+                "tags": ["Recon"]
+            },
+            {
+                "id": "commands/SharpFinder.yaml",
+                "label": "SharpFinder",
+                "tags": ["Recon"]
+            },
+            {
+                "id": "commands/MFASweep.yaml",
+                "label": "MFASweep",
+                "tags": ["Recon", "External"]
+            },
+            {
+                "id" : "commands/SharpEDRChecker.yaml",
+                "label" : "SharpEDRChecker",
+                "tags" : ["Recon"]
+            },
+            {
+                "id" : "commands/SharpClipboard.yaml",
+                "label" : "SharpClipboard",
+                "tags" : ["Recon"]
+            },
+            {
+                "id" : "commands/SharpShares.yaml",
+                "label" : "SharpShares",
+                "tags" : ["Recon"]
+            },
+            {
+                "id" : "commands/SharpSniper.yaml",
+                "label" : "SharpSniper",
+                "tags" : ["Recon"]
+            },
+            {
+                "id" : "commands/WinPEAS.yaml",
+                "label" : "WinPEAS",
+                "tags" : ["Recon"]
+            },
+            {
+                "id" : "commands/NMAP.yaml",
+                "label" : "NMAP",
+                "tags" : ["Recon"]
+            },
+            {
+                "id" : "commands/WindowsEnum.yaml",
+                "label" : "WindowsEnum",
+                "tags" : ["Recon"]
+            }
+        ]
+    },
+    {
+        "id": "Execution",
+        "label": "Execution",
+        "parentId": null,
+        "items": [
+            {
+                "id" : "commands/SharpBlock.yaml",
+                "label" : "SharpBlock",
+                "tags" : ["Execution", "Evasion"]
+            },
+            {
+                "id" : "commands/SharpCrashEventLog.yaml",
+                "label" : "SharpCrashEventLog",
+                "tags" : ["Execution", "Tamper", "Evasion"]
+            }
+        ]
+    },
+    {
+        "id": "Persistancy",
+        "label": "Persistancy",
+        "parentId": null,
+        "items": [
+            {
+                "id": "commands/SharpStay.yaml",
+                "label": "SharpStay",
+                "tags": ["Persistancy"]
+            },
+            {
+                "id" : "commands/SharPersist.yaml",
+                "label" : "SharPersist",
+                "tags" : ["Persistancy"]
+            }
+        ]
+    },
+    {
+        "id": "Lateral",
+        "label": "Lateral",
+        "parentId": null,
+        "items": [
+            {
+                "id": "commands/Certify.yaml",
+                "label": "Certify",
+                "tags": ["Lateral", "Certificates","ADCS", "Impersonation"]
+            },
+            {
+                "id": "commands/Mimikatz.yaml",
+                "label": "Mimikatz",
+                "tags": ["Lateral", "Hash"]
+            },
+            {
+                "id": "commands/Rubeus.yaml",
+                "label": "Rubeus",
+                "tags": ["Lateral", "Recon", "Creds", "Username", "Password"]
+            },
+            {
+                "id": "commands/SharpGPOAbuse.yaml",
+                "label": "SharpGPOAbuse",
+                "tags": ["Lateral"]
+            },
+            {
+                "id": "commands/SharpMove.yaml",
+                "label": "SharpMove",
+                "tags": ["Lateral", "Creds", "WMI", "DCOM", "SCM"]
+            },
+            {
+                "id" : "commands/SharpRDP.yaml",
+                "label" : "SharpRDP",
+                "tags" : ["Lateral", "RDP"]
+            },
+            {
+                "id" : "commands/SharpWMI.yaml",
+                "label" : "SharpWMI",
+                "tags" : ["Lateral"]
+            },
+            {
+                "id" : "commands/PsExec.yaml",
+                "label" : "PsExec",
+                "tags" : ["Lateral"]
+            },
+            {
+                "id" : "commands/KrbRelay.yaml",
+                "label" : "KrbRelay",
+                "tags" : ["Lateral"]
+            },
+            {
+                "id" : "commands/Crackmapexec.yaml",
+                "label" : "Crackmapexec",
+                "tags" : ["Lateral"]
+            },
+            {
+                "id" : "commands/Impacket.yaml",
+                "label" : "Impacket",
+                "tags" : ["Lateral"]
+            }
+        ]
+    },
+    {
+        "id": "Credntial Access",
+        "label": "Credntial Access",
+        "parentId": null,
+        "items": [
+            {
+                "id" : "commands/SharpSpray.yaml",
+                "label" : "SharpSpray",
+                "tags" : ["Credential Access"]
+            },
+            {
+                "id" : "commands/SharpCloud.yaml",
+                "label" : "SharpCloud",
+                "tags" : ["Credential Access"]
+            },
+            {
+                "id" : "commands/Inveigh.yaml",
+                "label" : "Inveigh",
+                "tags" : ["Credential Access"]
+            },
+            {
+                "id" : "commands/SessionGopher.yaml",
+                "label" : "SessionGopher",
+                "tags" : ["Credential Access", "Creds"]
+            },
+            {
+                "id" : "commands/DomainPasswordSpray.yaml",
+                "label" : "DomainPasswordSpray",
+                "tags" : ["Credential Access"]
+            },
+            {
+                "id" : "commands/SharpDPAPI.yaml",
+                "label" : "SharpDPAPI",
+                "tags" : ["Credential Access","Creds"]
+            }
+        ]
+    },
+    {
+        "id": "PrivEsc",
+        "label": "Privilege Escallation",
+        "parentId": null,
+        "items": [
+            {
+                "id": "commands/SharpRDPHijack.yaml",
+                "label": "SharpRDPHijack",
+                "tags": ["PrivEsc"]
+            },
+            {
+                "id": "commands/NoPac.yaml",
+                "label": "NoPac",
+                "tags": ["PrivEsc", "AD", "Impersonation"]
+            },
+            {
+                "id": "commands/PrinterNightmareLPE.yaml",
+                "label": "PrinterNightmareLPE",
+                "tags": ["PrivEsc", "Driver", "CVE"]
+            }, 
+            {
+                "id": "commands/SweetPotato.yaml",
+                "label": "SweetPotato",
+                "tags": ["PrivEsc"]
+            },
+            {
+                "id": "commands/SharpUp.yaml",
+                "label": "SharpUp",
+                "tags": ["PrivEsc"]
+            },
+            {
+                "id" : "commands/Certipy.yaml",
+                "label" : "Certipy",
+                "tags" : ["PrivEsc"]
+            },
+            {
+                "id" : "commands/Certify.yaml",
+                "label" : "Certify",
+                "tags" : ["PrivEsc"]
+            },
+            {
+                "id" : "commands/KrbRelayUp",
+                "label" : "KrbRelayUp",
+                "tags" : ["PrivEsc"]
+            }            
+        ]
+    },
+    {
+        "id": "LolBins",
+        "label": "LolBins",
+        "parentId": null,
+        "items": [
+            {
+                "id": "commands/nltest.yaml",
+                "label": "nltest",
+                "tags": ["LOLABS"]
+            }
+        ]
+    },
+    {
+        "id": "DataBases",
+        "label": "DataBases",
+        "parentId": null,
+        "items": [
+            {
+                "id": "commands/PowerUpSQL.yaml",
+                "label": "PowerUpSQL",
+                "tags": ["Recon", "Exploitation"]
+            }
+        ]
+    }
+]

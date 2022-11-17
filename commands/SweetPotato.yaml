@@ -1,0 +1,66 @@
+---
+projectLink: https://github.com/CCob/SweetPotato
+name: SweetPotato
+languages:
+  - name: EXE
+    prefix: SweetPotato.exe
+
+params:
+  - name: CLSID
+    type: text
+    description: CLSID, default BITS
+    default: 4991D34B-80A1-4291-83B6-3328366B9097
+    optional: true
+    selected: false
+    template: "-c {0}"
+
+  - name: Method
+    type: select
+    description: Method
+    default: Auto
+    options: ["Auto", "User", "Thread"]
+    optional: true
+    selected: false
+    template: "-m {0}"
+
+  - name: Prog
+    type: text
+    description: Program to launch
+    default: cmd.exe
+    template: "-p {0}"
+    optional: true 
+    selected: true
+
+  - name: Args
+    type: text
+    description: Arguments for program (default null)
+    default: 
+    template: "-a {0}"
+    optional: true
+    selected: false
+
+  - name: Exploit
+    type: select
+    description: Exploit mode
+    default: PrintSpoofer
+    options: ["DCOM", "WinRM", "EfsRpc", "PrintSpoofer"]
+    template: "-e {0}"
+    optional: true 
+    selected: false
+
+  - name: ListenPort
+    type: text
+    description: COM server listen port
+    default: 6666
+    template: "-l {0}"
+    optional: true
+    selected: false
+
+
+sections:
+  - name: Privilege escalation from SA to SYSTEM
+    labels: ["PrivEsc"]
+    mitre: ""
+    verb: ""
+    required_flags: []
+    optional_flags: [CLSID, Method, Prog, Args, Exploit, ListenPort]

@@ -1,0 +1,201 @@
+---
+projectLink: https://github.com/nmap/nmap
+name: NMAP
+languages:
+  - name: Linux
+    prefix: nmap
+  - name: EXE
+    prefix: nmap.exe
+
+params:
+  - name: Target Host/s
+    type: label
+  - name: Target
+    type: text
+    description: Specify IP or a list of IPs seperated by space
+    template: "{0}"
+    default: "192.168.1.1"
+    optional: true
+    selected: true
+  - name: TargetsFromFile
+    type: text
+    description: Path to file containing targets to scan
+    template: "-iL {0}"
+    default: targets.txt
+    optional: true
+    selected: true
+
+  - name: Target Ports
+    type: label
+  - name: Ports
+    type: text
+    description: Ports to scan.
+    template: "--Ports {0}"
+    default: 22-25,80,135-139,443,445,8080,8000,8081,9090
+    optional: true
+    selected: false    
+  - name: TopPorts
+    type: text
+    description: Port scan the top x ports
+    template: "--top-ports {0}"
+    default: 1000
+    optional: true
+
+  - name: Output
+    type: label
+  - name: OutputType
+    type: select
+    description: Output file type
+    template: "-o{0}"
+    default: "All"
+    optional: false
+    options: ["Nmap", "Xml", "Greppable", "All"]
+  - name: OutputPrefix
+    type: text
+    description: The name of the output file
+    template: "-oA {0}"
+    default: output
+    optional: true
+
+
+  - name: Scan options
+    type: label
+  - name: ScanSpeed
+    type: select
+    description: Specify scanning speed to use. Paranoid (0) - SuperFast (5) 
+    template: "-t{0}"
+    default: "3"
+    optional: true
+    options: ["0","1","2","3","4","5"]
+  - name: SynScan
+    type: flag
+    description: Send only TCP Syn packets, without FIN the connection.
+    value: -sS
+    optional: true
+    selected: false
+  - name: NoPing
+    type: flag
+    description: Disable host discovery. Port scan only.
+    value: -Pn
+    optional: true
+    selected: false 
+  - name: NoResolving
+    type: flag
+    description: Never do DNS resolution
+    value: -n
+    optional: true
+    selected: false
+  - name: sL
+    type: flag
+    description: No Scan. List targets only
+    value: -sL
+    optional: true
+    selected: false   
+  - name: sn
+    type: flag
+    description: Disable port scanning. Host discovery only.
+    value: -sn
+    optional: true
+    selected: false
+  - name: PS
+    type: flag
+    description: TCP SYN discovery on port x. Port 80 by default
+    value: -PS{Ports}
+    template: -PS{Ports}
+    optional: true
+    selected: false
+  - name: PA
+    type: flag
+    description: TCP ACK discovery on port x. Port 80 by default
+    value: -PA{Ports}
+    template: -PA{Ports}
+    optional: true
+    selected: false
+  - name: PU
+    type: flag
+    description: UDP discovery on port x. Port 40125 by default
+    value: -PU{Ports}
+    template: -PU{Ports}
+    optional: true
+    selected: false
+  - name: PR
+    type: flag
+    description: ARP discovery on local network
+    value: -PR
+    optional: true
+    selected: false
+
+
+
+sections:
+  - name: Basic port scan of a single IP
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Flags", "Target"]
+    optional_flags: [Ports, NoResolving, SynScan, NoPing, OutputPrefix]
+
+  
+  - name: Scan targets from file
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["iL"]
+    optional_flags: [TargetsFromFile, Ports, NoResolving, SynScan, NoPing, OutputPrefix]
+
+  
+  - name: Speed controlled scan
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Target", "ScanSpeed", "NoPing"]
+    optional_flags: []
+
+  
+  - name: TCP SYN port scan (Default)
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Target", "sS"]
+    optional_flags: []
+
+  
+  - name: TCP connect port scan (Default without root privilege)
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Target", "sT"]
+    optional_flags: []
+
+  
+  - name: UDP port scan
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Target", "sU"]
+    optional_flags: []
+
+  
+  - name: TCP ACK port scan
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Target", "sA"]
+    optional_flags: []
+
+  
+  - name: TCP Window port scan
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Target", "sW"]
+    optional_flags: []
+
+  
+  - name: TCP Maimon port scan
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: ["Target", "sM"]
+    optional_flags: []
+

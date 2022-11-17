@@ -1,0 +1,106 @@
+---
+projectLink: https://github.com/dafthack/MFASweep
+name: MFASweep
+languages:
+  - name: PS
+    prefix: ""
+
+params:
+  - name: MFASweepEndpoint
+    description: Selected target endpoint to test for MFA
+    default: 'Invoke-MFASweep'
+    template: "{0}"
+    type: select
+    options: [
+      'Invoke-MFASweep', 
+      'Invoke-GraphAPIAuth', 
+      'Invoke-AzureManagementAPIAuth', 
+      'Invoke-EWSAuth', 
+      'Invoke-O365WebPortalAuth', 
+      'Invoke-O365WebPortalAuthMobile',
+      'Invoke-O365ActiveSyncAuth',
+      'Invoke-ADFSAuth'
+    ]
+    optional: false
+  
+  - name: Username
+    type: text
+    description: Username
+    template: "-Username {0}"
+    default: User1
+    optional: false
+  - name: Password
+    type: text
+    description: Password
+    template: "-Password {0}"
+    default: 
+    optional: false
+
+  - name: Recon
+    type: flag
+    description: Reconnaissance
+    value: -Recon
+    optional: true
+    selected: false
+  - name: IncludeADFS
+    type: flag
+    description: Include ADFS
+    value: -IncludeADFS
+    optional: true
+    selected: false
+  
+sections:
+  - name: Self crafted command
+    labels: ["Recon"]
+    mitre: ''
+    verb: ''
+    required_flags: [MFASweepEndpoint, Username, Password]
+    optional_flags: [Recon, IncludeADFS]
+  - name: Test Azure APIs for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-MFASweep'
+    required_flags: [Username, Password]
+    optional_flags: [Recon, IncludeADFS]
+  - name: Test Microsoft Graph API for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-GraphAPIAuth'
+    required_flags: [Username, Password]
+    optional_flags: []
+  - name: Test Azure Service Management API for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-AzureManagementAPIAuth'
+    required_flags: [Username, Password]
+    optional_flags: []
+  - name: Test Microsoft 365 Exchange Web Services for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-EWSAuth'
+    required_flags: [Username, Password]
+    optional_flags: []
+  - name: Test Microsoft 365 Web Portal for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-O365WebPortalAuth'
+    required_flags: [Username, Password]
+    optional_flags: []
+  - name: Test Microsoft 365 Web Portal w/ Mobile User Agent for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-O365WebPortalAuthMobile'
+    required_flags: [Username, Password]
+    optional_flags: []
+  - name: Microsoft 365 Active Sync for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-O365ActiveSyncAuth'
+    required_flags: [Username, Password]
+    optional_flags: []
+  - name: Test ADFS for MFA
+    labels: ["Recon"]
+    mitre: ''
+    verb: 'Invoke-ADFSAuth'
+    required_flags: [Username, Password]
+    optional_flags: []

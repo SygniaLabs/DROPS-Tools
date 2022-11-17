@@ -1,0 +1,301 @@
+---
+projectLink:  
+name: SharpHound
+languages:
+  - name: EXE
+    prefix: SharpHound.exe 
+
+params:
+  - name: CollectionMethod
+    description: Specify collection method for BH.
+    default: "All"
+    template: "-c {0}"
+    type: select
+    options: ["Default", "All", "DCOnly", "ComputerOnly", "Session", "LoggedOn", "Group", "ACL", "GPOLocalGroup", "Trusts", "Container", "LocalGroup", "LocalAdmin", "RDP", "DCOM", "PSRemote", "ObjectProps"]
+    optional: false
+  - name: Domain
+    type: text
+    description: Name of the domain to enumerate
+    template: "-d {0}"
+    default: example.local
+    optional: false
+
+  - name: Search Filters
+    type: label
+
+  - name: LDAPFilter
+    template: "-f \"{0}\""
+    description: Add an LDAP filter to the pregenerated filter.
+    type: text
+    default: (CN=*,OU=Example,DC=Example,DC=Local)
+    optional: true
+
+  - name: DistinguishedName
+    type: text
+    description: Base DistinguishedName to start search at.
+    template: "--distinguishedname \"{0}\""
+    default: OU=Example,DC=Example,DC=Local
+    optional: true
+  
+  - name: Input Output
+    type: label
+
+  - name: ComputerFile
+    type: text
+    description: Path to file containing computer names to enumerate
+    template: "--computerfile \"{0}\""
+    default: file.txt
+    optional: true
+  - name: OutputDirectory
+    type: text
+    description: Directory to output file too
+    template: "--outputdirectory \"{0}\""
+    default: "."
+    optional: true
+  - name: OutputPrefix
+    type: text
+    description: String to prepend to output file names
+    template: "--outputprefix {0}"
+    default: prefix
+    optional: true
+  - name: CacheName
+    type: text
+    description: Filename for cache (Defaults to a machine specific identifier)
+    template: "--cachename {0}"
+    default: cache
+    optional: true
+  - name: ZipFileName
+    type: text
+    description: Filename for the zip
+    template: "--zipfilename {0}"
+    default: ZipName
+    optional: true
+  - name: ZipPassword
+    type: text
+    description: Password protects the zip with the specified password
+    template: "--zippassword {0}"
+    default: Z!pP4ssw0rd@
+    optional: true
+
+  - name: Authentication
+    type: label
+
+  - name: Username
+    description: Username for LDAP
+    type: text
+    default: user1
+    template: "--ldapusername {0}"
+    optional: true     
+  - name: Password
+    description: Password for LDAP
+    type: text
+    template: "--ldappassword {0}"
+    default: P@ssw0rd
+    optional: true
+    selected: false
+
+  - name: LDAP config
+    type: label
+  
+  - name: DomainController
+    type: text
+    description: Override domain controller to pull LDAP from. This option can result in data loss
+    template: "--domaincontroller {0}"
+    default: dc1
+    optional: true
+  - name: LDAPPort
+    type: text
+    description: Override port for LDAP
+    template: "--ldapport {0}"
+    default: 0
+    optional: true
+
+  - name: Scanning config
+    type: label
+
+  - name: PortCheckTimeout
+    type: text
+    description: Timeout for port checks in milliseconds
+    template: "--portchecktimeout {0}"
+    default: 500
+    optional: true
+  - name: Throttle
+    type: text
+    description: Add a delay after computer requests in milliseconds.
+    template: "--throttle {0}"
+    default: 0
+    optional: true
+  - name: Jitter
+    type: text
+    description: Add jitter to throttle (percent)
+    template: "--jitter {0}"
+    default: 0
+    optional: true
+  - name: Threads
+    type: text
+    description: Number of threads to run enumeration with.
+    template: "--threads {0}"
+    default: 50
+    optional: true
+  
+  - name: Loop Config
+    type: label
+
+  - name: LoopDuration
+    type: text
+    description: Loop duration (Defaults to 2 hours - 00:02:00)
+    template: "--loopduration {0}"
+    default: 00:02:00
+    optional: true
+  - name: LoopInterval
+    type: text
+    description: Add delay between loops (Example - 00:00:01 is 1 minute)
+    template: "--loopinterval {0}"
+    default: 00:00:01
+    optional: true
+  - name: StatusInterval
+    type: text
+    description: Interval in which to display status in milliseconds.
+    template: "--statusinterval {0}"
+    default: 30000
+    optional: true
+  
+
+  - name: Flags
+    type: label
+
+  - name: SearchForest
+    type: flag
+    description: Search all available domains in the forest
+    value: "-s"
+    optional: true
+    selected: false
+  - name: Stealth
+    type: flag
+    description: Perform “stealth” data collection
+    value: "--stealth"
+    optional: true
+    selected: true
+  - name: MemCache
+    type: flag
+    description: Keep cache in memory and don't write to disk
+    value: "--memcache"
+    optional: true
+    selected: false
+  - name: RebuildCache
+    type: flag
+    description: Rebuild cache and remove all entries
+    value: "--rebuildcache"
+    optional: true
+    selected: false
+  - name: RandomFileNames
+    type: flag
+    description: Use random filenames for output
+    value: "--randomfilenames"
+    optional: true
+    selected: false
+  - name: NoZip
+    type: flag
+    description: Don't zip files
+    value: "--nozip"
+    optional: true
+    selected: false
+  - name: TrackComputerCalls
+    type: flag
+    description: Adds a CSV tracking requests to computers
+    value: "--trackcomputercalls"
+    optional: true
+    selected: false
+  - name: PrettyPrint
+    type: flag
+    description: Pretty print JSON
+    value: "--prettyprint"
+    optional: true
+    selected: false
+  - name: LDAPS
+    type: flag
+    description: This will use ldaps
+    value: "--secureldap"
+    optional: true
+    selected: true
+  - name: DisableCertVerification
+    type: flag
+    description: Disable certificate verification for secure LDAP
+    value: "--disablecertverification"
+    optional: true
+    selected: false
+  - name: DisableSigning
+    type: flag
+    description: Disables Kerberos Signing/Sealing
+    value: "--disablesigning"
+    optional: true
+    selected: false
+  - name: SkipPortCheck
+    type: flag
+    description: Skip checking if 445 is open
+    value: "--skipportcheck"
+    optional: true
+    selected: false
+  - name: SkipPasswordCheck
+    type: flag
+    description: Skip PwdLastSet age check when checking computers
+    value: "--skippasswordcheck"
+    optional: true
+    selected: false
+  - name: ExcludeDC
+    type: flag
+    description: Exclude domain controllers from session/localgroup enumeration (mostly for ATA/ATP)
+    value: "--excludedcs"
+    optional: true
+    selected: false
+  - name: Loop
+    type: flag
+    description: Loop computer collection
+    value: "-l"
+    optional: true
+    selected: false
+  
+  
+
+sections:
+  - name: Collect
+    labels: ["Recon", "LDAP"]
+    mitre: "T1590.001"
+    verb: ''
+    required_flags: [CollectionMethod, Domain]
+    optional_flags: [
+      LDAPFilter,
+      DistinguishedName,
+      ComputerFile,
+      OutputDirectory,
+      OutputPrefix,
+      CacheName,
+      ZipFileName,
+      ZipPassword,
+      Username,
+      Password,
+      DomainController,
+      LDAPPort,
+      PortCheckTimeout,
+      Throttle,
+      Jitter,
+      Threads,
+      LoopDuration,
+      LoopInterval,
+      StatusInterval,
+      SearchForest,
+      Stealth,
+      MemCache,
+      RebuildCache,
+      RandomFileNames,
+      NoZip,
+      TrackComputerCalls,
+      PrettyPrint,
+      LDAPS,
+      DisableCertVerification,
+      DisableSigning,
+      SkipPortCheck,
+      SkipPasswordCheck,
+      ExcludeDC,
+      Loop
+    ]

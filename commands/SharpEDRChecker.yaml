@@ -1,0 +1,17 @@
+---
+projectLink: https://github.com/PwnDexter/SharpEDRChecker
+name: SharpEDRChecker
+languages:
+  - name: EXE
+    prefix: SharpEDRChecker.exe
+
+params:
+  
+
+sections:
+- name: Reconnaissance EDRs on local host
+  labels: ["Recon"]
+  mitre: ''
+  verb: ''
+  required_flags: []
+  optional_flags: []

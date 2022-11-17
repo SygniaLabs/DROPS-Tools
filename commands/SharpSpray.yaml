@@ -1,0 +1,71 @@
+---
+projectLink: https://github.com/jnqpblc/SharpSpray
+name: SharpSpray
+languages:
+  - name: EXE
+    prefix: SharpSpray.exe
+
+params:
+  - name: SpSeeds
+    type: text
+    description: A comma-separated list of passwords to as a seed to the internal list generator.
+    template: "--Seeds {0}"
+    default: Password,Welcome
+    optional: true
+
+  - name: SpPasswords
+    type: text
+    description: A comma-separated list of passwords to use instead of the internal list generator.
+    template: "--Passwords {0}"
+    default: ItsNotWinter!,P@ssw0rd
+    optional: true
+  
+  - name: SpDelay
+    type: text
+    description: The delay time between guesses in millisecounds.
+    template: "--Delay {0}"
+    default: 300
+    optional: true
+
+  - name: SpSleep
+    type: text
+    description: The number of minutes to sleep between password cycles.
+    template: "--Sleep {0}"
+    default: 15
+    optional: true
+
+sections:
+- name: Generic command
+  labels: ["Passwords", "Lateral"]
+  mitre: 'T1110.003'
+  verb: ''
+  required_flags: []
+  optional_flags: [SpSeeds, SpPasswords, SpDelay, SpSleep]
+
+- name: Password spray with automatic generated passwords with custom sleep
+  labels: ["Passwords", "Lateral"]
+  mitre: 'T1110.003'
+  verb: ''
+  required_flags: [SpSleep]
+  optional_flags: []
+
+- name: Password spray with predefined seeds for password generation with custom sleep
+  labels: ["Passwords", "Lateral"]
+  mitre: 'T1110.003'
+  verb: ''
+  required_flags: [SpSeeds, SpSleep]
+  optional_flags: []
+
+- name: Password spray with predefined password list with custom sleep
+  labels: ["Passwords", "Lateral"]
+  mitre: 'T1110.003'
+  verb: ''
+  required_flags: [SpPasswords, SpSleep]
+  optional_flags: []
+
+- name: Password spray with predefined password list with custom sleep and delay
+  labels: ["Passwords", "Lateral"]
+  mitre: 'T1110.003'
+  verb: ''
+  required_flags: [SpPasswords, SpSleep, SpDelay]
+  optional_flags: []

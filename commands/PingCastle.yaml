@@ -1,0 +1,146 @@
+---
+projectLink: https://www.pingcastle.com/
+name: PingCastle
+languages:
+  - name: EXE
+    prefix: PingCastle.exe
+
+params:
+  - name: DomainController
+    type: text
+    description: Specify Domain Controller to execute check against
+    template: "--server {0}"
+    default: 
+    optional: false
+  - name: PcScanner
+    description: The scanner to use
+    default: aclcheck
+    template: "--scanner {0}"
+    type: select
+    options:
+      [
+        "aclcheck",
+        "antivirus",
+        "computerversion",
+        "foreignusers",
+        "laps_bitlocker",
+        "localadmin",
+        "nullsession",
+        "nullsession-trust",
+        "oxidbindings",
+        "remote",
+        "share",
+        "smb",
+        "smb3querynetwork",
+        "spooler",
+        "startup",
+        "zerologon",
+      ]
+    optional: false
+  - name: Username
+    type: text
+    description: Username to use for PingCastle scan
+    template: "--user {0}"
+    default: User1
+    optional: false
+  - name: Password
+    type: text
+    description: Password to use for PingCastle scan
+    template: "--password {0}"
+    default: Password123
+    optional: false
+  
+  - name: Flags
+    type: label
+
+  - name: HealthCheck
+    type: flag
+    description: desc
+    value: --healthcheck
+    optional: true
+    selected: false
+  - name: DateFile
+    type: flag
+    description: desc
+    value: --datefile 
+    optional: true
+    selected: false
+  - name: NoEnumLimit
+    type: flag
+    description: desc
+    value: --no-enum-limit 
+    optional: true
+    selected: false
+  - name: Reachable
+    type: flag
+    description: desc
+    value: --reachable 
+    optional: true
+    selected: false
+  - name: ExploreTrust
+    type: flag
+    description: desc
+    value: --explore-trust 
+    optional: true
+    selected: false
+  - name: ExploreForestTrust
+    type: flag
+    description: desc
+    value: --explore-forest-trust 
+    optional: true
+    selected: false
+
+sections:
+- name: Execute PingCastle HealthCheck against all domains in forest
+  labels: ["Recon", "AD"]
+  mitre: 'T1590.001'
+  verb: ''
+  required_flags: [HealthCheck, DomainController]
+  optional_flags: []
+
+- name: Execute PingCastle Specific scanner with specific credentials
+  labels: ["Recon", "AD", "Creds"]
+  mitre: 'T1590.001'
+  verb: ''
+  required_flags: [PcScanner, Username, Password]
+  optional_flags: []
+
+# ---
+
+# sections:
+#   - name: Execute PingCastle HealthCheck against all domains in forest
+#     labels: ["Recon", "AD"]
+#     mitre: 'T1590.001'
+#     commands:
+#       - language: EXE
+#         command: PingCastle.exe --healthcheck --server *
+#   - name: Execute PingCastle thorough HealthCheck against all domains in forest
+#     labels: ["Recon", "AD"]
+#     mitre: 'T1590.001'
+#     commands:
+#       - language: EXE
+#         command: PingCastle.exe --healthcheck --server * --level Full --datefile --no-enum-limit --reachable --explore-trust --explore-forest-trust
+#   - name: Execute PingCastle thorough HealthCheck against all domains in forest with specific credentials
+#     labels: ["Recon", "AD"]
+#     mitre: 'T1590.001'
+#     commands:
+#       - language: EXE
+#         command: PingCastle.exe --healthcheck --server * --level Full --datefile --no-enum-limit --reachable --explore-trust --explore-forest-trust --user {{Username}} --password {{Password}}
+#   - name: Execute PingCastle HealthCheck against specific DC
+#     labels: ["Recon", "AD"]
+#     mitre: 'T1590.001'
+#     commands:
+#       - language: EXE
+#         command: PingCastle.exe --healthcheck --server {{DomainController}}
+#   - name: Execute PingCastle Specific scanner
+#     labels: ["Recon", "AD"]
+#     mitre: 'T1590.001'
+#     commands:
+#       - language: EXE
+#         command: PingCastle.exe --scanner {{PcScanner}}
+#   - name: Execute PingCastle Specific scanner with specific credentials
+#     labels: ["Recon", "AD", "Creds"]
+#     mitre: 'T1590.001'
+#     commands:
+#       - language: EXE
+#         command: PingCastle.exe --scanner {{PcScanner}} --user {{Username}} --password {{Password}}

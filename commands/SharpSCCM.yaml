@@ -1,0 +1,12 @@
+---
+projectLink: https://github.com/Mayyhem/SharpSCCM
+name: SharpSCCM
+params:
+
+sections:
+- name: name
+  labels: []
+  mitre: ''
+  commands:
+  - language: EXE
+    command: some

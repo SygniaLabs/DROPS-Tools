@@ -1,0 +1,52 @@
+---
+projectLink: https://github.com/calebstewart/CVE-2021-1675
+name: PrinterNightmareLPE
+languages:
+  - name: PS
+    prefix: Invoke-Nightmare
+
+params:
+  - name: DriverName
+    type: text
+    description: Name of driver that will be installed
+    template: "-DriverName \"{0}\""
+    default: Xerox
+    optional: true
+  - name: NewUser
+    type: text
+    description: Name of the new administrator
+    template: "-NewUser \"{0}\""
+    default: john
+    optional: true
+  - name: NewPassword
+    type: text
+    description: Password of the new administrator
+    template: "-NewPassword \"{0}\""
+    default: SuperSecure
+    optional: true
+  - name: DLL
+    type: text
+    description: Path of dll to that will be executed
+    template: "-DLL \"{0}\""
+    default: C:\absolute\path\to\your\bindshell.dll
+    optional: true
+
+sections:
+  - name: Self crafted
+    labels: ["PrivEsc", "Driver", "CVE"]
+    mitre: ''
+    verb: ''
+    required_flags: []
+    optional_flags: [DriverName, NewUser, NewPassword, DLL]
+  - name: Add a new user to the local administrators group by default
+    labels: ["PrivEsc", "Driver", "CVE"]
+    mitre: ''
+    verb: ''
+    required_flags: [DriverName, NewUSer, NewPassword]
+    optional_flags: []
+  - name: Supply a custom DLL payload, to do anything else you might like
+    labels: ["PrivEsc", "Driver", "CVE"]
+    mitre: ''
+    verb: ''
+    required_flags: [DLL]
+    optional_flags: []

@@ -1,0 +1,79 @@
+---
+projectLink: https://github.com/s0lst1c3/SharpFinder
+name: SharpFinder
+languages:
+  - name: EXE
+    prefix: SharpFinder.exe
+
+params:
+  - name: Path
+    type: text
+    description: Path to single directory for enumeration
+    template: "--path={0}"
+    default: \\Remote\C$
+    optional: true
+  - name: InputFile
+    type: text
+    description: File path containing list of directories
+    template: "--input-file={0}"
+    default: directory-list.txt
+    optional: true
+  - name: Keywords
+    type: text
+    description: Keywords used to filter files by name.
+    template: "--keywords={0}"
+    default: creds,credential,admin,password
+    optional: true
+  - name: Extensions
+    type: text
+    description: Extensions used to filter files by type.
+    template: "--extensions={0}"
+    default: exe,xml,bat,ps1
+    optional: true
+
+  - name: Readable
+    type: flag
+    description: Filter files with read access to
+    value: "--readable"
+    optional: true
+    selected: false
+  - name: Writeable
+    type: flag
+    description: Filter files with write access to
+    value: "--writeable"
+    optional: true
+    selected: false
+  - name: ReadWriteable
+    type: flag
+    description: Filter files with read and write access to (Used in conjunction with previous flags)
+    value: "--acl-filter-mode-and"
+    optional: true
+    selected: false
+  - name: ExcludeHidden
+    type: flag
+    description: Exclude hidden files from search
+    value: "--exclude-hidden"
+    optional: true
+    selected: false
+
+sections:
+- name: Self crafted command
+  labels: []
+  mitre: ''
+  verb: ''
+  required_flags: []
+  optional_flags: [Path, InputFile, Keywords, Extensions, Readable, Writeable, ReadWriteable, ExcludeHidden]
+
+- name: Search files in specific directory
+  labels: []
+  mitre: ''
+  verb: ''
+  required_flags: [Path]
+  optional_flags: [Keywords, Extensions, Readable, Writeable, ReadWriteable, ExcludeHidden]
+
+- name: Search files in multiple directories
+  labels: []
+  mitre: ''
+  verb: ''
+  required_flags: [InputFile]
+  optional_flags: [Keywords, Extensions, Readable, Writeable, ReadWriteable, ExcludeHidden]

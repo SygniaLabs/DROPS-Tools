@@ -1,0 +1,702 @@
+---
+projectLink: https://github.com/Porchetta-Industries/CrackMapExec
+name: Crackmapexec
+languages:
+  - name: BASH
+    prefix: cme
+
+params:
+  - name: cmeProtocol
+    description: CrackMapExec available protocols
+    default: smb
+    template: "{0}"
+    type: select
+    options: ["mssql", "rdp", "ldap", "winrm", "smb", "ssh"]
+    optional: false
+  
+  - name: Winrm config
+    type: label
+  
+  - name: SSL
+    type: flag
+    description: Connect to SSL Enabled WINRM
+    value: --ssl
+    optional: true
+    selected: false
+  - name: IgnoreSSLCert
+    type: flag
+    description: Ignore Certificate Verification
+    value: --ignore-ssl-cert
+    optional: true
+    selected: false
+
+  - name: RDP Config
+    type: label
+  
+  - name: RDPTimeout
+    type: text
+    description: RDP timeout on socket connection
+    template: "--rdp-timeout {0}"
+    default: 10
+    optional: true
+  - name: Screenshot
+    type: flag
+    description: Screenshot RDP if connection success
+    value: --screenshot
+    optional: true
+    selected: false
+  - name: ScreenTime
+    type: text
+    description: Time to wait for desktop image
+    template: "--screentime {0}"
+    default: 10
+    optional: true
+  - name: Resolution
+    type: text
+    description: 'Resolution in "WIDTHxHEIGHT" format. Default: "1024x768"'
+    template: "--res {0}"
+    default: 1024x768
+    optional: true
+
+  - name: LDAP Config
+    type: label
+  
+  - name: ASRepRoast
+    type: text
+    description: Get AS_REP response ready to crack with hashcat
+    template: "--asreproast {0}"
+    default: ""
+    optional: true
+  - name: Kerberoasting
+    type: text
+    description: Get TGS ticket ready to crack with hashcat
+    template: "--kerberoasting {0}"
+    default: ""
+    optional: true
+  - name: TrustedForDelegation
+    type: flag
+    description: Get the list of users and computers with flag TRUSTED_FOR_DELEGATION
+    value: --trusted-for-delegation
+    optional: true
+    selected: false
+  - name: PasswordNotRequired
+    type: flag
+    description: Get the list of users with flag PASSWD_NOTREQD
+    value: --password-not-required
+    optional: true
+    selected: false
+  - name: AdminCount
+    type: flag
+    description: Get objets that had the value adminCount=1
+    value: --admin-count
+    optional: true
+    selected: false
+  - name: EnumUsers
+    type: flag
+    description: Enumerate enabled domain users
+    value: --users
+    optional: true
+    selected: false
+  - name: EnumGroups
+    type: flag
+    description: Enumerate domain groups
+    value: --groups
+    optional: true
+    selected: false
+  - name: NoSMB
+    type: flag
+    description: No smb connection
+    value: --no-smb
+    optional: true
+    selected: false
+
+  - name: SQL Config
+    type: label
+
+  - name: SQLQuery
+    type: text
+    description: execute the specified query against the MSSQL DB
+    template: "-q {0}"
+    default: ""
+    optional: true
+  
+  - name: SSH Config
+    type: label
+  
+  - name: KeyFile
+    type: text
+    description: Authenticate using the specified private key. Treats the password parameter as the key's passphrase.
+    template: "--key-file {0}"
+    default: ""
+    optional: true
+
+  - name: SMB Config
+    type: label
+
+  - name: cmeSmbModules
+    description: available SMB modules of CME
+    default: gpp_password
+    template: "-M {0}"
+    type: select
+    options: [bh_owned, dfscoerce, drop, empire_exec, enum_avproducts, enum_dns, get_netconnections, gpp_autologin, gpp_password, handlekatz, ioxidresolver, lsassy, met_inject, ms17, nanodump, nopac, petitpotam, procdump, rdp, runasppl, scuffy, shadowcoerce, slinky, spider_plus, spooler, test_connection, uac, wdigest, web_delivery, webdav, wireless, zerologon]
+    optional: true
+  - name: ExecutionMethod
+    description: "method to execute the command. Ignored if in MSSQL mode (default: wmiexec)"
+    default: wmiexec
+    template: "--exec-method {0}"
+    type: select
+    options: [wmiexec, smbexec, mmcexec, atexec]
+    optional: true
+  - name: Shares
+    type: flag
+    description: enumerate shares and access
+    value: --shares
+    optional: true
+    selected: false
+  - name: Sessions
+    type: flag
+    description: enumerate active sessions
+    value: --sessions
+    optional: true
+    selected: false
+  - name: Disks
+    type: flag
+    description: enumerate disks
+    value: --disks
+    optional: true
+    selected: false
+  - name: LoggedonUsers
+    type: flag
+    description: enumerate logged on users
+    value: --loggedon-users
+    optional: true
+    selected: false
+
+  
+  - name: General Config
+    type: label
+
+  - name: Threads
+    type: text
+    description: "set how many concurrent threads to use (default: 100)"
+    template: "-t {0}"
+    default: 100
+    optional: true
+  - name: Timeout
+    type: text
+    description: "max timeout in seconds of each thread (default: None)"
+    template: "--timeout {0}"
+    default: 
+    optional: true
+  - name: Jitter
+    type: text
+    description: "sets a random delay between each connection (default: None)"
+    template: "--jitter {0}"
+    default: 
+    optional: true
+  - name: Port
+    type: text
+    description: Custom port to use
+    template: "--port {0}"
+    default: ""
+    optional: true
+  - name: GlobalFailLimit
+    type: text
+    description: max number of global failed login attempts
+    template: "--gfail-limit {0}"
+    default: 2
+    optional: true
+  - name: UserFailLimit
+    type: text
+    description: max number of failed login attempts per username
+    template: "--ufail-limit {0}"
+    default: 2
+    optional: true
+  - name: HostFailLimit
+    type: text
+    description: max number of failed login attempts per host
+    template: "--fail-limit {0}"
+    default: 2
+    optional: true
+
+  - name: Server config
+    type: label
+  
+  - name: Server
+    description: "use the selected server (default: https)"
+    default: https
+    template: "--server {0}"
+    type: select
+    options: [http, https]
+    optional: true
+  - name: ServerHost
+    type: text
+    description: "IP to bind the server to (default: 0.0.0.0)"
+    template: "--server-host {0}"
+    default: "0.0.0.0"
+    optional: true
+  - name: ServerPort
+    type: text
+    description: desc
+    template: "--server-port {0}"
+    default: 
+    optional: true
+  - name: ConnectBackHost
+    type: text
+    description: "IP for the remote system to connect back to (default: same as server-host)"
+    template: "--connectback-host {0}"
+    default: ""
+    optional: true
+
+
+  - name: Target Host/s
+    type: label
+
+  - name: Target
+    type: text
+    description: "the target IP(s), range(s), CIDR(s), hostname(s), FQDN(s), file(s) containing a list of targets, NMap XML or .Nessus file(s)"
+    template: "{0}"
+    default: "192.168.1.1"
+    optional: true
+    selected: true
+  - name: TargetsFile
+    type: text
+    description: Path to file containing targets to scan
+    template: "{0}"
+    default: ./targets.txt
+    optional: true
+    selected: true
+
+  - name: Authentication
+    type: label
+
+  - name: Domain
+    type: text
+    description: Domain name
+    template: "-d {0}"
+    default: example.local
+    optional: true
+  - name: Username
+    type: text
+    description: Username to authneitcate with
+    template: "-u {0}"
+    default: Administrator
+    optional: true
+  - name: Password
+    type: text
+    description: Password of the specified username
+    template: "-p {0}"
+    default: ""
+    optional: true
+    selected: true
+  - name: Hash
+    type: text
+    description: Hash of the user to authenticate
+    template: "-H {0}"
+    default: ""
+    optional: true
+  - name: AesKey
+    type: text
+    description: AES key to use for Kerberos Authentication (128 or 256 bits)
+    template: "--aesKey {0}"
+    default: ""
+    optional: true
+  - name: Laps
+    type: text
+    description: LAPS authentification
+    template: "--laps {0}"
+    default: 
+    optional: true
+  - name: KDCHost
+    type: text
+    description: FQDN of the domain controller. If omitted it will use the domain part (FQDN) specified in the target parameter
+    template: "--kdcHost {0}"
+    default: ""
+    optional: true
+  - name: LocalAuth
+    type: flag
+    description: authenticate locally to each target
+    value: --ocal-auth
+    optional: true
+    selected: false
+  - name: Kerberos
+    type: flag
+    description: Use Kerberos authentication from ccache file (KRB5CCNAME)
+    value: "-k"
+    optional: true
+    selected: false 
+
+  - name: Execution
+    type: label
+
+  - name: Command
+    type: text
+    description: execute the specified command
+    template: "-x {0}"
+    default: whoami
+    optional: true
+  - name: PSCommand
+    type: text
+    description: execute the specified PowerShell command
+    template: "-X {0}"
+    default: whoami
+    optional: true
+  - name: NoOutput
+    type: flag
+    description: do not retrieve command output
+    value: --no-output
+    optional: true
+    selected: false
+  - name: ForcePS32
+    type: flag
+    description: force the PowerShell command to run in a 32-bit process
+    value: --force-ps32
+    optional: true
+    selected: false
+  - name: Obfuscate
+    type: flag
+    description: Obfuscate PowerShell scripts
+    value: --obfs
+    optional: true
+    selected: false
+  - name: ClearObfuscation
+    type: flag
+    description: Clear all cached obfuscated PowerShell scripts
+    value: --clear-obfscripts
+    optional: true
+    selected: false
+
+  - name: Input & Output
+    type: label
+
+  - name: Export
+    type: text
+    description: Export result into a file, probably buggy
+    template: "--export {0}"
+    default: file.txt
+    optional: false
+  
+  - name: Credential Gathering
+    type: label
+  
+  - name: SAM
+    type: flag
+    description: dump SAM hashes from target systems
+    value: --sam
+    optional: true
+    selected: false
+  - name: LSA
+    type: flag
+    description: dump LSA secrets from target systems
+    value: --lsa
+    optional: true
+    selected: false
+  - name: NTDSDump
+    description: "dump the NTDS.dit from target DCs using the specifed method (default: drsuapi)"
+    default: drsuapi
+    template: "--ntds {0}"
+    type: select
+    options: [drsuapi,vss]
+    optional: true
+
+  - name: Flags
+    type: label
+
+  - name: NoBruteforce
+    type: flag
+    description: "No spray when using file for username and password (user1 => password1, user2 => password2)"
+    value: --no-bruteforce
+    optional: true
+    selected: false
+  - name: ContinueOnSuccess
+    type: flag
+    description: continues authentication attempts even after successes
+    value: --continue-on-success
+    optional: true
+    selected: false
+  
+
+sections:
+  - name: Self crafted
+    labels: []
+    mitre: ''
+    verb: ''
+    required_flags: [cmeProtocol]
+    optional_flags: [
+      Threads,
+      Timeout,
+      Jitter,
+      Port,
+      SSL,
+      IgnoreSSLCert,
+      RDPTimeout,
+      Screenshot,
+      ScreenTime,
+      Resolution,
+      ASRepRoast,
+      Kerberoasting,
+      TrustedForDelegation,
+      PasswordNotRequired,
+      AdminCount,
+      EnumUsers,
+      EnumGroups,
+      NoSMB,
+      SQLQuery,
+      KeyFile,
+      cmeSmbModules,
+      ExecutionMethod,
+      Shares,
+      Sessions,
+      Disks,
+      LoggedonUsers,
+      GlobalFailLimit,
+      UserFailLimit,
+      HostFailLimit,
+      Server,
+      ServerHost,
+      ServerPort,
+      ConnectBackHost,
+      Target,
+      TargetsFile,
+      Authentication,
+      Domain,
+      Username,
+      Password,
+      Hash,
+      AesKey,
+      Laps,
+      KDCHost,
+      LocalAuth,
+      Kerberos,
+      Execution,
+      Command,
+      PSCommand,
+      NoOutput,
+      ForcePS32,
+      Obfuscate,
+      ClearObfuscation,
+      Export,
+      SAM,
+      LSA,
+      NTDSDump,
+      NoBruteforce,
+      ContinueOnSuccess
+    ]
+
+  - name: RDP
+    labels: [RDP]
+    mitre: ''
+    verb: 'rdp'
+    required_flags: [Target]
+    optional_flags: [
+      Threads,
+      Timeout,
+      Jitter,
+      Username,
+      Password,
+      Hash,
+      Kerberos,
+      Export,
+      AesKey,
+      GlobalFailLimit,
+      UserFailLimit,
+      HostFailLimit,
+      Server,
+      ServerHost,
+      ServerPort,
+      ConnectBackHost,
+      NoBruteforce,
+      ContinueOnSuccess,
+      Domain,
+      LocalAuth,
+      Screenshot,
+      ScreenTime,
+      Resolution,
+      RDPTimeout,
+      Port
+    ]
+
+  - name: LDAP
+    labels: []
+    mitre: ''
+    verb: 'ldap'
+    required_flags: [Target]
+    optional_flags: [
+      Threads,
+      Timeout,
+      Jitter,
+      Username,
+      Password,
+      Hash,
+      Kerberos,
+      Export,
+      AesKey,
+      KDCHost,
+      GlobalFailLimit,
+      UserFailLimit,
+      HostFailLimit,
+      Server,
+      ServerHost,
+      ServerPort,
+      ConnectBackHost,
+      NoBruteforce,
+      ContinueOnSuccess,
+      Port,
+      NoSMB,
+      Domain,
+      LocalAuth,
+      ASRepRoast,
+      Kerberoasting,
+      TrustedForDelegation,
+      PasswordNotRequired,
+      AdminCount,
+      EnumUsers,
+      EnumGroups
+    ]
+
+  - name: MSSQL
+    labels: []
+    mitre: ''
+    verb: 'mssql'
+    required_flags: [Target]
+    optional_flags: [
+      Threads,
+      Timeout,
+      Jitter,
+      Username,
+      Password,
+      Hash,
+      Kerberos,
+      Export,
+      AesKey,
+      KDCHost,
+      GlobalFailLimit,
+      UserFailLimit,
+      HostFailLimit,
+      Server,
+      ServerHost,
+      ServerPort,
+      ConnectBackHost,
+      NoBruteforce,
+      ContinueOnSuccess,
+      Domain,
+      LocalAuth,
+      Port,
+      SQLQuery,
+      ForcePS32,
+      NoOutput,
+      Command,
+      PSCommand,
+      Obfuscate,
+      ClearObfuscation
+      ]
+  - name: Winrm
+    labels: []
+    mitre: ''
+    verb: 'winrm'
+    required_flags: [Target]
+    optional_flags: [
+      Threads,
+      Timeout,
+      Jitter,
+      Username, 
+      Password, 
+      Hash, 
+      Kerberos, 
+      Export, 
+      AesKey, 
+      KDCHost, 
+      GlobalFailLimit, 
+      UserFailLimit, 
+      HostFailLimit, 
+      Server, 
+      ServerHost, 
+      ServerPort, 
+      ConnectBackHost, 
+      NoBruteforce, 
+      ContinueOnSuccess, 
+      Domain, 
+      LocalAuth, 
+      Port, 
+      SSL, 
+      IgnoreSSLCert, 
+      Laps, 
+      SAM, 
+      LSA, 
+      NoOutput, 
+      Command, 
+      PSCommand
+    ]
+  - name: SMB
+    labels: []
+    mitre: ''
+    verb: 'smb'
+    required_flags: [Target]
+    optional_flags: [
+      Threads,
+      Timeout,
+      Jitter,
+      Username,
+      Password,
+      Kerberos,
+      Export,
+      AesKey,
+      KDCHost,
+      GlobalFailLimit,
+      UserFailLimit,
+      HostFailLimit,
+      Server,
+      ServerHost, 
+      ServerPort, 
+      ConnectBackHost, 
+      Hash,
+      NoBruteforce,
+      Domain,
+      LocalAuth,
+      Port,
+      ContinueOnSuccess,
+      Laps,
+      SAM,
+      LSA,
+      NTDSDump,
+      Shares,
+      Sessions,
+      Disks,
+      LoggedonUsers,
+      cmeSmbModules,
+      ExecutionMethod
+      ForcePS32,
+      NoOutput,
+      Command,
+      PSCommand,
+      Obfuscate,
+      ClearObfuscation
+    ]
+  - name: SSH
+    labels: []
+    mitre: ''
+    verb: 'ssh'
+    required_flags: [Target]
+    optional_flags: [Username, Password, Hash, Kerberos, Export, AesKey, KDCHost, GlobalFailLimit, UserFailLimit, HostFailLimit, Server, ServerHost, ServerPort, ConnectBackHost, NoBruteforce, ContinueOnSuccess, Port, KeyFile, NoOutput, Command]
+
+  - name: Check crednetials against targeted host over SMB
+    labels: ["Lateral"]
+    mitre: ''
+    verb: smb # ["smb", "ldap", "winrm", "mssql", "ssh", "rdp"]
+    required_flags: [Target, User]
+    optional_flags: [Password, Hash, LocalAuth, Kerberos]
+
+  - name: Enumerate active sessions via SMB
+    labels: []
+    mitre: ''
+    verb: 'smb'
+    required_flags: [Target, User, Sessions]
+    optional_flags: [Password, Hash, LocalAuth, Kerberos]
+
+
+  - name: Execute command on a remote specified target/s
+    labels: []
+    mitre: ''
+    verb: ''
+    required_flags: [Target, User, Command]
+    optional_flags: [Password, Hash, LocalAuth, Kerberos]    

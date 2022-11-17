@@ -1,0 +1,83 @@
+---
+projectLink: https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS
+name: winPEAS
+languages:
+  - name: EXE
+    prefix: winpeas.exe
+
+params:
+  - name: SpecificCheck
+    description: Select specific check to execute
+    default: systeminfo
+    template: "{0}"
+    type: select
+    options: [domain, systeminfo, userinfo, processinfo, servicesinfo, applicationsinfo, networkinfo, windowscreds, browserinfo, filesinfo, fileanalysis, eventsinfo]
+    optional: true
+    selected: false
+  
+  - name: OutFile
+    type: text
+    description: Log all output to file defined as logfile
+    template: "-log={0}"
+    default: out.txt
+    optional: true
+    selected: true
+
+  - name: notcolor
+    type: flag
+    description: Do not color the output
+    value: notcolor
+    optional: true
+    selected: true
+
+  - name: searchpf
+    type: text
+    description: Search credentials via regex also in Program Files folders
+    template: "searchpf {0}"
+    default: Pass.*
+    optional: true
+    selected: false
+  
+  - name: wait
+    type: flag
+    description: Wait for user input between checks
+    value: "wait"
+    optional: true
+    selected: false
+
+  - name: debug
+    type: flag
+    description: Display debugging information - memory usage, method execution time
+    value: "debug"
+    optional: true
+    selected: true
+
+  - name: quiet
+    type: flag
+    description: Do not print banner
+    value: "quiet"
+    optional: true
+    selected: true
+  
+  - name: lolbas
+    type: flag
+    description: Run additional LOLBAS check
+    value: "-lolbas"
+    optional: true
+    selected: true
+
+  - name: linpeas
+    type: text
+    description: desc
+    template: "-linpeas={0}"
+    default: https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh
+    optional: true
+    selected: false
+
+sections:
+  - name: Execute WinPEAS
+    labels: ["Recon"]
+    mitre: ""
+    verb: ""
+    required_flags: []
+    optional_flags: [SpecificCheck, quiet, notcolor, searchpf, wait, debug, OutFile, lolbas, linpeas]

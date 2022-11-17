@@ -1,0 +1,34 @@
+---
+projectLink: https://github.com/PowerShellMafia/PowerSploit
+params:
+  - name: Domain
+    description: Name of the domain to enumerate.
+    default: example.local
+  - name: Forest
+    description: Name of the forest to enumerate.
+    default: example.local
+
+sections:
+  - name: Find user with SPN
+    labels: ["Recon"]
+    commands:
+      - language: PS
+        command: Get-NetUser -SPN
+        
+  - name: Domain trusts for the current domain
+    labels: ["Recon"]
+    mitre: ''
+    commands:
+    - language: PS
+      command: |-
+        Get-NetDomainTrust
+        Get-NetDomainTrust –Domain {{Domain}}
+  
+  - name: Details about the current forest
+    labels: ["Recon"]
+    mitre: ''
+    commands:
+    - language: PS
+      command: |-
+        Get-NetForest
+        Get-NetForest –Forest {{Forest}}  

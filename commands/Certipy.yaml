@@ -1,0 +1,158 @@
+---
+projectLink: https://github.com/ly4k/Certipy
+name: Certipy
+languages:
+  - name: Python
+    prefix: certipy
+
+params:
+  - name: target
+    description: '[[domain/]username[:password]@]<targetName or address>'
+    template: "{domain}/{username}:{password}@{0}"
+    optional: false
+    type: text
+    default: dc.domain.local
+	
+#authentication options:
+  - name: Authentication Options
+    type: label
+
+  - name: hashes
+    type: text
+    description: NTLM hashes, format is LMHASH:NTHASH
+    template: "-hashes {0}"
+    default: 
+    optional: false
+
+  - name: no-pass
+    type: flag
+    description: Don't ask for password (useful for -k)
+    value: "-no-pass"
+    optional: true
+    selected: false
+
+  - name: kerberos
+    type: flag
+    description: Use Kerberos authentication. Grabs credentials from ccache file (KRB5CCNAME) based on target parameters.
+    value: '-k'
+    optional: true
+    selected: false  	
+	
+
+#find options:
+  - name: Find
+    type: label
+
+  - name: enabled
+    type: flag
+    description: Show only enabled certificate templates
+    value: "-enabled"
+    optional: true
+    selected: true
+
+#output options:
+  - name: Output Options
+    type: label
+
+  - name: debug
+    type: flag
+    description: Turn DEBUG output ON
+    value: '-debug'
+    optional: true
+    selected: false
+
+  - name: outputPrefix
+    type: text
+    description: Filename prefix for writing results to
+    template: "-output {0}"
+    default: "cert-prefix-out"
+    optional: false
+
+  - name: output
+    type: text
+    description: output file name
+    template: "-out {0}"
+    default: "out.txt"
+    optional: false    
+
+  - name: json
+    type: flag
+    description: Output result as JSON only
+    value: "-json"
+    optional: true
+    selected: false
+
+  - name: bloodhound
+    type: flag
+    description: Output result as BloodHound data only
+    value: "-bloodhound"
+    optional: true
+    selected: false
+
+  - name: text
+    type: flag
+    description: Output result as text only
+    value: "-text"
+    optional: true
+    selected: false
+
+
+
+
+#connection options:
+  - name: Connection Options
+    type: label
+
+  - name: scheme
+    type: text
+    description: LDAP Scheme to query
+    template: "{0}"
+    default: "OU=...,"
+    optional: false
+
+  - name: target-ip
+    type: text
+    description: IP Address of the target machine. If omitted it will use whatever was specified as target. This is useful when target is the NetBIOS name and you cannot resolve it
+    template: "-target-ip {0}"
+    default: "192.168.1.1"
+    optional: true
+  
+  - name: ns
+    type: text
+    description: Nameserver for DNS resolution
+    template: "-ns {0}"
+    default: "ns1.domain.local"
+    optional: true
+
+  - name: timeout
+    type: text
+    description: Timeout for connections in seconds
+    template: "-timeout {0}"
+    default: "5"
+    optional: true
+
+  - name: dc-ip
+    type: text
+    description: IP Address of the domain controller. If ommited it use the domain part (FQDN) specified in the target.
+    template: "-dc-ip {0}"
+    default: ""
+    optional: true
+    selected: false	
+ 
+  - name: dns-tcp
+    type: flag
+    description: Use TCP instead of UDP for DNS queries
+    value: "-dns-tcp"
+    optional: true
+    selected: false
+
+
+
+
+sections:
+  - name: Enumerating enabled AD CS certificate templates
+    labels: []
+    mitre: ''
+    verb: 'find'
+    required_flags: ["target"]
+    optional_flags: ["debug", "json", "bloodhound", "text", "outputPrefix", "enabled", "scheme", "dc-ip", "target-ip", "ns", "dns-tcp", "timeout", "hashes", "no-pass", "kerberos"]

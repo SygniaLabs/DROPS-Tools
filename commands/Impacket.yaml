@@ -1,0 +1,401 @@
+projectLink: https://github.com/SecureAuthCorp/impacket
+name: Impacket
+languages:
+  - name: Python
+    prefix: ''
+params:
+  - name: domain
+    description: 'Domain to authenticate to'
+    template: "{0}"
+    optional: false
+    selected: false
+    type: text
+    default: domain
+
+  - name: username
+    description: 'User to authneticate with'
+    template: "{0}"
+    optional: false
+    selected: false
+    type: text
+    default: bob
+
+  - name: password
+    description: 'Password to authenticate with'
+    template: "{0}"
+    optional: false
+    selected: false
+    type: text
+    default: 
+
+  - name: target
+    description: '[[domain/]username[:password]@]<targetName or address>'
+    template: "{domain}/{username}:{password}@{0}"
+    optional: false
+    selected: false
+    type: text
+    default: dc.domain.local
+
+  - name: command
+    description: 'command to execute at the target. If empty it will launch a semi-interactive shell'
+    template: "{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'whoami'
+  
+  - name: share 
+    description: 'Share where the output will be grabbed from (default ADMIN$)'
+    template: "-share {0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'ADMIN$'
+
+
+  - name: codec
+    type: text
+    description: Sets encoding used (codec) from the target's output (default "utf-8")
+    template: '-codec {0}'
+    default: "utf-8"
+    optional: true
+    selected: false
+
+
+  - name: shell-type
+    type: select
+    description: choose a command processor for the semi-interactive shell
+    template: '-shell-type {0}'
+    options: ['cmd', 'powershell'] 
+    optional: true
+
+  - name: com-version
+    type: text
+    description: DCOM version, format is MAJOR_VERSION:MINOR_VERSION e.g. 5.7
+    template: '-com-version {0}'
+    default: ''
+    optional: true
+
+
+  - name: hashes
+    type: text
+    description: NTLM hashes, format is LMHASH:NTHASH
+    template: "-hashes {0}"
+    default: 
+    optional: false
+
+
+  - name: aesKey
+    type: text
+    description: AES key to use for Kerberos Authentication (128 or 256 bits)
+    template: "-aesKey {0}"
+    default: ""
+    optional: true
+
+  - name: dc-ip
+    type: text
+    description: IP Address of the domain controller. If ommited it use the domain part (FQDN) specified in the target.
+    template: "-dc-ip {0}"
+    default: ""
+    optional: true
+    selected: false
+
+  - name: auth-file
+    type: text
+    description: Smbclient/mount.cifs-style authentication file
+    template: "-A {0}"
+    default: 
+    optional: true
+    selected: false
+
+  - name: keytab
+    type: text
+    description: Read keys for SPN from keytab file
+    template: "-keytab {0}"
+    default: ""
+    optional: true  
+    selected: false
+
+  - name: port
+    type: text
+    description: Destination port to connect to SMB Server
+    template: "-port {0}"
+    default: "445"
+    optional: true
+    selected: false
+
+
+  - name: identity
+    description: '[domain/]username[:password]'
+    template: "{domain}/{username}:{password}"
+    optional: false
+    type: text
+    default: {username}
+
+  - name: user
+    type: text
+    description: Filter output by this user
+    template: "-user {0}"
+    default: "filteruser"
+    optional: true
+    selected: false
+
+
+  - name: users
+    type: text
+    description: Input file with list of users to filter to output for
+    template: "-users {0}"
+    default: 'users.txt'
+    optional: true
+    selected: false
+
+  - name: targets
+    type: text
+    description:  Input file with targets system to query info from (one per line). If not specified script will run in domain mode.
+    template: "-targets {0}"
+    default: 'targets.txt'
+    optional: true
+    selected: false
+
+
+
+  - name: delay
+    type: text
+    description: Seconds delay between starting each batch probe (default 10 seconds)
+    template: "-delay {0}"
+    default: "10"
+    optional: true
+    selected: false
+
+  - name: max-connections
+    type: text
+    description: Max amount of connections to keep opened (default 1000)
+    template: "-max-connections {0}"
+    default: "1000"
+    optional: false
+
+
+  - name: system
+    type: text
+    description: SYSTEM hive to parse
+    template: 
+    default: 
+    optional: false
+
+
+  - name: bootkey
+    type: text
+    description: bootkey for SYSTEM hive
+    template: 
+    default: 
+    optional: false
+
+  - name: security
+    type: text
+    description: SECURITY hive to parse
+    template: 
+    default: 
+    optional: false
+
+
+  - name: sam
+    type: text
+    description: SAM hive to parse
+    template: 
+    default: 
+    optional: false
+
+
+  - name: ntds
+    type: text
+    description: NTDS.DIT file to parse
+    template: "-ntds {0}"
+    default: "ntds.dit"
+    optional: true
+    selected: false
+
+  - name: resumefile
+    type: text
+    description: Resume file name to resume NTDS.DIT session dump (only available to DRSUAPI approach). This file will also be used to keep updating the session's state
+    template: "-resumefile {0}"
+    default: ""
+    optional: true 
+
+
+  - name: outputfile
+    type: text
+    description: Base output filename. Extensions will be added for sam, secrets, cached and ntds
+    template: "-outputfile {0}"
+    default: "outputfile.txt"
+    optional: true
+
+
+  - name: rodcNo
+    type: text
+    description: Number of the RODC krbtgt account (only avaiable for Kerb-Key-List approach)
+    template: "-rodcNo {0}"
+    default: ""
+    optional: true    
+
+  - name: rodcKey
+    type: text
+    description: AES key of the Read Only Domain Controller (only avaiable for Kerb-Key-List approach)
+    template: "-rodcKey {0}"
+    default: ""
+    optional: true
+
+  - name: exec-method
+    description: Remote exec method to use at target (only when using -use-vss). Default - smbexec
+    template: "-exec-method {0}"
+    type: select
+    default: smbexec
+    options: ["smbexec","wmiexec","mmcexec"]
+    optional: true
+
+  - name: just-dc-user
+    type: text
+    description: Extract only NTDS.DIT data for the user specified. Only available for DRSUAPI approach. Implies also -just-dc switch
+    template: "-just-dc-user {0}"
+    default: "targeteduser"
+    optional: true
+
+  - name: no-pass
+    type: flag
+    description: Don't ask for password (useful for -k)
+    value: "-no-pass"
+    optional: true
+    selected: false
+
+  - name: kerberos
+    type: flag
+    description: Use Kerberos authentication. Grabs credentials from ccache file (KRB5CCNAME) based on target parameters.
+    value: '-k'
+    optional: true
+    selected: false  
+
+
+  - name: just-dc
+    type: flag
+    description: Extract only NTDS.DIT data (NTLM hashes and Kerberos keys)
+    value: "-just-dc"
+    optional: true
+    selected: false    
+
+  - name: just-dc-ntlm
+    type: flag
+    description: Extract only NTDS.DIT data (NTLM hashes only)
+    value: "-just-dc-ntlm"
+    optional: true
+    selected: false
+
+
+  - name: pwd-last-set
+    type: flag
+    description: Shows pwdLastSet attribute for each NTDS.DIT account. Doesn't apply to -outputfile data
+    value: "-pwd-last-set"
+    optional: true
+    selected: false
+
+
+  - name: user-status
+    type: flag
+    description: Display whether or not the user is disabled
+    value: "-user-status"
+    optional: true
+    selected: false
+
+  - name: history
+    type: flag
+    description: Dump password history, and LSA secrets OldVal
+    value: "-history"
+    optional: true
+    selected: false
+
+
+  - name: nooutput 
+    description: 'Whether or not to print the output'
+    optional: true
+    selected: false
+    type: flag
+    value: "-nooutput"
+
+  - name: ts
+    type: flag
+    description: Adds timestamp to every logging output
+    value: '-ts'
+    optional: false
+
+  - name: silentcommand
+    type: flag
+    description: Does not execute cmd.exe to run given command (no output)
+    value: '-silentcommand'
+    optional: true
+    selected: false
+
+  - name: debug
+    type: flag
+    description: Turn DEBUG output ON
+    value: '-debug'
+    optional: true
+    selected: false    
+
+  - name: use-vss
+    type: flag
+    description: Use the VSS method instead of default DRSUAPI
+    value: "-use-vss"
+    optional: true
+    selected: false
+
+  - name: use-keylist
+    type: flag
+    description: Use the Kerb-Key-List method instead of default DRSUAPI
+    value: "-use-keylist"
+    optional: true
+    selected: false  
+
+  - name: noloop
+    type: flag
+    description: Stop after the first probe
+    value: "-noloop"
+    optional: true
+    selected: false
+
+  - name: csv
+    type: flag
+    description: Turn CSV output
+    value: "-csv"
+    optional: true
+    selected: false
+
+
+sections:
+  - name: wmiexec
+    labels: []
+    mitre: ""
+    verb: 'wmiexec.py'
+    required_flags: [target]
+    optional_flags: ["share","nooutput","ts","silentcommand","debug","codec","shell-type","com-version","hashes","no-pass","kerberos","aesKey","dc-ip","auth-file","keytab","command"]
+  - name: secretsdump
+    labels: []
+    mitre: ""
+    verb: 'secretsdump.py'
+    required_flags: [target]
+    optional_flags: ["ts","debug","system","bootkey","security","sam","ntds","resumefile","outputfile","use-vss","rodcNo","rodcKey","use-keylist","exec-method","just-dc-user","just-dc","just-dc-ntlm","pwd-last-set","user-status","history","hashes","no-pass","kerberos","aesKey","keytab","dc-ip","target-ip"]
+  - name: samrdump
+    labels: []
+    mitre: ""
+    verb: 'samrdump.py'
+    required_flags: [target]
+    optional_flags: ["csv","ts","debug","dc-ip","target-ip","port","hashes","no-pass","kerberos","aesKey"]
+  - name: rpcdump
+    labels: []
+    mitre: ''
+    verb: 'rpcdump.py'
+    required_flags: [target]
+    optional_flags: ["debug","target-ip","port","hashes"]
+  - name: netview
+    labels: []
+    mitre: ''
+    verb: 'netview.py'
+    required_flags: [identity]
+    optional_flags: ["user","users","target","targets","noloop","delay","max-connections","ts","debug","hashes","no-pass","kerberos","aesKey","dc-ip"]

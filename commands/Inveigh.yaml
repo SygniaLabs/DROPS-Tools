@@ -1,0 +1,611 @@
+---
+projectLink: https://github.com/Kevin-Robertson/Inveigh
+name: Inveigh
+languages:
+  - name: EXE
+    prefix: Inveigh.exe
+  - name: PS
+    prefix: Invoke-Inveigh
+
+params:
+
+  - name: Control
+    type: label	
+
+  - name: Inspect
+    type: flag
+    description: Inspect traffic only
+    value: '-Inspect Y'
+    optional: true
+    selected: false
+
+  - name: IPv4
+    type: flag
+    description: IPv4 spoofing/capture
+    value: '-IPv4 Y'
+    optional: true
+    selected: false
+
+  - name: IPv6
+    type: flag
+    description: IPv6 spoofing/capture
+    value: '-IPv4 Y'
+    optional: true
+    selected: false
+
+  - name: RunCount
+    type: text
+    description: Number of NetNTLM captures to perform before auto-exiting.
+    template: "{0}"
+    default: 'Unlimited'
+    optional: true
+
+  - name: Output
+    type: label
+
+  - name: Console
+    type: text
+    description: Set the level for console output. (0=none, 1=only captures/spoofs, 2=no disabled, no informational, 3=no disabled, no filtered, 4=no disabled, 5=all)
+    template: "-Console {0}"
+    default: 5
+    optional: true
+
+  - name: ConsoleLimit
+    type: text
+    description: Limit to queued console entries
+    template: "-ConsoleLimit {0}"
+    default: 
+    optional: true
+
+  - name: ConsoleStatus
+    type: text
+    description: Interval in minutes for auto-displaying capture details
+    template: "-ConsoleStatus {0}"
+    default: 
+    optional: true
+
+  - name: ConsoleUnique
+    type: flag
+    description: Displaying only unique (user and system combination) hashes at time of capture
+    value: '-ConsoleStatus Y'
+    optional: true
+    selected: false
+
+  - name: FileOutput
+    type: flag
+    description: Real time file output
+    value: '-FileOutput Y'
+    optional: true
+    selected: false
+
+  - name: FileDirectory
+    type: text
+    description: Valid path to an output directory for enabled file output
+    template: "-FileDirectory {0}"
+    default: 'OutDir'
+    optional: true
+
+  - name: FilePrefix
+    type: text
+    description: Prefix for all output files
+    template: "-FilePrefix {0}"
+    default: 'inveigh'
+    optional: true
+
+  - name: FileUnique
+    type: flag
+    description: Outputting only unique (user and system combination) hashes
+    value: '-FileUnique Y'
+    optional: true
+    selected: false
+
+  - name: LogOutput
+    type: flag
+    description:  Outputting log entries
+    value: '-LogOutput Y'
+    optional: true
+    selected: false
+
+  - name: Spoofers
+    type: label	
+
+
+  - name: DHCPv6
+    type: flag
+    description: DHCPv6 spoofing
+    value: '-DHCPv6 Y'
+    optional: true
+    selected: false
+
+  - name: DHCPv6TTL
+    type: text
+    description: Lease lifetime in seconds (Default 300).
+    template: "-DHCPv6TTL {0}"
+    default: 
+    optional: true
+
+  - name: DNS
+    type: flag
+    description: DNS spoofing
+    value: '-DNS Y'
+    optional: true
+    selected: false
+
+  - name: DNSHost
+    type: text
+    description: Fully qualified hostname to use SOA/SRV responses.
+    template: "-DNSHost {0}"
+    default: ''
+    optional: true
+
+  - name: DNSSRV
+    type: text
+    description: Comma separated list of SRV request services to answer (Default LDAP).
+    template: "-DNSSRV {0}"
+    default: ''
+    optional: true
+
+  - name: DNSSuffix
+    type: text
+    description: DNS search suffix to include in DHCPv6/ICMPv6 responses.
+    template: "-DNSSuffix {0}"
+    default: ''
+    optional: true
+
+  - name: DNSTTL
+    type: text
+    description: DNS TTL in seconds (Default 30)
+    template: "-DNSTTL {0}"
+    default: ''
+    optional: true
+
+  - name: DNSTYPES
+    type: text
+    description: Types (A, SOA, SRV) Comma separated list of DNS types to spoof (Default A).
+    template: "-DNSTYPES {0}"
+    default: 'A,SOA,SRV'
+    optional: true
+
+  - name: ICMPv6
+    type: flag
+    description: Sending ICMPv6 router advertisements
+    value: '-ICMPv6 Y' 
+    optional: true
+    selected: false
+
+  - name: ICMPv6Interval
+    type: text
+    description: ICMPv6 RA interval in seconds (Default 200).
+    template: "-ICMPv6Interval {0}"
+    default: ''
+    optional: true
+  
+  - name: ICMPv6TTL
+    type: text
+    description: ICMPv6 TTL in seconds (Default 300).
+    template: "-ICMPv6TTL {0}"
+    default: ''
+    optional: true
+
+  - name: IgnoreDomains
+    type: text
+    description: Comma separated list of domains to ignore when spoofing.
+    template: "-IgnoreDomains {0}"
+    default: ''
+    optional: true
+
+  - name: IgnoreHosts
+    type: text
+    description: Comma separated list of hostnames to ignore when spoofing.
+    template: "-IgnoreHosts {0}"
+    default: ''
+    optional: true
+
+  - name: IgnoreIPs
+    type: text
+    description: Comma separated list of source IP addresses to ignore when spoofing (Default local).
+    template: "-IgnoreIPs {0}"
+    default: ''
+    optional: true
+
+  - name: IgnoreMACs
+    type: text
+    description: Comma separated list of MAC addresses to ignore when DHCPv6 spoofing.
+    template: "-IgnoreMACs {0}"
+    default: ''
+    optional: true
+
+  - name: Local
+    type: flag
+    description: Performin spoofing attacks against the host system
+    value: '-Local Y'
+    optional: true
+    selected: false
+
+  - name: LLMNR
+    type: flag
+    description: LLMNR spoofing
+    value: '-LLMNR Y'
+    optional: true
+    selected: false
+
+  - name: LLMNRTTL
+    type: text
+    description: LLMNR TTL in seconds.
+    template: "-LLMNRTTL {0}"
+    default: 30
+    optional: true
+
+  - name: MAC
+    type: text
+    description: Local MAC address for DHCPv6.
+    template: "-MAC {0}"
+    default: ''
+    optional: true
+
+  - name: MDNS
+    type: flag
+    description: mDNS spoofing
+    value: '-MDNS Y'
+    optional: true
+    selected: false
+
+  - name: MDNSQuestions
+    type: text
+    description: Comma separated list of question types to spoof. (QU,QM)
+    template: "-MDNSQuestions {0}"
+    default: ''
+    optional: true
+
+  - name: MDNSTTL
+    type: text
+    description: mDNS TTL in seconds (Default=120).
+    template: "-MDNSTTL {0}"
+    default: '120'
+    optional: true
+
+  - name: MDNSTypes
+    type: text
+    description: Comma separated list of mDNS record types to spoof (Default=A). (A,AAAA,ANY)
+    template: "-MDNSTypes {0}"
+    default: ''
+    optional: true
+
+  - name: MDNSUnicast
+    type: flag
+    description: Send a unicast only response to a QM request
+    value: '-MDNSUnicast Y'
+    optional: true
+    selected: false
+
+  - name: NBNS
+    type: flag
+    description: NBNS spoofing
+    value: '-NBNS Y'
+    optional: true
+    selected: false
+
+  - name: NBNSTTL
+    type: text
+    description: NBNS TTL in seconds.
+    template: "-NBNSTTL {0}"
+    default: '165'
+    optional: true
+
+  - name: NBNSTypes
+    type: text
+    description: Comma separated list of NBNS types to spoof (Default=00,20). (00,03,20,1B)
+    template: "-NBNSTypes {0}"
+    default: '00,20'
+    optional: true
+
+  - name: ReplyToDomains
+    type: text
+    description: Comma separated list of domains to respond to when spoofing.
+    template: "-ReplyToDomains {0}"
+    default: 'All'
+    optional: true
+
+  - name: ReplyToHosts
+    type: text
+    description: Comma separated list of hostnames to respond to when spoofing.
+    template: "-ReplyToHosts {0}"
+    default: All
+    optional: true
+
+  - name: ReplyToIPs
+    type: text
+    description: Comma separated list of source IP addresses to respond to when spoofing.
+    template: "-ReplyToIPs {0}"
+    default: All
+    optional: true
+
+  - name: ReplyToMACs
+    type: text
+    description: Comma separated list of MAC addresses to respond to when DHCPv6 spoofing.
+    template: "-ReplyToMACs {0}"
+    default: All
+    optional: true
+
+  - name: SpooferIP
+    type: text
+    description: IP address included in spoofing responses.
+    template: "-SpooferIP {0}"
+    default: Autoassign
+    optional: true
+
+  - name: SpooferIPv6
+    type: text
+    description: IPv6 address included in spoofing responses.
+    template: "-SpooferIPv6 {0}"
+    default: Autoassign
+    optional: true
+
+  - name: Repeat
+    type: flag
+    description: Repeated spoofing attacks against a system after NetNTLM capture.
+    value: '-Repeat Y'
+    optional: true
+    selected: false
+
+
+  - name: Capture
+    type: label	
+
+  - name: Cert
+    type: text
+    description: Base64 certificate for TLS.
+    template: "-Cert {0}"
+    default: ''
+    optional: true
+
+  - name: CertPassword
+    type: text
+    description: Base64 certificate password for TLS.
+    template: "-CertPassword {0}"
+    default: ''
+    optional: true
+
+  - name: Challenge
+    type: text
+    description: 16 character hex NetNTLM challenge for use with the TCP listeners.
+    template: "-Challenge {0}"
+    default: ''
+    optional: true
+
+  - name: HTTP
+    type: flag
+    description: HTTP listener
+    value: '-HTTP Y'
+    optional: true
+    selected: false
+
+  - name: HTTPAuth
+    type: text
+    description: (Anonymous/Basic/NTLM) HTTP/HTTPS listener authentication.
+    template: "-HTTPAuth {0}"
+    default: 'NTLM'
+    optional: true
+
+  - name: HTTPPorts
+    type: text
+    description: Comma seperated list of TCP ports for the HTTP listener.
+    template: "-HTTPPorts {0}"
+    default: '80'
+    optional: true
+
+  - name: HTTPRealm
+    type: text
+    description: Basic authentication realm.
+    template: "-HTTPRealm {0}"
+    default: ADFS
+    optional: true
+
+  - name: HTTPResponse
+    type: text
+    description: Content to serve as the default HTTP/HTTPS/Proxy response.
+    template: "-HTTPResponse {0}"
+    default: ''
+    optional: true
+
+  - name: HTTPS
+    type: flag
+    description: HTTPS listener
+    value: '-HTTPS Y'
+    optional: true
+    selected: false
+
+  - name: HTTPSPorts
+    type: text
+    description: Comma separated list of TCP ports for the HTTPS listener.
+    template: "-HTTPSPorts {0}"
+    default: 443
+    optional: true
+
+  - name: IgnoreAgents
+    type: text
+    description: Comma separated list of HTTP user agents to ignore with wpad anmd proxy auth.
+    template: "-IgnoreAgents {0}"
+    default: Firefox
+    optional: true
+
+  - name: LDAP
+    type: flag
+    description: LDAP listener
+    value: '-LDAP Y'
+    optional: true
+    selected: false
+
+  - name: LDAPPorts
+    type: text
+    description:  Comma separated list of TCP ports for the LDAP listener.
+    template: "-LDAPPorts {0}"
+    default: '389'
+    optional: true
+
+  - name: ListenerIP
+    type: text
+    description: IP address for all listeners.
+    template: "-ListenerIP {0}"
+    default: Any
+    optional: true
+
+  - name: ListenerIPv6
+    type: text
+    description: IPv6 address for all listeners.
+    template: "-ListenerIPv6 {0}"
+    default: Any
+    optional: true
+
+  - name: MachineAccount
+    type: flag
+    description: Machine account NetNTLM captures
+    value: '-MachineAccount Y'
+    optional: true
+    selected: false
+
+  - name: Proxy
+    type: flag
+    description: Proxy listener authentication captures
+    value: '-Proxy Y'
+    optional: true
+    selected: false
+
+  - name: ProxyAuth
+    type: text
+    description: (Basic/NTLM) Proxy authentication.
+    template: "-ProxyAuth {0}"
+    default: NTLM
+    optional: true
+
+  - name: ProxyPort
+    type: text
+    description: Port for the proxy listener.
+    template: "-ProxyPort {0}"
+    default: 8492
+    optional: true
+  
+  - name: SMB
+    type: flag
+    description: SMB sniffer/listener
+    value: '-SMB Y'
+    optional: true
+    selected: false
+
+  - name: SMBPorts
+    type: text
+    description: Port for the SMB listener.
+    template: "-SMBPorts {0}"
+    default: 445
+    optional: true
+
+  - name: SnifferIP
+    type: text
+    description: IP address included in spoofing responses.
+    template: "-SnifferIP {0}"
+    default: ''
+    optional: true
+
+  - name: SnifferIPv6
+    type: text
+    description: IPv6 address included in spoofing responses.
+    template: "-SnifferIPv6 {0}"
+    default: ''
+    optional: true
+
+  - name: WebDAV
+    type: flag
+    description: Serve WebDAV over HTTP/HTTPS listener
+    value: '-WebDAV'
+    optional: true
+    selected: false
+
+  - name: WebDAVAuth
+    type: text
+    description: (Anonymous/Basic/NTLM) WebDAV authentication.
+    template: "-WebDAVAuth {0}"
+    default: NTLM
+    optional: true
+
+  - name: WPADAuth
+    type: text
+    description: Authentication type for wpad.dat requests. (Anonymous/Basic/NTLM)
+    template: "-WPADAuth {0}"
+    default: ''
+    optional: true
+
+  - name: WPADResponse
+    type: text
+    description: Contents of wpad.dat responses.
+    template: "-WPADResponse {0}"
+    default: ''
+    optional: true
+
+
+
+sections:
+
+  - name: Inspect traffic only
+    labels: [Recon]
+    mitre: ''
+    verb: ''
+    required_flags: [Inspect]
+    optional_flags: [
+      #Output optional
+      Console,ConsoleLimit,ConsoleStatus,ConsoleUnique,FileOutput,FileDirectory,FilePrefix,FileUnique,LogOutput
+    ]
+
+  - name: Start DHCPv6 spoofer and also send out ICMPv6 RA packets (IPv6 MITM)
+    labels: [IPv6, 'Credential Access']
+    mitre: 'T1557.003'
+    verb: ''
+    required_flags: [DHCPv6, ICMPv6]
+    optional_flags: [
+                    #Attack optional
+                    MAC,DHCPv6TTL,ICMPv6Interval,ICMPv6TTL,IgnoreDomains,IgnoreHosts,IgnoreIPs,IgnoreMACs,ReplyToDomains,ReplyToHosts,ReplyToIPs,ReplyToMACs,SpooferIPv6,Repeat,SnifferIPv6,
+                    #Output optional
+                    Console,ConsoleLimit,ConsoleStatus,ConsoleUnique,FileOutput,FileDirectory,FilePrefix,FileUnique,LogOutput
+      ]
+
+  - name: Spoof additional record types DNS queries
+    labels: [DNS]
+    mitre: ''
+    verb: ''
+    required_flags: [DNSTYPES, DNSHost]
+    optional_flags: [DNSSRV,DNSSuffix,DNSTTL,
+                    #Control
+                    IPv6,IPv4,
+                    #Output optional
+                    Console,ConsoleLimit,ConsoleStatus,ConsoleUnique,FileOutput,FileDirectory,FilePrefix,FileUnique,LogOutput
+    ]
+
+  - name: Start all available spoofers and listeners
+    labels: [DNS,SMB,LDAP,'Credential Access']
+    mitre: 'T1557.001'
+    verb: ''
+    required_flags: [DNS,DHCPv6,LLMNR,MDNS,NBNS,HTTP,HTTPS,SMB,LDAP,WebDAV,ProxyAuth]
+    optional_flags: [
+                    #Control
+                    IPv6,IPv4,
+                    #Capture
+                    DHCPv6TTL,DNSHost,DNSSRV,DNSSuffix,DNSTTL,DNSTYPES,ICMPv6,ICMPv6Interval,ICMPv6TTL,IgnoreDomains,IgnoreHosts,IgnoreIPs,IgnoreMACs,Local,LLMNRTTL,MAC,MDNSQuestions,MDNSTTL,MDNSTypes,MDNSUnicast,NBNSTTL,NBNSTypes,ReplyToDomains,ReplyToHosts,ReplyToIPs,ReplyToMACs,SpooferIP,SpooferIPv6,Repeat,Capture,Cert,CertPassword,Challenge,HTTPAuth,HTTPPorts,HTTPRealm,HTTPResponse,HTTPSPorts,IgnoreAgents,LDAPPorts,ListenerIP,ListenerIPv6,MachineAccount,Proxy,ProxyPort,SMBPorts,SnifferIP,SnifferIPv6,WebDAVAuth,WPADAuth,WPADResponse,
+                    #Output
+                    Console,ConsoleLimit,ConsoleStatus,ConsoleUnique,FileOutput,FileDirectory,FilePrefix,FileUnique,LogOutput,
+    ]
+
+
+  - name: Craft your command
+    labels: ['Credential Access']
+    mitre: ''
+    verb: ''
+    required_flags: []
+    optional_flags: [
+                    #Control
+                    IPv6,IPv4,
+                    #Listeners/Spoofers
+                    DNS,DHCPv6,LLMNR,MDNS,NBNS,HTTP,HTTPS,SMB,LDAP,WebDAV,ProxyAuth,
+                    #Capture
+                    DHCPv6TTL,DNSHost,DNSSRV,DNSSuffix,DNSTTL,DNSTYPES,ICMPv6,ICMPv6Interval,ICMPv6TTL,IgnoreDomains,IgnoreHosts,IgnoreIPs,IgnoreMACs,Local,LLMNRTTL,MAC,MDNSQuestions,MDNSTTL,MDNSTypes,MDNSUnicast,NBNSTTL,NBNSTypes,ReplyToDomains,ReplyToHosts,ReplyToIPs,ReplyToMACs,SpooferIP,SpooferIPv6,Repeat,Capture,Cert,CertPassword,Challenge,HTTPAuth,HTTPPorts,HTTPRealm,HTTPResponse,HTTPSPorts,IgnoreAgents,LDAPPorts,ListenerIP,ListenerIPv6,MachineAccount,Proxy,ProxyPort,SMBPorts,SnifferIP,SnifferIPv6,WebDAVAuth,WPADAuth,WPADResponse,
+                    #Output
+                    Console,ConsoleLimit,ConsoleStatus,ConsoleUnique,FileOutput,FileDirectory,FilePrefix,FileUnique,LogOutput,
+    ]

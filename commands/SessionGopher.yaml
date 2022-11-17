@@ -1,0 +1,83 @@
+---
+projectLink: https://github.com/Arvanaghi/SessionGopher
+name: SessionGopher
+languages:
+  - name: PS
+    prefix: Invoke-SessionGopher
+
+params:
+  - name: Target
+    type: text
+    description: A specific host you want to target.
+    template: "-Target {0}"
+    default: Server01
+    optional: true
+  - name: Targets
+    type: text
+    description: A file with a list of hosts to run SessionGopher against.
+    template: "-iL {0}"
+    default: .\path-to-file.txt
+    optional: true
+  - name: Output
+    type: text
+    description: outputs the data to a folder of .csv files
+    template: "-o {0}"
+    default: C:\temp
+    optional: true
+  - name: Username
+    type: text
+    description: Username
+    template: "-u {0}"
+    default: User1
+    optional: true
+  - name: Password
+    type: text
+    description: Password
+    template: "-p {0}"
+    default: Password123
+    optional: true
+
+  - name: Thorough
+    type: flag
+    description: searches all drives for PuTTY private key (.ppk), Remote Desktop Connecton (.rdp), and RSA (.sdtid) files.
+    value: -Thorough 
+    optional: true
+    selected: false
+  - name: AllDomain
+    type: flag
+    description: SessionGopher will query Active Directory for all domain-joined systems and run against all of them.
+    value: -AllDomain
+    optional: true
+    selected: false
+
+sections:
+- name: Self crafted command
+  labels: ["Credentials Access", "Creds", "NoCreds"]
+  mitre: 'T1634'
+  verb: ''
+  required_flags: []
+  optional_flags: [Target, Targets, AllDomain, Username, Password, Output, Thorough]
+- name: Run locally
+  labels: ["Credential Access"]
+  mitre: 'T1634'
+  verb: ''
+  required_flags: []
+  optional_flags: [Thorough]
+- name: Run remotely against all instances in the domain
+  labels: ["Credential Access"]
+  mitre: 'T1634'
+  verb: ''
+  required_flags: [AllDomain]
+  optional_flags: [Username, Password, Output, Thorough]
+- name: Run remotely against a specific target
+  labels: ["Credential Access"]
+  mitre: 'T1634'
+  verb: ''
+  required_flags: [Target]
+  optional_flags: [Username, Password, Output, Thorough]
+- name: Run remotely against specific hosts (file path containing targets)
+  labels: ["Credential Access"]
+  mitre: 'T1634'
+  verb: ''
+  required_flags: [Targets]
+  optional_flags: [Username, Password, Output, Thorough]

@@ -1,0 +1,213 @@
+---
+projectLink: https://github.com/Dec0ne/KrbRelayUp
+name: KrbRelayUp
+languages:
+  - name: EXE
+    prefix: KrbRelayUp.exe
+
+params:
+
+
+  - name: Exploitation
+    type: label	
+
+  - name: method
+    description: Abuse method to use in after a successful relay to LDAP <rbcd/shadowcred> (default=rbcd) 
+    default: ''
+    template: "-m {0}"
+    type: select
+    options: [rbcd,shadowcred,adcs]
+    optional: false
+  
+  - name: port
+    type: text
+    description: Port for Com Server (default=12345) (RELAY)
+    template: "-p {0}"
+    default: '12345'
+    optional: true
+
+  - name: clsid
+    description: CLSID to use for coercing Kerberos auth from local machine account (default=90f18417-f0f1-484e-9d3c-59dceee5dbd8) (RELAY)
+    default: 
+    template: "-cls {0}"
+    type: select
+    options: [
+              # SYSTEM Relay
+              90f18417-f0f1-484e-9d3c-59dceee5dbd8, # RPC_C_IMP_LEVEL_IDENTIFY (Windows 10 1903, Server 2019, Server 2016)
+              0bae55fc-479f-45c2-972e-e951be72c0c1, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903)
+    ]
+    optional: true
+  
+  - name: impersonate
+    type: text
+    description: User to impersonate. should be a local administrator in the target computer. (default=Administrator) (SPAWN)
+    template: "-i {0}"
+    default: ''
+    optional: true
+
+  - name: ServiceName
+    type: text
+    description: Name of the service to be created. (default=KrbSCM) (SPAWN/KRBSCM)
+    template: "-s {0}"
+    default: ''
+    optional: true
+
+  - name: ServiceCommand
+    type: text
+    description: Service command [binPath]. (default = spawn cmd.exe as SYSTEM) (SPAWN/KRBSCM)
+    template: "-sc {0}"
+    default: ''
+    optional: true
+        
+
+
+  - name: RBCD Options
+    type: label	
+
+  - name: CreateNewComputerAccount
+    type: flag
+    description: Create new computer account for RBCD. Will use the current authenticated user.
+    value: '-c'
+    optional: true
+    selected: false
+  
+  - name: ComputerName
+    type: text
+    description: Name of attacker owned computer account for RBCD. (default=KRBRELAYUP$)
+    template: "-cn {0}"
+    default: ''
+    optional: true
+  
+  - name: ComputerPassword
+    type: text
+    description: Password of computer account for RBCD. (default=RANDOM [if -c is enabled])
+    template: "-cp {0}"
+    default: ''
+    optional: true
+  
+  - name: ComputerHash
+    type: text
+    description: Password NT hash of computer account for RBCD. (either -cp or -ch must be specified) (SPAWN)
+    template: "-ch {0}"
+    default: 
+    optional: true
+
+  - name: ADCS / Shadowcred Options
+    type: label	
+
+  - name: ForceShadowCred
+    type: flag
+    description: Clear the msDS-KeyCredentialLink attribute of the attacked computer account before adding our new shadow credentials. (SHADOWCRED only)
+    value: '-f'
+    optional: true
+    selected: false
+  - name: CAEndpoint
+    type: text
+    description: CA endpoint FQDN (default = same as DC)
+    template: "-ca {0}"
+    default: ''
+    optional: true
+  
+  - name: CertificateTemplate
+    type: text
+    description: Certificate template to request for (default=Machine)
+    template: "-cet {0}"
+    default: ''
+    optional: true
+
+  - name: certificate
+    type: text
+    description: Base64 encoded certificate or path to certificate file
+    template: "-ce {0}"
+    default: 
+    optional: true
+
+  - name: CertificatePassword
+    type: text
+    description: Certificate password (if applicable)
+    template: "-cep {0}"
+    default: 'SomeCompPassword'
+    optional: true
+    selected: false
+  
+  - name: https
+    type: flag
+    description: Connect to CA endpoint over secure HTTPS instead of HTTP)
+    value: '-https'
+    optional: true
+    selected: false
+
+  - name: General Options
+    type: label	
+
+  - name: domain
+    type: text
+    description: FQDN of domain. (Optional)
+    template: "-d {0}"
+    default: ''
+    optional: true
+
+  - name: domainController
+    type: text
+    description: FQDN of domain controller. (Optional)
+    template: "-dc {0}"
+    default: ''
+    optional: true
+
+  - name: ssl
+    type: flag
+    description: Use LDAP over SSL. (Optional)
+    value: '-ssl'
+    optional: true
+    selected: false
+
+  - name: CreateNetOnly
+    type: flag
+    description: Use CreateNetOnly (needs to be on disk) instead of PTT when importing ST (enabled if using FULL mode)
+    value: '-n'
+    optional: true
+    selected: false
+
+  - name: verbose
+    type: flag
+    description: Show verbose output. (Optional)
+    value: '-v'
+    optional: true
+    selected: false
+
+
+sections:
+  - name: Create computer account, force SYSTEM account auth via COM server, relay to LDAP, and assign RBCD rights to created computer
+    labels: [PrivEsc, LDAP]
+    mitre: 'T1557.001'
+    verb: 'relay'
+    required_flags: [domain, CreateNewComputerAccount, ComputerName, ComputerPassword]
+    optional_flags: [domainController,ssl,verbose]
+  
+  - name: Use owned computer account with RBCD rights to spawn SYSTEM shell
+    labels: [PrivEsc,Kerberos]
+    mitre: 'T1543.003'
+    verb: 'spwan'
+    required_flags: [domain, ComputerName, ComputerPassword]
+    optional_flags: [ComputerPassword, ComputerHash]
+  
+  - name: Execute the full attack to spawn SYSTEM shell, choosing any attack method
+    labels: [PrivEsc]
+    mitre: 'T1557.001'
+    verb: 'full'
+    required_flags: [method]
+    optional_flags: [domain,domainController,certificate,CertificatePassword,CreateNetOnly,ForceShadowCred,ssl,verbose]
+
+  - name: Use the currently loaded Kerberos Service Ticket to create a new service running as SYSTEM
+    labels: [PrivEsc]
+    mitre: 'T1543.003'
+    verb: krbscm
+    required_flags: [ServiceName, ServiceCommand]
+    optional_flags: [verbose]
+
+  - name: Craft a custom command for full attack
+    labels: [PrivEsc]
+    mitre: ''
+    verb: 'full'
+    required_flags: [method]
+    optional_flags: [port,clsid,domain,domainController,certificate,CAEndpoint,CertificateTemplate,CertificatePassword,CreateNetOnly,ForceShadowCred,CreateNewComputerAccount,ComputerName,ComputerHash,ComputerPassword,ServiceName,ServiceCommand,impersonate,https,ssl,verbose]

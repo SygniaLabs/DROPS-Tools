@@ -1,0 +1,648 @@
+---
+projectLink: https://github.com/GhostPack/Rubeus
+name: Rubeus
+languages:
+  - name: EXE
+    prefix: Rubeus.exe
+  - name: PS
+    prefix: Invoke-Rubeus -Command
+  - name: C2
+    prefix: execute-assembly /path/to/local/Rubeus.exe
+
+params:
+#authentication options:
+  - name: Authentication
+    type: label
+
+  - name: user
+    description: 'Username for ticket request'
+    template: "/user:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: password
+    description: 'Password or Hash (type specified in enctype) for the ticket request'
+    template: "/password:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: enctype
+    description: 'Encryption type of the Hash provided in the password field'
+    template: "/enctype:{0}"
+    optional: true
+    selected: false
+    type: select
+    default: RC4
+    options: [DES,RC4,AES128,AES256]
+
+  - name: hash
+    description: 'Specify hash type as the parameter name instead of using password + enctype parameters'
+    template: "/{enctype}:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: '856a1023055848748e7b9d505ebe0e02'
+
+  - name: ticket
+    description: 'Path to file or Base64 form of the ticket to authenticate with or target'
+    template: "/ticket:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'ticket.kirbi'
+
+  - name: certificate
+    description: 'Certificate from the users keystore (Smartcard), thumbprint or subject'
+    template: "/certificate:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'f063e6f4798af085946be6cd9d82ba3999c7ebac'
+
+  - name: Proxy
+    type: label
+
+  - name: proxyurl
+    description: 'The full URL for the KDC proxy'
+    template: "/proxyurl:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'https://KDC_PROXY/kdcproxy'
+
+  - name: Target
+    type: label	
+
+  - name: dc
+    description: 'The Domain Controller to target'
+    template: "/dc:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: domain
+    description: 'The Domain name to target'
+    template: "/domain:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: luid
+    description: 'Logon User ID to target'
+    template: "/luid:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: target
+    description: 'SPN to target'
+    template: "/target:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''    
+
+  - name: service
+    description: 'SPN/s names to target'
+    template: "/service:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: impersonateuser
+    type: text
+    description: 'User to impersonate in a constrained delegation abuse (S4U)'
+    template: "/impersonateuser:{0}"
+    default: 
+    optional: false
+    selected: false
+
+  - name: msdsspn
+    description: 'msds-allowedtodelegateto SPN to target for the S4U2proxy (Constrained delegation abuse)'
+    template: "/msdsspn:{0}"
+    optional: false
+    selected: false
+    type: text
+    default: 'ldap/PRIMARY.testlab.local'
+
+  - name: Filter
+    type: label
+
+  - name: ou
+    description: 'Specify Organization Unit (OU) to filter the targets'
+    template: "/ou:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'OU=,...'
+
+  - name: spn
+    description: 'SPN to target'
+    template: "/spn:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'blah/blah'
+
+  - name: spns
+    description: 'Path to file containning SPNs to target'
+    template: "/spns:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'C:\temp\spns.txt'
+
+  - name: pwdsetbefore
+    type: text
+    description: 'Filter targeted users who set their password before specified date'
+    template: "/pwdsetbefore:{0}"
+    default: '03-29-2010'
+    optional: true
+    selected: false
+
+  - name: pwdsetafter
+    type: text
+    description: 'Filter targeted users who set their password after specified date'
+    template: "/pwdsetafter:{0}"
+    default: '01-31-2005'
+    optional: true
+    selected: false    
+
+  - name: Ticket Forgery
+    type: label
+
+  - name: ldap
+    type: flag
+    description: 'Perform an LDAP query for the proper netbios name of the domain is made from the Configuration container in order to set the LogonDomainName field in the PAC'
+    value: '/ldap'
+    optional: true
+    selected: false
+
+  - name: printcmd
+    type: flag
+    description: 'Can be used to print the arguments required to generate another ticket containing the same PAC information used to generate the current ticket'
+    value: '/printcmd'
+    optional: true
+    selected: false
+
+  - name: Ticket Renewals
+    type: label
+
+  - name: renewtill
+    description: 'Sets the renew-till field in the EncTicketPart. This is relative to starttime, in the format of multiplier plus timerange, so for 5 days, 5d (Default: 7d).'
+    template: "/renewtill:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: '7d'
+
+  - name: Throttling
+    type: label
+
+  - name: delay
+    type: text
+    description: Number in milliseconds to pause between TGS requests
+    template: "/delay:{0}"
+    default: '5000'
+    optional: true
+    selected: false
+
+  - name: jitter
+    type: text
+    description: Can be combined with the delay flag for a % jitter
+    template: "/jitter:{0}"
+    default: '30'
+    optional: true
+    selected: false
+
+  - name: Monitor options
+    type: label
+
+  - name: interval
+    type: text
+    description: 'Interval in seconds for new TGTs monitoring'
+    template: "/interval:{0}"
+    default: '60'
+    optional: false
+    selected: false
+
+  - name: monitorinterval
+    type: text
+    description: 'Interval in seconds for new TGTs monitoring'
+    template: "/monitorinterval:{0}"
+    default: '60'
+    optional: false
+    selected: false
+
+  - name: displayinterval
+    type: text
+    description: 'The interval in seconds to display the current cache of valit TGTs'
+    template: "/displayinterval:{0}"
+    default: '1200'
+    optional: false
+    selected: false
+
+  - name: targetuser
+    type: text
+    description: 'Return ticket data for a specified user'
+    template: "/targetuser:{0}"
+    default: ''
+    optional: false    
+
+  - name: runfor
+    type: text
+    description: 'Time in seconds to run the monitoring / harvesting operations'
+    template: "/runfor:{0}"
+    default: '500'
+    optional: false
+    selected: false    
+
+  - name: Output
+    type: label
+
+  - name: outfile
+    description: 'Outputs roasted hashes to a specified file'
+    template: "/outfile:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: ''
+
+  - name: format
+    description: 'Save Roasted hashes in a specified format'
+    template: "/format:{0}"
+    optional: true
+    selected: false
+    type: select
+    default: hashcat
+    options: ["john","hashcat"]
+
+  - name: consoleoutfile
+    description: 'Redirects all console output to the file specified'
+    template: "/consoleoutfile:{0}"
+    optional: true
+    selected: false
+    type: text
+    default: 'C:\FILE.txt'
+
+  - name: Process Creation
+    type: label
+
+  - name: createnetonly
+    type: text
+    description: 'Create a new hidden process of logon type 9'
+    template: "/createnetonly:{0}"
+    default: 'C:\Windows\System32\cmd.exe'
+    optional: true
+    selected: false
+
+  - name: show
+    type: flag
+    description: 'If enabled, createnetonly will not hide the created process window '
+    value: '/show'
+    optional: true
+    selected: false
+
+  - name: Spray options
+    type: label
+
+  - name: users
+    type: text
+    description: 'File containning usernames to target for spray / brute force attack'
+    template: "/users:{0}"
+    default: 'target-users.txt'
+    optional: true
+    selected: false
+
+  - name: noticket
+    type: flag
+    description: 'Disable ticket creation on successful guesses of passwords'
+    value: '/noticket'
+    optional: true
+    selected: false
+
+  - name: verbose
+    description: 'Verbose output for the Kerberos password bruteforce operation'
+    optional: true
+    selected: false
+    type: flag
+    value: '/verbose'
+
+  - name: Flags
+    type: label
+
+  - name: ptt
+    description: 'Apply the requested TGT to the current login session'
+    optional: true
+    selected: false
+    type: flag
+    value: '/ptt'
+
+  - name: nopac
+    description: 'Switch for requesting TGT without a PAC'
+    optional: true
+    selected: false
+    type: flag
+    value: '/nopac'
+
+  - name: OPSEC Flags
+    type: label
+
+  - name: ldaps
+    description: 'Switch to send LDAP queries over TLS (port 636)'
+    optional: true
+    selected: false
+    type: flag
+    value: '/ldaps'
+
+  - name: opsec
+    description: 'This flag is intended to make Rubeus traffic more stealthy, it cannot by default be used with any encryption type (enctype) other than aes256. Switch to form the TGS-REQs more inline with genuine requests'
+    optional: true
+    selected: false
+    type: flag
+    value: '/opsec'
+
+  - name: rc4opsec
+    description: 'Use the tgtdeleg trick, enumerate accounts without AES enabled, roast w/ RC4 specified'
+    optional: true
+    selected: false
+    type: flag
+    value: '/rc4opsec'
+
+  - name: aes
+    type: flag
+    description: 'Request AES encrypted tickets when Kerberoasting'
+    value: '/aes'
+    optional: true
+    selected: false    
+
+  - name: Display Flags
+    type: label
+
+  - name: nowrap
+    description: 'Dont wrap the lines of the base64 encoded ticket output'
+    optional: true
+    selected: false
+    type: flag
+    value: '/nowrap'
+
+
+
+
+
+
+
+sections:
+# Ticket requests and renewals:
+
+  - name: Retrieve a TGT based on a user password/hash
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'asktgt'
+    required_flags: ["user", "password"]
+    optional_flags: ["enctype", "hash", "domain", "dc", "outfile", "ptt", "luid", "nowrap", "opsec", "nopac", "proxyurl"]
+
+
+  - name: Retrieve a TGT based on a user password/hash, start a /netonly process, and to apply the ticket to the new process/logon session
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'asktgt'
+    required_flags: ["user", "password", "createnetonly"]
+    optional_flags: ["enctype", "hash", "show", "domain", "dc", "nowrap", "opsec", "nopac", "proxyurl"]
+
+
+  - name: Retrieve a TGT using a certificate from the users keystore (Smartcard) specifying certificate thumbprint or subject
+    labels: ['Kerberos', 'Certificate']
+    mitre: ""
+    verb: 'asktgt'
+    required_flags: ["user", "certificate"]
+    optional_flags: ["domain", "dc", "nowrap", "proxyurl"]
+
+
+  - name: Perform a Kerberos-based password spray attack
+    labels: ['Kerberos', 'PasswordSpray', 'Credential Access', 'No Creds']
+    mitre: "T1110.003"
+    verb: 'brute'
+    required_flags: ["password"]
+    optional_flags: ["user", "users", "domain", "noticket", "ou", "dc", "outfile", "verbose", "nowrap"]
+
+
+
+# Constrained delegation abuse:
+
+  - name: Perform S4U constrained delegation abuse
+    labels: ['Kerberos', 'PrivEsc']
+    mitre: ""
+    verb: 's4u'
+    required_flags: ["ticket", "impersonateuser", "msdsspn"]
+    optional_flags: ["altservice", "dc", "outfile", "ptt", "nowrap", "opsec", "self", "proxyurl", "createnetonly", "show"]
+
+
+# Ticket Forgery:
+
+  - name: Forge a golden ticket using LDAP to gather the relevent information
+    labels: ['Kerberos','Credential Access']
+    mitre: "T1558.001"
+    verb: 'golden'
+    required_flags: ["hash", "user", "ldap"]
+    optional_flags: ["printcmd", "outfile", "ptt"]
+
+
+  - name: Forge a silver ticket using LDAP to gather the relevent information
+    labels: ['Kerberos','Credential Access']
+    mitre: "T1558.002"
+    verb: 'silver'
+    required_flags: ["hash", "user", "service", "ldap" ]
+    optional_flags: ["printcmd", "outfile", "ptt"]
+
+  - name: Forge a diamond TGT by requesting a TGT based on a user password/hash
+    labels: ['Kerberos', 'Username', 'Password']
+    mitre: ""
+    verb: 'diamond'
+    required_flags: ["user", "password"]
+    optional_flags: ["enctype", "hash", "createnetonly", "domain", "dc", "outfile", "ptt", "luid", "nowrap", "krbkey", "ticketuser", "ticketuserid", "groups", "sids"]
+
+
+  - name: Forge a diamond TGT by requesting a TGT using a PCKS12 certificate
+    labels: ['Kerberos', 'Credential Access']
+    mitre: ""
+    verb: 'diamond'
+    required_flags: ["user", "certificate"]
+    optional_flags: ["createnetonly", "domain", "dc", "outfile", "ptt", "luid", "nowrap", "krbkey", "ticketuser", "ticketuserid", "groups", "sids"]
+
+
+# Roasting:
+
+  - name: Perform Kerberoasting, outputting hashes to a file in a specified output format
+    labels: ['Kerberos', 'Credential Access']
+    mitre: "T1558.003"
+    verb: 'kerberoast'
+    required_flags: ["format", "outfile"]
+    optional_flags: ["spn", "user", "domain", "dc", "ou", "ldaps"]
+
+
+  - name: List statistics about found Kerberoastable accounts without actually sending ticket requests
+    labels: ['Kerberos', 'Recon']
+    mitre: ""
+    verb: 'kerberoast'
+    required_flags: ["stats"]
+    optional_flags: ["ldaps", "nowrap"]
+
+
+  - name: Perform Kerberoasting with an existing TGT
+    labels: ['Kerberos', 'Credential Access']
+    mitre: "T1558.003"
+    verb: 'kerberoast'
+    required_flags: ["spn", "ticket"]
+    optional_flags: ["nowrap"]
+
+  - name: Perform "opsec" Kerberoasting, using tgtdeleg, and filtering out AES-enabled accounts
+    labels: ['Kerberos', 'Credential Access', 'OPSEC']
+    mitre: "T1558.003"
+    verb: 'kerberoast'
+    required_flags: ["rc4opsec"]
+    optional_flags: ["ldaps", "nowrap"]
+
+  - name: Perform Kerberoasting, requesting tickets only for accounts whose password was last set between specific dates
+    labels: ['Kerberos', 'Credential Access']
+    mitre: "T1558.003"
+    verb: 'kerberoast'
+    required_flags: ["pwdsetafter", "pwdsetbefore"]
+    optional_flags: ["ldaps", "nowrap"]
+
+
+  - name: Perform Kerberoasting, with a specific milliseconds delay and a jitter
+    labels: ['Kerberos', 'Credential Access', 'OPSEC']
+    mitre: "T1558.003"
+    verb: 'kerberoast'
+    required_flags: ["delay", "jitter"]
+    optional_flags: ["ldaps", "nowrap"]
+
+
+  - name: Perform AES Kerberoasting
+    labels: ['Kerberos', 'Credential Access', 'OPSEC']
+    mitre: "T1558.003"
+    verb: 'kerberoast'
+    required_flags: ["aes"]
+    optional_flags: ["ldaps", "nowrap"]
+
+
+  - name: Perform AS-REP "roasting" for any users without preauth
+    labels: ['Kerberos', 'Credential Access']
+    mitre: "T1558.004"
+    verb: 'asreproast'
+    required_flags: []
+    optional_flags: ["user", "domain", "dc", "ou", "ldaps", "nowrap"]
+
+
+
+# Ticket management:
+
+  - name: Submit a TGT, optionally targeting a specific LUID (if elevated)
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'ptt'
+    required_flags: ["ticket"]
+    optional_flags: ["luid"]
+
+
+  - name: Purge tickets from the current logon session, optionally targeting a specific LUID (if elevated)
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'purge'
+    required_flags: ['Kerberos', 'Ticket']
+    optional_flags: ["luid"]
+
+
+  - name: Parse and describe a ticket (service ticket or TGT)
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'describe'
+    required_flags: ["ticket"]
+    optional_flags: ["servicekey", "krbkey", "asrepkey", "serviceuser", "servicedomain"]
+
+
+
+# Ticket extraction and harvesting:
+
+  - name: Triage all current tickets (if elevated, list for all users), optionally targeting a specific LUID, username, or service
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'triage'
+    required_flags: []
+    optional_flags: ["luid", "user", "service", "server"]
+
+
+  - name: List all current tickets in detail (if elevated, list for all users), optionally targeting a specific LUID
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'klist'
+    required_flags: []
+    optional_flags: ["luid", "user", "service", "server"]
+
+
+  - name: Dump all current ticket data (if elevated, dump for all users), optionally targeting a specific service/LUID
+    labels: ['Kerberos', 'Ticket', 'Credentials Access']
+    mitre: ""
+    verb: 'dump'
+    required_flags: []
+    optional_flags: ["luid", "user", "service", "server", "nowrap"]
+
+
+  - name: Retrieve a usable TGT .kirbi for the current user (w/ session key) without elevation by abusing the Kerberos GSS-API, faking delegation
+    labels: ['Kerberos', 'Ticket']
+    mitre: ""
+    verb: 'tgtdeleg'
+    required_flags: []
+    optional_flags: ["target"]
+
+
+  - name: Monitor every /interval SECONDS (default 60) for new TGTs, optionally targeting specific user
+    labels: ['Kerberos', 'Ticket', 'Credentials Access']
+    mitre: ""
+    verb: 'monitor'
+    required_flags: ["interval"]
+    optional_flags: ["targetuser", "nowrap", "registry", "runfor"]
+
+
+  - name: Monitor every /monitorinterval SECONDS (default 60) for new TGTs, auto-renew TGTs, and display the working cache every /displayinterval SECONDS (default 1200)
+    labels: ['Kerberos', 'Ticket', 'Credentials Access']
+    mitre: ""
+    verb: 'harvest'
+    required_flags: ["monitorinterval"]
+    optional_flags: ["displayinterval", "targetuser", "nowrap", "registry", "runfor"]
+
+
+
+# Miscellaneous:
+
+  - name: Calculate rc4_hmac, aes128_cts_hmac_sha1, aes256_cts_hmac_sha1, and des_cbc_md5 hashes
+    labels: ['Password']
+    mitre: ""
+    verb: 'hash'
+    required_flags: ["password"]
+    optional_flags: ["user", "domain"]
+
+
+  - name: Display the current user's LUID
+    labels: []
+    mitre: ""
+    verb: 'currentluid'
+    required_flags: []
+    optional_flags: []
+
+
+  - name: Display information about the (current) or (target) logon session, default all readable
+    labels: ['Recon']
+    mitre: ""
+    verb: 'logonsession'
+    required_flags: []
+    optional_flags: ["current", "luid"]

@@ -1,0 +1,236 @@
+---
+projectLink: https://github.com/cube0x0/KrbRelay
+name: KrbRelay
+languages:
+  - name: EXE
+    prefix: KrbRelay.exe
+
+params:
+
+  - name: Target
+    type: label	
+
+  - name: spn
+    type: text
+    description: ServicePrincipalName for the target service
+    template: "-spn {0}"
+    default: 'ldap/dc01.htb.local'
+    optional: false
+
+  - name: clsid
+    description: 
+    default: 
+    template: "-clsid {0}"
+    type: select
+    options: [
+              # SYSTEM Relay
+              90f18417-f0f1-484e-9d3c-59dceee5dbd8, # RPC_C_IMP_LEVEL_IDENTIFY (Windows 10 1903, Server 2019, Server 2016)
+              0bae55fc-479f-45c2-972e-e951be72c0c1, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903)
+              # Cross-Session Relay
+              0289a7c5-91bf-4547-81ae-fec91a89dec5, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903, Server 2016)
+              1f87137d-0e7c-44d5-8c73-4effb68962f2, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903, Server 2016)
+              73e709ea-5d93-4b2e-bbb0-99b7938da9e4, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903, Server 2016)
+              9678f47f-2435-475c-b24a-4606f8161c16, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903, Server 2016)
+              9acf41ed-d457-4cc1-941b-ab02c26e4686, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903, Server 2016)
+              ce0e0be8-cf56-4577-9577-34cc96ac087c, # RPC_C_IMP_LEVEL_IMPERSONATE (Windows 10 1903, Server 2016)
+              354ff91b-5e49-4bdc-a8e6-1cb6c6877182, # RPC_C_IMP_LEVEL_IMPERSONATE (Server 2019)
+              38e441fb-3d16-422f-8750-b2dacec5cefc, # RPC_C_IMP_LEVEL_IMPERSONATE (Server 2019)
+              f8842f8e-dafe-4b37-9d38-4e0714a61149, # RPC_C_IMP_LEVEL_IMPERSONATE (Server 2019)
+              5f7f3f7b-1177-4d4b-b1db-bc6f671b8f25, # RPC_C_IMP_LEVEL_IMPERSONATE (Server 2016)
+              98068995-54d2-4136-9bc9-6dbcb0a4683f, # RPC_C_IMP_LEVEL_IMPERSONATE (Server 2016)
+              bdb57ff2-79b9-4205-9447-f5fe85f37312, # RPC_C_IMP_LEVEL_IMPERSONATE (Server 2016)
+              ]
+    optional: false
+
+
+  - name: optionalTarget
+    type: text
+    description: Optional target parameter for a given attack. Tool will use localhost if omitted
+    template: "{0}"
+    default: ''
+    optional: false
+
+  - name: LDAP Attacks (Pick one)
+    type: label	
+
+  - name: rbcd
+    type: text
+    description: Configure RBCD for a given SID (default to localhost)
+    template: "-rbcd {0} {optionalTarget}"
+    default: '<SID>'
+    optional: true
+
+  - name: addGroupMember
+    type: text
+    description: desc
+    template: "-addGroupMember {0}"
+    default: '<GROUP-Name> <USER>'
+    optional: true
+
+  - name: resetPassword
+    type: text
+    description: Reset domain user password
+    template: "-reset-password {0}"
+    default: '<USER> <NEW-PASSWORD>'
+    optional: true 
+
+  - name: shadowcred
+    type: flag
+    description: Configure msDS-KeyCredentialLink (default to localhost)
+    template: "-shadowcred {optionalTarget}"
+    optional: true
+    selected: true
+
+  - name: laps
+    type: flag
+    description: Dump LAPS passwords (default to localhost)
+    template: "-laps {optionalTarget}"
+    optional: true
+    selected: false
+
+  - name: gMSA
+    type: flag
+    description: Dump gMSA passwords (default to localhost)
+    template: "-gMSA {optionalTarget}"
+    optional: true
+    selected: false
+
+  - name: SMB Attacks (Pick one)
+    type: label	
+
+  - name: addPrivileges
+    type: text
+    description: Add privileges for a given SID
+    template: "-add-privileges {0}"
+    default: '<SID>'
+    optional: true
+
+  - name: serviceAdd
+    type: text
+    description: Create SYSTEM service
+    template: "-service-add {0}"
+    default: '<SERVICE-NAME> <COMMAND>'
+    optional: true
+
+  - name: secrets
+    type: flag
+    description: Dump SAM & LSA secrets
+    value: '-secrets'
+    optional: true
+    selected: true
+
+  - name: list
+    type: flag
+    description: List SMB shares
+    value: '-list'
+    optional: true
+    selected: false
+  
+  - name: HTTP Attacks
+    type: label	
+
+  - name: endpoint
+    type: text
+    description: Endpoint URI to listen
+    template: "{0}"
+    default: 'EWS/Exchnage.asmx'
+    optional: true
+    selected: true
+
+  - name: ewsDelegate
+    type: text
+    description: EWS delegate mailbox
+    template: "-ews-delegate {0}"
+    default: '<USER@DOMAIN>'
+    optional: true
+
+  - name: ewsSearch
+    type: text
+    description: Search inbox for keywords
+    template: "-ews-search {0}"
+    default: '<KEYWORD,KEYWORD>'
+    optional: true
+
+  - name: proxy
+    type: flag
+    description: Start an HTTP proxy server against target
+    value: '-proxy'
+    optional: true
+    selected: false
+
+  - name: Options
+    type: label	      
+
+  - name: console
+    type: flag
+    description: Launch interactive console over the relay of LDAP/SMB protocols
+    value: '-console'
+    optional: true
+    selected: false
+
+  - name: session
+    type: text
+    description: ID for cross session marshalling
+    template: "-session {0}"
+    default: '2'
+    optional: false
+
+  - name: port
+    type: text
+    description: COM listener port
+    template: "{0}"
+    default: 
+    optional: false
+
+  - name: llmnr
+    type: flag
+    description: Activate LLMNR poisoning
+    value: '-llmnr'
+    optional: true
+    selected: false
+
+  - name: ssl
+    type: flag
+    description: Switch to use SSL transport
+    value: '-ssl'
+    optional: true
+    selected: false
+
+
+sections:
+  - name: Local Privilege Escalation attacking LDAP SPN to create msDS-KeyCredentialLink on the localhost
+    labels: [PrivEsc]
+    mitre: ''
+    verb: ''
+    required_flags: [spn, clsid, shadowcred]
+    optional_flags: [ssl, console]
+
+
+  - name: Poison LLMNR to coerce victims into creating and sending service tickets of a given SMB related SPN
+    labels: [PrivEsc]
+    mitre: 'T1557.001'
+    verb: ''
+    required_flags: [llmnr, spn]
+    optional_flags: [secrets, serviceAdd, addPrivileges, list, console]
+
+
+  - name: Exploit cross-session LDAP, choosing any LDAP attack
+    labels: [PrivEsc]
+    mitre: 'T1557.001'
+    verb: ''
+    required_flags: [spn, session, clsid]
+    optional_flags: [rbcd, shadowcred, addGroupMember, laps, gMSA, resetPassword, ssl, console]    
+
+  - name: Exploit cross-session HTTP, choosing any HTTP attack
+    labels: [PrivEsc]
+    mitre: ''
+    verb: ''
+    required_flags: [spn,endpoint, session,clsid]
+    optional_flags: [ewsSearch, ewsDelegate, proxy, ssl]
+
+  - name: Exploit cross-session SMB, chossing any SMB attack
+    labels: [PrivEsc]
+    mitre: 'T1557.001'
+    verb: ''
+    required_flags: [spn,session,clsid]
+    optional_flags: [addPrivileges, secrets, serviceAdd, console]

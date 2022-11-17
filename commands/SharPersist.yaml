@@ -1,0 +1,118 @@
+---
+projectLink: https://github.com/mandiant/SharPersist
+name: SharPersist
+languages:
+  - name: EXE
+    prefix: SharPersist.exe
+
+params:
+  - name: Technique
+    description: Persistance technique
+    default: startupfolder
+    template: "-t {0}"
+    type: select
+    options: [ "keepass", "reg", "schtaskbackdoor", "startupfolder", "tortoisesvn", "service", "schtask" ]
+    optional: false
+  - name: Method
+    description: Method to execute
+    default: list
+    template: "-m {0}"
+    type: select
+    options: ["add", "remove", "check", "list"]
+    optional: false
+  - name: AddOns
+    description: Optional Add-Ons
+    default: env
+    template: "-o {0}"
+    type: select
+    options: ["env", "hourly", "daily", "logon"]
+    optional: true
+  - name: RegKeys
+    description: Registry Keys
+    default: logonscript
+    template: "-k {0}"
+    type: select
+    options: [ "hklmrun", "hklmrunonce", "hklmrunonceex", "hkcurun", "hkcurunonce", "logonscript", "stickynotes", "userinit" ]
+    optional: true
+  - name: Command
+    type: text
+    description: Command to execute.
+    template: "-c \"{0}\""
+    default: C:\Windows\System32\cmd.exe
+    optional: true
+  - name: Arguments
+    type: text
+    description: Arguments to command to execute (if applicable)
+    template: "-a \"{0}\""
+    default: /c calc.exe
+    optional: true
+  - name: FileName
+    type: text
+    description: The file to create/modify
+    template: "-f \"{0}\""
+    default: file_path
+    optional: true
+  - name: RegistryValue
+    type: text
+    description: Registry value to create/modify
+    template: "-v \"{0}\""
+    default: TestValue
+    optional: true
+  - name: TaskName
+    type: text
+    description: Scheduled task name or service name
+    template: "-n {0}"
+    default: TestTask
+    optional: true
+  
+  
+
+sections:
+- name: Self crafted command
+  labels: []
+  mitre: ''
+  verb: ''
+  required_flags: [Technique, Method]
+  optional_flags: [Command, Arguments, AddOns, RegKeys, FileName, RegistryValue, TaskName]
+- name: KeePass
+  labels: ["Persistency"]
+  mitre: ''
+  verb: '-t keepass'
+  required_flags: [Command, Arguments, FileName, Method]
+  optional_flags: []
+- name: Registry
+  labels: []
+  mitre: ''
+  verb: '-t reg'
+  required_flags: [Command, RegKeys, Method]
+  optional_flags: [Arguments, RegistryValue, AddOns]
+- name: Scheduled Task Backdoor
+  labels: []
+  mitre: ''
+  verb: '-t schtaskbackdoor'
+  required_flags: [Command, TaskName, Method]
+  optional_flags: [Arguments]
+- name: Startup Folder
+  labels: []
+  mitre: ''
+  verb: '-t startupfolder'
+  required_flags: [Command, FileName, Method]
+  optional_flags: [Arguments]
+- name: Tortoise SVN
+  labels: []
+  mitre: ''
+  verb: '-t tortoisesvn'
+  required_flags: [Command, Method]
+  optional_flags: [Arguments]
+- name: Windows Service
+  labels: []
+  mitre: ''
+  verb: '-t service'
+  required_flags: [Command, TaskName, Method]
+  optional_flags: [Arguments]
+- name: Scheduled Task
+  labels: []
+  mitre: ''
+  verb: '-t schtask'
+  required_flags: [Command, TaskName, Method]
+  optional_flags: [Arguments, AddOns]

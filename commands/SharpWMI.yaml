@@ -1,0 +1,227 @@
+---
+projectLink: https://github.com/GhostPack/SharpWMI
+name: SharpWMI
+languages:
+  - name: EXE
+    prefix: SharpWMI.exe
+
+params:
+- name: action
+  description: Type of command to execute
+  default: query
+  template: "action={0}"
+  type: select
+  options: [query, loggedon, exec, executevbs, upload, firewall, ps, terminate, getenv, setenv, delenv, install]
+  optional: false
+
+- name: VariableName
+  type: text
+  description: Variable Name
+  template: "name={0}"
+  default: PROCESSOR_ARCHITECTURE
+  optional: true
+  selected: false
+
+- name: VariableValue
+  type: text
+  description: Variable Value
+  template: "value={0}"
+  default: new_value
+  optional: true
+  selected: false
+
+- name: ComputerName
+  type: text
+  description: desc
+  template: "computername={0}"
+  default: localhost
+  optional: true
+  selected: true
+
+- name: query
+  type: text
+  description: WMI query
+  template: "query=\"{0}\""
+  default: select * from win32_service
+  optional: true
+  selected: false
+
+- name: Process
+  type: text
+  description: Process name or PID
+  template: "process={0}"
+  default: agent.exe
+  optional: true
+  selected: false
+
+- name: command
+  type: text
+  description: Command to execute
+  template: "command=\"{0} {CommandArgs}\""
+  default: whoami
+  optional: true
+  selected: false
+
+- name: CommandArgs
+  type: text
+  description: Command arguments
+  template: "{0}"
+  default: ""
+  optional: true
+  selected: false
+
+- name: namespace
+  type: text
+  description: WMI namespace to query
+  template: "namespace=\"{0}\""
+  default: root\\SecurityCenter2
+  optional: true
+  selected: false
+
+- name: Username
+  type: text
+  description: desc
+  template: "username=\"{0}\""
+  default: windomain\User1
+  optional: true
+  selected: false
+
+- name: Password
+  type: text
+  description: desc
+  template: "password=\"{0}\""
+  default: Password123
+  optional: true
+  selected: false
+
+- name: script
+  type: text
+  description: VBS script to execute, script or path
+  template: "script=\"{0}\""
+  default: CreateObject(\\"WScript.Shell\\").Run(\\"notepad.exe\\")
+  optional: true
+  selected: false
+
+- name: scriptb64
+  type: text
+  description: Base64 encoded VBS script to execute, script or path
+  template: "scriptb64=\"{0}\""
+  default: myscript.vbs.b64
+  optional: true
+  selected: false
+
+- name: url
+  type: text
+  description: URL to script to execute within VBS
+  template: "script=\"{0}\""
+  default: https://mydomain.io/location/script.vbs
+  optional: true
+  selected: false
+
+- name: trigger
+  type: text
+  description: Trigger in seconds
+  template: "trigger={0}"
+  default: 5
+  optional: true
+  selected: false
+
+- name: timeout
+  type: text
+  description: Timeout in seconds
+  template: "timeout={0}"
+  default: 10
+  optional: true
+  selected: false
+
+- name: DisableAmsi
+  type: flag
+  description: Disable AMSI
+  value: amsi=disable
+  optional: true
+  selected: true
+
+- name: Result
+  type: flag
+  description: Display result
+  value: result=true
+  optional: true
+  selected: true
+
+sections:
+- name: Self create WMI command
+  labels: [WMI]
+  mitre: ''
+  verb: ''
+  required_flags: [action]
+  optional_flags: [ComputerName, query, Username, Password, command, CommandArgs, Process, VariableName, VariableValue, url, script, scriptb64, timeout, trigger, DisableAmsi, Result]
+
+- name: Query WMI
+  labels: [WMI, Recon]
+  mitre: ''
+  verb: 'action=query'
+  required_flags: [query]
+  optional_flags: [namespace, Username, Password]
+
+- name: Remote system Logged On users enumeration
+  labels: [WMI, Recon]
+  mitre: ''
+  verb: 'action=loggedon'
+  required_flags: [ComputerName]
+  optional_flags: [Username, Password]
+
+- name: Remote process creation
+  labels: [WMI, Lateral]
+  mitre: ''
+  verb: 'action=exec'
+  required_flags: [command]
+  optional_flags: [ComputerName, DisableAmsi, Result, Username, Password]
+
+- name: List processes
+  labels: [WMI, Recon]
+  mitre: ''
+  verb: 'action=ps'
+  required_flags: []
+  optional_flags: [ComputerName, Username, Password]
+
+- name: Terminate process (first found)
+  labels: [WMI]
+  mitre: ''
+  verb: 'action=terminate'
+  required_flags: [Process]
+  optional_flags: [ComputerName, Username, Password]
+
+- name: Get environment variables (all if name not given)
+  labels: [WMI, Recon]
+  mitre: ''
+  verb: 'action=getenv'
+  required_flags: []
+  optional_flags: [VariableName, ComputerName, Username, Password]
+
+- name: Set environment variable
+  labels: [WMI]
+  mitre: ''
+  verb: 'action=setenv'
+  required_flags: [VariableName, VariableValue]
+  optional_flags: [ComputerName, Username, Password]
+
+- name: Delete an environment variable
+  labels: [WMI]
+  mitre: ''
+  verb: 'action=delenv'
+  required_flags: [VariableName]
+  optional_flags: [ComputerName, Username, Password]
+
+- name: Install MSI file
+  labels: [WMI, Lateral]
+  mitre: ''
+  verb: 'action=install'
+  required_flags: [path]
+  optional_flags: [ComputerName, DisableAmsi, Username, Password]
+
+- name: Execute VBS
+  labels: [WMI, Lateral]
+  mitre: ''
+  verb: 'action=executevbs'
+  required_flags: []
+  optional_flags: [script, scriptb64, url, command, trigger, timeout, Username, Password]

@@ -1,0 +1,77 @@
+---
+projectLink: https://github.com/bohops/SharpRDPHijack
+name: SharpRDPHijack
+languages:
+  - name: EXE
+    prefix: SharpRDPHijack.exe
+
+params:
+  - name: Host
+    type: text
+    description: Query a host to identify RDP/TS session information (not required for other switches)
+    template: "--tsquery={0}"
+    default: localhost
+    optional: true
+  - name: Session
+    type: text
+    description: Target session identifier
+    template: "--session={0}"
+    default: 1
+    optional: true
+  - name: Password
+    type: text
+    description: Session password if known (otherwise optional - not required for disconnect switch)
+    template: "--password={0}"
+    default: Password123
+    optional: true
+  
+  - name: Console
+    type: flag
+    description: Redirect session to console session instead of current (active) session
+    value: --console
+    optional: true
+    selected: false
+  - name: Disconnect
+    type: flag
+    description: Disconnect an active (remote) session
+    value: --disconnect
+    optional: true
+    selected: false
+
+sections:
+- name: Self created RDP Hijack command
+  labels: ["Lateral"]
+  mitre: ''
+  verb: ''
+  required_flags: []
+  optional_flags: [Host, Session, Password, Console, Disconnect]
+- name: Query the local host for RDP/TS session information
+  labels: ["Lateral"]
+  mitre: ''
+  verb: ''
+  required_flags: [Host]
+  optional_flags: []
+- name: Impersonate NT AUTHORITY\SYSTEM to hijack session and redirect to the current session
+  labels: ["Lateral"]
+  mitre: ''
+  verb: ''
+  required_flags: [Session]
+  optional_flags: []
+- name: Impersonate NT AUTHORITY\SYSTEM to hijack session and redirect to the console session
+  labels: ["Lateral"]
+  mitre: ''
+  verb: ''
+  required_flags: [Session, Console]
+  optional_flags: []
+- name: Hijack Remote Desktop session with knowledge of the logged-on user's password
+  labels: ["Lateral"]
+  mitre: ''
+  verb: ''
+  required_flags: [Session, Password]
+  optional_flags: []
+- name: Disconnect active session
+  labels: ["Lateral"]
+  mitre: ''
+  verb: ''
+  required_flags: [Session, Disconnect]
+  optional_flags: []

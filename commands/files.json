@@ -245,7 +245,7 @@
                 "tags" : ["PrivEsc"]
             },
             {
-                "id" : "commands/KrbRelayUp",
+                "id" : "commands/KrbRelayUp.yaml",
                 "label" : "KrbRelayUp",
                 "tags" : ["PrivEsc"]
             }            

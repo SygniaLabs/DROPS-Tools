@@ -1,38 +1,175 @@
 ---
 projectLink: https://github.com/GhostPack/SharpDPAPI
+name: SharpChrome
+languages:
+  - name: EXE
+    prefix: SharpChrome.exe
+  - name: Apollo
+    prefix: inline_assembly -Assembly "SharpChrome.exe" -Arguments "
+
 params:
-  - name: Command
-    description: description
-  - name: Server
-    description: description
-  - name: DomainController
-    description: DC FQDN name or IP
-  - name: Path
-    description: Local path for key on attacked machine
+  - name: Targeting
+    type: label
+
+  - name: server
+    description: Target server to interact with
+    template: "/server:{0}"
+    default: ''
+    type: text
+    optional: true
+  - name: target
+    description: Triage a specific 'Cookies', 'Login Data', 'Local State' location or specific user folder
+    template: "/target:{0}"
+    default: ''
+    type: text
+    optional: true
+  - name: browser
+    description: 'Triage chrome (the default) or (chromium-based) edge'
+    template: "/browser:{0}"
+    default: chrome
+    type: select
+    options: [chrome,edge]
+    optional: true
+    selected: false
+
+  - name: Decryption
+    type: label
+  
+  - name: unprotect
+    description: Force use of CryptUnprotectData() (default for unprivileged execution)
+    type: flag
+    value: "/unprotect"
+
+  - name: pvk
+    type: text
+    description: DPAPI domain private key file/Base64 to decrypt reachable user masterkeys
+    template: "/pvk:{0}"
+    default: 'key.pvk'
+    optional: true
+
+  - name: password
+    description: Decrypt the current user's masterkeys using a plaintext password
+    type: text
+    template: "/password:{0}"
+    optional: true
+
+  - name: guid-sha
+    type: text
+    description: 'One or more GUID:SHA1 masterkeys for decryption of discovered DPAPI blobs'
+    template: "{0}"
+    default: '{44ca9f3a-9097-455e-94d0-d91de951c097}:9b049ce6918ab89937687'
+    optional: true
+    selected: false     
+
+  - name: mkfile
+    description: Use a file of one or more GUID:SHA1 masterkeys for decryption
+    type: text
+    template: "/mkfile:{0}"
+    optional: true
+
+  - name: statekey
+    description: Decrypted AES state key (from the 'statekeys' command)
+    type: text
+    template: "/mkfile:{0}"
+    optional: true
+
+  - name: Output
+    type: label
+
+  - name: nowrap
+    description: Disable backupkey base64 output value line wrapping
+    value: "/nowrap"
+    type: flag
+    optional: true
+
+  - name: file
+    type: text
+    description: Output file for the PVK for 'backupkey' command
+    template: "/file:{0}"
+    default: 'key.pvk'
+    optional: true
+
+  - name: format
+    description: 'Choose how to display the output. JSON available only for cookies command'
+    template: "/format:{0}"
+    default: chrome
+    type: select
+    options: [csv,table,json]
+    optional: true
+    selected: false
+
+  - name: showall
+    description: Show Login Data entries with null passwords and expired Cookies instead of filtering
+    value: "/showall"
+    type: flag
+    optional: true
+
+  - name: consoleoutfile
+    type: text
+    description: Output all console output to a file on disk
+    template: "/consoleoutfile:{0}"
+    default: 'consoleout.txt'
+    optional: true
+
+  - name: setneverexpire
+    description: Set expirations for cookies output to now + 100 years (for json output)
+    value: "/setneverexpire"
+    type: flag
+    optional: true    
+
+  - name: Cookies filtering
+    type: label
+
+  - name: cookie
+    type: text
+    description: Return cookies where the cookie name matches the supplied regex
+    template: "/cookie:{0}"
+    default: 'login'
+    optional: true
+
+  - name: url
+    type: text
+    description: Return cookies where the cookie URL matches the supplied regex
+    template: "/url:{0}"
+    default: 'login.microsoftonline.com'
+    optional: true
+
 
 sections:
-  - name: Get domain backup key as Base64 string
-    labels: ["Lateral", "Creds"]
-    commands:
-      - language: EXE
-        command: SharpChrome backupkey /nowrap /server:{{DomainController}}
-  - name: Get domain backup key, save to file
-    labels: ["Lateral", "Creds"]
-    commands:
-      - language: EXE
-        command: SharpChrome backupkey /nowrap /server:{{DomainController}} file:{{Path}}
-  - name: General
-    labels: []
-    commands:
-      - language: EXE
-        command: SharpChrome.exe {{Command}}
-  - name: Cookies
-    labels: []
-    commands:
-      - language: EXE
-        command: SharpChrome.exe cookies /server:{{Server}}
-  - name: Logins
-    labels: []
-    commands:
-      - language: EXE
-        command: SharpChrome.exe logins /server:{{Server}}
+- name: Get domain backup key as Base64 string # SharpChrome backupkey /nowrap /server:{{DomainController}} file:{{Path}}
+  labels: ["Credential Access"]
+  mitre: ''
+  verb: 'backupkey'
+  required_flags: []  
+  optional_flags: [server, nowrap, file]
+- name: Get browser saved logins # SharpChrome.exe logins /server:{{Server}}
+  labels: ["Credential Access"]
+  mitre: ''
+  verb: 'logins'
+  required_flags: []
+  optional_flags: [
+                   target, server, browser,
+                   unprotect, password, guid-sha, mkfile, pvk, statekey,
+                   format, showall, consoleoutfile
+                   ]
+- name: Get browser cookies
+  labels: ["Credential Access"]
+  mitre: ''
+  verb: 'cookies'
+  required_flags: []
+  optional_flags: [
+                   target, server, browser,
+                   unprotect, password, guid-sha, mkfile, pvk, statekey,
+                   cookie, url, setneverexpire,  # Cookies command only
+                   format, showall, consoleoutfile
+                   ]
+- name: Get the browser's statekey
+  labels: ["Credential Access"]
+  mitre: ''
+  verb: 'statekeys'
+  required_flags: []
+  optional_flags: [
+                   target, server, browser,
+                   unprotect, password, guid-sha, mkfile, pvk, statekey,
+                   format, showall, consoleoutfile
+                   ]

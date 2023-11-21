@@ -8,8 +8,8 @@ languages:
 params:
 
 sections:
-- name: Get domain backup key as Base64 string
-  labels: ["Lateral", "Creds"]
+- name: Monitor Clipboard
+  labels: ["Lateral", "Creds", "Clipboard"]
   mitre: ''
   verb: ''
   required_flags: []

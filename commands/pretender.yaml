@@ -1,0 +1,369 @@
+projectLink: https://github.com/RedTeamPentesting/pretender
+name: pretender
+languages: 
+  - name: EXE
+    prefix: pretender.exe
+params:
+    # Section containing relevant parameters
+    - name: interfaceString
+      description: 'Interface to bind on, supports auto-detection by IPv4 or IPv6'
+      template: "-i {0}"
+      optional: false
+      type: text
+      default: ''
+
+    - name: ip4Ip
+      description: 'Relay IPv4 address with which queries are answered, supports auto-detection by interface or IPv6'
+      template: "-4 {0}"
+      optional: true
+      selected: false
+      type: text
+      default: ''
+
+    - name: ip6Ip
+      description: 'Relay IPv6 address with which queries are answered, supports auto-detection by interface or IPv4'
+      template: "-6 {0}"
+      optional: true
+      selected: false
+      type: text
+      default: ''
+
+    - name: soaHostnameString
+      description: 'Hostname for the SOA record (useful for Kerberos relaying)'
+      template: "--soa-hostname {0}"
+      optional: true
+      selected: false
+      type: text
+      default: ''
+
+    - name: spoofStrings
+      description: 'Only spoof these domains, if domain starts with a dot, all subdomains with match (allowlist)'
+      template: "--spoof {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '' 
+
+    - name: dontSpoofStrings
+      description: 'Do not spoof these domains, if domain starts with a dot, all subdomains with match (blocklist)'
+      template: "--dont-spoof {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '' 
+
+    - name: spoofForHosts
+      description: 'Only spoof DHCPv6 and name resolution for these hosts (allowlist of IPs or hostnames)'
+      template: "--spoof-for {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '' 
+
+    - name: dontSpoofForHosts
+      description: 'Do not spoof DHCPv6 and name resolution for these hosts (blocklist of IPs or hostnames)'
+      template: "--dont-spoof-for {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '' 
+
+    - name: spoofTypesTypes
+      description: 'Only spoof these query types (A, AAA, ANY, SOA, all types are spoofed if empty)'
+      template: "--spoof-types {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '' 
+
+    - name: ttlDuration
+      description: 'Time to live for name resolution responses (default 1m0s)'
+      template: "--ttl {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '1m' 
+
+    - name: leaseLifetimeDuration
+      description: 'DHCPv6 IP lease lifetime (default 1m0s)'
+      template: "--lease-lifetime {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '1m'
+
+    - name: routerLifetimeDuration
+      description: 'Router lifetime specified in router advertisements (default 3m0s)'
+      template: "--router-lifetime {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '3m'
+
+    - name: raPeriodDuration
+      description: 'Time period between router advertisements (default 3m0s)'
+      template: "--ra-period {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '3m' 
+    
+    - name: stopAfterDuration
+      description: 'Stop running after this duration'
+      template: "--stop-after duration {0}"
+      optional: true
+      selected: false
+      type: text
+      default: '' 
+    
+    - name: noTimestamps
+      description: 'Disables timestamps in the output'
+      template: "--no-timestamps"
+      optional: true
+      selected: false
+      type: text
+      default: '' 
+    
+    - name: logFile
+      description: 'Log file name'
+      template: "--log {0}"
+      optional: true
+      selected: false
+      type: text
+      default: ''    
+
+    - name: Flags
+      type: label
+      
+    - name: noDhcpDns
+      description: 'Disable DHCPv6 DNS takeover attack (DHCPv6 and DNS)'
+      template: "--no-dhcp-dns"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noDhcp
+      description: 'Disable DHCPv6 spoofing'
+      template: "--no-dhcp"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noDns
+      description: 'Disable DNS spoofing'
+      template: "--no-dns"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noRa
+      description: 'Disable router advertisements'
+      template: "--no-ra"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noMdns
+      description: 'Disable mDNS spoofing'
+      template: "--no-mdns"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noNetbios
+      description: 'Disable NetBIOS-NS spoofing'
+      template: "--no-netbios"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noLlmnr
+      description: 'Disable LLMNR spoofing'
+      template: "--no-llmnr"
+      optional: true
+      selected: false
+      type: flag    
+
+    - name: noLnr
+      description: 'Disable local name resolution spoofing (mDNS, LLMNR, NetBIOS-NS)'
+      template: "--no-lnr"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noIpv6Lnr
+      description: 'Disable mDNS and LLMNR via IPv6 (useful with allowlist or blocklist)'
+      template: "--no-ipv6-lnr"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: ignoreNofqdn
+      description: 'Ignore DHCPv6 messages where the client did not include its FQDN (useful with allowlist or blocklists)'
+      template: "--ignore-nofqdn"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: verbose
+      description: 'Print debug information'
+      template: "--verbose"
+      optional: true
+      selected: false
+      type: flag      
+
+    - name: noColor 
+      description: Disables output styling
+      type: flag
+      value: "--no-color"
+      optional: true
+      selected: false
+    
+    - name: noHostInfo
+      description: Do not gather host information
+      type: flag
+      value: "--no-host-info"
+      optional: true      
+      selected: false
+
+    - name: hideIgnored
+      description: 'Do not log ignored queries'
+      template: "--hide-ignored"
+      optional: true
+      selected: false
+      type: flag      
+    
+    - name: redirectStderr
+      description: 'Redirect stderr to stdout'
+      template: "--redirect-stderr"
+      optional: true
+      selected: false
+      type: flag      
+
+sections:
+
+    - name: Local name resolution spoofing
+      labels: ['Recon'] # Relevant labels for filtering
+      mitre: 'T11.11' # Mitre relevant technique
+      verb: '' # Verb that 
+      required_flags: [interfaceString] # Will reflect required params for command
+      optional_flags: [
+        noColor, 
+        ip4Ip, 
+        ip6Ip,
+        soaHostnameString,   
+        noDhcpDns,
+        noDhcp,
+        noDns,
+        noRa,
+        noMdns,
+        noNetbios,
+        noLlmnr,
+        noLnr,
+        noIpv6Lnr,
+        spoofStrings,
+        dontSpoofStrings,
+        spoofforHosts,
+        dontSpoofForHosts,
+        spoofTypesTypes,
+        ignoreNofqdn,
+        ttlDuration,
+        leaseLifetimeDuration,
+        routerLifetimeDuration,
+        raPeriodDuration,
+        stopAfterDuration,
+        verbose,
+        noColor,
+        logFile,
+        noHostInfo,
+        hideIgnored,
+        redirect-stderr
+        ] # Will contain any optional params for command  
+
+    - name: List interfaces and their addresses (the other options have no effect, except for --no-color)
+      labels: ['Recon'] # Relevant labels for filtering
+      mitre: '' # Mitre relevant technique
+      verb: '--interfaces' # Verb that 
+      required_flags: [] # Will reflect required params for command
+      optional_flags: [noColor] # Will contain any optional params for command          
+
+    - name: Only logs incoming queries and does not answer any of them
+      labels: ['Recon'] # Relevant labels for filtering
+      mitre: '' # Mitre relevant technique
+      verb: '--dry' # Verb that 
+      required_flags: [
+        interfaceString
+      ] # Will reflect required params for command
+      optional_flags: [
+        noColor, 
+        ip4Ip, 
+        ip6Ip,
+        soaHostnameString,   
+        noDhcpDns,
+        noDhcp,
+        no-dns,
+        noRa,
+        noMdns,
+        noNetbios,
+        noLlmnr,
+        noLnr,
+        noIpv6Lnr,
+        spooftrings,
+        dontSpoofStrings,
+        spoofForHosts,
+        dontSpoofForHosts,
+        spoofTypesTypes,
+        ignoreNofqdn,
+        ttlDuration,
+        leaseLifetimeDuration,
+        routerLifetimeDuration,
+        raPeriodDuration,
+        stopAfterDuration,
+        verbose,
+        noColor,
+        logFile,
+        noHostInfo,
+        hideIgnored,
+        redirectStderr
+        ] # Will contain any optional params for command 
+    
+    - name: Self crafted
+      labels: []
+      mitre: ''
+      verb: ''
+      required_flags: [
+        interfaceString
+      ]
+      optional_flags: [            
+        ip4Ip,
+        ip6Ip,
+        soaHostnameString,
+        spoofStrings,
+        dontSpoofStrings,
+        spoofForHosts,
+        dontSpoofForHosts,
+        spoofTypesTypes,
+        ttlDuration,
+        leaseLifetimeDuration,
+        routerLifetimeDuration,
+        raPeriodDuration,
+        stopAfterDuration,
+        noTimestamps,
+        logFile,
+        Flags,
+        noDhcpDns,
+        noDhcp,
+        noDns,
+        noRa,
+        noMdns,
+        noNetbios,
+        noLlmnr,
+        noLnr,
+        noIpv6Lnr,
+        ignoreNofqdn,
+        verbose,
+        noColor ,
+        noHostInfo,
+        hideIgnored,
+        redirectStderr
+      ]

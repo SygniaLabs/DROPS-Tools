@@ -4,6 +4,8 @@ name: Certify
 languages:
   - name: EXE
     prefix: Certify.exe
+  - name: Apollo
+    prefix: inline_assembly -Assembly "Certify" -Arguments "
 params:
   - name: ca
     description: ''

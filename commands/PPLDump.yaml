@@ -1,0 +1,57 @@
+---
+projectLink: https://github.com/itm4n/PPLdump
+name: PPLDump
+languages:
+  - name: EXE
+    prefix: ''
+
+params:
+  - name: ProccessName
+    type: text
+    description: Number of concurrent threads
+    template: "{0}"
+    default: ''
+    optional: true 
+
+  - name: ProccessID
+    type: text
+    description: Number of concurrent threads
+    template: "{0}"
+    default: ''
+    optional: true 
+
+  - name: DumpFile
+    type: text
+    description: Number of concurrent threads
+    template: "{0}"
+    default: 'C:\temp\out'
+    optional: true 
+
+  - name: Verbose
+    type: flag
+    description: Verbose output
+    value: '-v'
+    optional: true
+    selected: false
+
+  - name: DebugMode
+    type: flag
+    description: Enable Debug mode
+    value: '-d'
+    optional: true
+    selected: false
+
+  - name: Force
+    type: flag
+    description: Bypass DefineDosDevice error check
+    value: '-f'
+    optional: true
+    selected: false
+
+sections:
+  - name: Dump PPL process memory
+    labels: [LSASS, Creds]
+    mitre: ''
+    verb: ''
+    required_flags: [DumpFile]
+    optional_flags: [ProccessName, ProccessID, Verbose, DebugMode, Force]

@@ -1,13 +1,16 @@
 ---
 projectLink: https://github.com/GhostPack/Rubeus
+sigmaRulesURL: https://raw.githubusercontent.com/SigmaHQ/sigma/master/rules/windows/process_creation/proc_creation_win_hktl_rubeus.yml
 name: Rubeus
 languages:
   - name: EXE
     prefix: Rubeus.exe
   - name: PS
     prefix: Invoke-Rubeus -Command
-  - name: C2
+  - name: Covenant
     prefix: execute-assembly /path/to/local/Rubeus.exe
+  - name: Apollo
+    prefix: inline_assembly -Assembly "Rubeus.exe" -Arguments "
 
 params:
 #authentication options:

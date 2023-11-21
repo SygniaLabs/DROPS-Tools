@@ -4,6 +4,8 @@ name: winPEAS
 languages:
   - name: EXE
     prefix: winpeas.exe
+  - name: Apollo
+    prefix: inline_assembly -Assembly "winPEAS.exe" -Arguments "
 
 params:
   - name: SpecificCheck

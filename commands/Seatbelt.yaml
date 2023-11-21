@@ -1,9 +1,12 @@
 ---
 projectLink: https://github.com/GhostPack/Seatbelt
+sigmaRulesURL: https://raw.githubusercontent.com/SigmaHQ/sigma/master/rules/windows/process_creation/proc_creation_win_pua_seatbelt.yml
 name: Seatbelt
 languages:
   - name: EXE
     prefix: Seatbelt.exe
+  - name: Apollo
+    prefix: inline_assembly -Assembly "Seatbelt.exe" -Arguments "
 
 params:
   - name: Seatbelt commands

@@ -1,0 +1,167 @@
+projectLink: https://github.com/mlcsec/SharpSQL
+name: SharpSQL
+languages:
+  - name: EXE
+    prefix: 'SharpSQL.exe'
+  - name: Apollo
+    prefix: inline_assembly -Assembly "SharpSQL.exe" -Arguments "    
+  
+params:
+  - name: Target
+    type: label
+
+  - name: Instance
+    type: text
+    description: The targeted SQL server instance
+    template: "-Instance {0}"
+    default: sql.server
+    optional: false
+
+  - name: Database
+    type: text
+    description: The db to connect to (default - master)
+    template: "-db {0}"
+    optional: true
+
+  - name: LinkedInstance
+    type: text
+    description: The linked instance to target
+    template: "-LinkedInstance {0}"
+    default: linked.sql.server
+    optional: true
+
+  - name: Username
+    type: text
+    description: The SQL user to impersonate
+    template: "-User {0}"
+    optional: true
+
+  - name: Execute
+    type: label
+
+  - name: Command
+    type: text
+    description: The command to execute
+    template: "-Command {0}"
+    default: "whoami && ipconfig"
+    optional: true
+
+  - name: Query
+    type: text
+    description: The raw SQL query to execute
+    template: "-Query {0}"
+    optional: true       
+
+  - name: Option for Get-Hash
+    type: label
+
+  - name: ListenerAddress # Get-Hash
+    type: text
+    description: The IP to xp_dirtree (share - /pwn)
+    template: "-ip {0}"
+    default: ''
+    optional: true
+
+
+  - name: Self-craft 
+    type: label
+
+  - name: Method
+    type: select
+    description: Select a method for self crafted command        
+    template: "{0}"
+    optional: false
+    default: 'Get-DBUser'
+    options: [
+              #Get-SQLInstanceDomain,
+              Get-Databases,
+              Get-DBUser,
+              Get-GroupMembership,
+              Get-Hash,
+              Get-ImpersonableUsers,
+              Get-LinkedServers,
+              Get-LinkedPrivs,
+              Get-Sysadmins,
+              Get-SystemUser,
+              Get-SQLQuery,
+              Get-Triggers,
+              Get-Users,
+              Get-UserPrivs,
+              Check-Cmdshell,
+              Check-LinkedCmdshell,
+              Clear-CLRAsm,
+              Enable-Cmdshell,
+              Enable-LinkedCmdshell,
+              Invoke-OSCmd,
+              Invoke-LinkedOSCmd,
+              Invoke-ExternalScript,
+              Invoke-OLEObject,
+              Invoke-CLRAsm,
+              Invoke-UserImpersonation,
+              Invoke-DBOImpersonation
+            ]
+
+  
+sections:
+  - name: Get SQL instances within current domain via user and computer SPNs
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-SQLInstanceDomain'
+    required_flags: []
+    optional_flags: []
+
+  - name: Get the Windows User/Machine hash via xp_dirtree. Make sure to set-up a listener (e.g ntlmrelayx, Inveigh).
+    labels: [Credential Access,SQL]
+    mitre: ''
+    verb: 'Get-Hash'
+    required_flags: [Instance, ListenerAddress]
+    optional_flags: [Database, LinkedInstance, Username]
+
+  - name: Get the privileges of the current user context
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-UserPrivs'
+    required_flags: [Instance]
+    optional_flags: [Database, LinkedInstance, Username]
+
+  - name: Get linked SQL servers
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-LinkedServers'
+    required_flags: [Instance]
+    optional_flags: []
+
+  - name: Get sysadmin users
+    labels: [Recon,SQL]
+    mitre: ''
+    verb: 'Get-Sysadmins'
+    required_flags: [Instance]
+    optional_flags: []
+
+  - name: Enable xp_cmdshell on instance
+    labels: [Exec, SQL, xp_cmdshell]
+    mitre: ''
+    verb: 'Enable-Cmdshell'
+    required_flags: [Instance]
+    optional_flags: []    
+
+  - name: Invoke OS command
+    labels: [Exec, SQL, xp_cmdshell]
+    mitre: ''
+    verb: 'Invoke-OSCmd'
+    required_flags: [Instance, Command]
+    optional_flags: []
+
+  - name: Invoke command execution via impersonation
+    labels: [Exec, SQL, xp_cmdshell]
+    mitre: ''
+    verb: 'Invoke-UserImpersonation'
+    required_flags: [Instance, Username, Query]
+    optional_flags: []
+
+  - name: Self-craft command
+    labels: [SQL, xp_cmdshell]
+    mitre: ''
+    verb: ''
+    required_flags: [Method, Instance]
+    optional_flags: [Database, LinkedInstance, Username, Command, Query]

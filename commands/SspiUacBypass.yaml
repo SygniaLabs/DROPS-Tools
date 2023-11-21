@@ -1,0 +1,25 @@
+---
+projectLink: https://github.com/antonioCoco/SspiUacBypass
+name: SspiUacBypass
+languages:
+  - name: EXE
+    prefix: SspiUacBypass.exe
+  - name: Apollo
+    prefix: inline_assembly -Assembly "SspiUacBypass.exe" -Arguments "
+
+params:
+  - name: BinPath
+    description: Executable path to launch with high integrity
+    template: "{0}"
+    default: "C:\\windows\\System32\\cmd.exe"
+    type: text
+    optional: true
+
+
+sections:
+- name: Launch process as SYSTEM
+  labels: ["PeivEsc", "UAC"]
+  mitre: ''
+  verb: ''
+  required_flags: []  
+  optional_flags: [BinPath]

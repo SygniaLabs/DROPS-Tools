@@ -1,9 +1,13 @@
 ---
 projectLink:  
+sigmaRulesURL: https://raw.githubusercontent.com/SigmaHQ/sigma/master/rules/windows/process_creation/proc_creation_win_hktl_bloodhound_sharphound.yml
+# https://github.com/SigmaHQ/sigma/raw/master/rules/windows/file/file_event/file_event_win_bloodhound_collection.yml
 name: SharpHound
 languages:
   - name: EXE
     prefix: SharpHound.exe 
+  - name: Apollo
+    prefix: inline_assembly -Assembly "SharpHound" -Arguments "
 
 params:
   - name: CollectionMethod
